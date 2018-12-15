@@ -41,11 +41,21 @@
     "react": "^16.6.3",
     "react-dom": "^16.6.3"
   },
-  "author": "",
-  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doronnahum/redux-admin.git"
+  },
+  "author": "Doron nahum",
   "license": "MIT",
-  "repository": "",
+  "bugs": {
+    "url": "https://github.com/doronnahum/redux-admin/issues"
+  },
+  "homepage": "https://github.com/doronnahum/redux-admin#readme",
   "keywords": [
-    "react-component"
+    "react-component",
+    "react-admin",
+    "admin",
+    "redux",
+    "saga"
   ]
 }
