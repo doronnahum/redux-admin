@@ -275,7 +275,11 @@ export default class FilterOptions extends React.Component {
   }
   render() {
     const {initialValues, onSave, fields, advanceMode} = this.props
-    const initValues = (initialValues && initialValues.length) ? initialValues : [this.getNewRow()];
+    const _initialValues = (initialValues && initialValues.length) ? {...initialValues} : null
+    if(advanceMode && _initialValues && _initialValues[0] && !_initialValues[0].advanceMode){
+      _initialValues[0].advanceMode = true // This will convert an simple filter to advanceMode filter
+    }
+    const initValues = _initialValues ||  [this.getNewRow()];
     return (
       <Formik
         initialValues={{activeFilters: initValues}}
