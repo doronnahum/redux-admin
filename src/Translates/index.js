@@ -4,7 +4,7 @@ import {Modal, AutoComplete, Tabs, Tooltip, Button} from 'antd';
 import codes from './codes';
 import {
   Consumer,
-} from 'src/components/redux-admin/fields'
+} from '../fields'
 
 /*
   Example of use

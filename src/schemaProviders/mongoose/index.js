@@ -11,7 +11,7 @@ import {
   Reference,
   Select,
   ArrayInput
-} from 'src/components/redux-admin/fields'
+} from '../../fields'
 import validation from './validation'
 import list from './list'
 
