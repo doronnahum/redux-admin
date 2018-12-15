@@ -1,8 +1,8 @@
 import forOwn from 'lodash/forOwn';
 
-export const isString = function(obj) {
-  return Object.prototype.toString.call(obj) === '[object String]'
-};
+export const isString = function(value) {
+  return typeof value === 'string';
+}
 
 export const getChangedData = function(values, dataFromServer) {
   let dataToSend = null
@@ -41,4 +41,61 @@ export const convertColumnsToCsvFields = function(columns = []) {
     value: (row, field) => row[key],
     default: getDefaultValueByType(type),
   }))
+}
+
+export const getDeepObjectValue = function(obj, keypath) {
+  if (!isObject(obj)) {
+    return undefined;
+  }
+
+  return forEachKeyInKeypath(obj, keypath, function(obj, key) {
+    if (isObject(obj)) {
+      return obj[key];
+    }
+  });
+}
+
+
+export const isObject = function(obj) {
+  return obj === Object(obj);
+}
+
+let forEachKeyInKeypath = function(object, keypath, callback) {
+  if (!isString(keypath)) {
+    return undefined;
+  }
+
+  var key = ""
+    , i
+    , escape = false;
+
+  for (i = 0; i < keypath.length; ++i) {
+    switch (keypath[i]) {
+      case '.':
+        if (escape) {
+          escape = false;
+          key += '.';
+        } else {
+          object = callback(object, key, false);
+          key = "";
+        }
+        break;
+
+      case '\\':
+        if (escape) {
+          escape = false;
+          key += '\\';
+        } else {
+          escape = true;
+        }
+        break;
+
+      default:
+        escape = false;
+        key += keypath[i];
+        break;
+    }
+  }
+
+  return callback(object, key, true);
 }

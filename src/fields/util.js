@@ -1,6 +1,5 @@
-import {getDeepObjectValue} from 'validate.js'
 import isArray from 'lodash/isArray';
-
+import {getDeepObjectValue} from '../util'
 export const getFieldValueByName = function(name = '', values) {
   var _name = name;
   if(_name.includes('[')) {
