@@ -95,7 +95,6 @@ class Admin extends Component {
   }
 
   handleBackEvent(event) {
-    debugger
     if (this._isMounted) {
       /*
         This is the Listener('popstate');
@@ -547,7 +546,7 @@ class Admin extends Component {
 }
 
 Admin.propTypes = {
-  url: PropTypes.string.require, // Api endpoint
+  url: PropTypes.string.isRequired, // Api endpoint
   list: PropTypes.element,
   renderList: PropTypes.func, // alternative to props.list
   doc: PropTypes.element,
@@ -570,7 +569,7 @@ Admin.propTypes = {
   initialSkip: PropTypes.number, // default is 0
   listClearOnUnMount: PropTypes.bool, // true by default, when true we remove all data from store when componentWillUnmount
   adminWillUnmount: PropTypes.func, // optional Call back when componentWillUnmount
-  roleConfig: PropTypes.objectOf({
+  roleConfig: PropTypes.shape({
     canCreate: PropTypes.bool, // true by default
     canRead: PropTypes.bool, // true by default
     canUpdate: PropTypes.bool, // true by default
