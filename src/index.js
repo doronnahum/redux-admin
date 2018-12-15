@@ -28,7 +28,7 @@ export const docViews = {
 
 export const fields = _fields;
 export const parseServer = _parseServer;
-export const _mongoose = _mongoose;
+export const mongoose = _mongoose;
 export const Admin = _Admin;
 export const Translates = _Translates;
 export const getListTargetKey = _getListTargetKey;
