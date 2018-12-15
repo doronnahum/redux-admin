@@ -128,9 +128,6 @@ class Admin extends Component {
         const _queryParamsNewKey = `${queryParamsPrefix}${queryParamsNewKey}`;
         const _queryParamsViewKey = `${queryParamsPrefix}${queryParamsViewKey}`;
         const _queryParamsEditKey = `${queryParamsPrefix}${queryParamsEditKey}`;
-        router.onReplaceParams({
-
-        })
         this.handleRoute(REPLACE_PARAMS, { [_queryParamsNewKey]: '', [_queryParamsViewKey]: '', [_queryParamsEditKey]: '' })
       }
     } else {
@@ -194,7 +191,7 @@ class Admin extends Component {
    * @param {*} syncParams default is true, set false to disabled the url params
    * @description This will open a document in Edit mode
    */
-  onEditClick(row, docId, syncParams = true, updateParamsType) {
+  onEditClick(row, docId, syncParams = true, updateParamsType = SET_PARAMS) {
     const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsEditKey } = this.props
     const newCurrentId = docId || row[rowKey || idKey]
     const docSource = getDocumentSource({ url, id: newCurrentId, targetKey: getDocTargetKey(url) })
