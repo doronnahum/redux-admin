@@ -47,7 +47,7 @@ const parseServerGetParams = (
   return {
     limit,
     skip,
-    sort: _sort,
+    order: _sort,
     where: filter,
     count: 1
   };
