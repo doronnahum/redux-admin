@@ -6,6 +6,9 @@ import SimpleDoc from './docView/SimpleDoc.js';
 import _Translates from './Translates';
 import {Layout} from 'antd';
 export {Formik, Form, Field, ErrorMessage} from 'formik';
+import * as _fields from './fields';
+import * as _parseServer from './parse-server';
+import * as _mongoose from './mongoose';
 export {setRouteConfig} from './router'
 export const layouts = {
   Admin: Layout
@@ -23,6 +26,9 @@ export const docViews = {
   SimpleDoc
 }
 
+export const fields = _fields;
+export const parseServer = _parseServer;
+export const _mongoose = _mongoose;
 export const Admin = _Admin;
 export const Translates = _Translates;
 export const getListTargetKey = _getListTargetKey;
