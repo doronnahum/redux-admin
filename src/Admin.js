@@ -3,14 +3,15 @@ import React, { Component, Fragment, cloneElement } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { NetProvider, idKey, Selector } from 'src/components/net-provider';
-import { Refresh, Delete } from 'src/components/net-provider/actions';
+import { NetProvider, idKey, Selector, actions } from 'net-provider';
 import { Layout, Breadcrumb, Modal } from 'antd'
 import router from './router';
 import { sendMessage } from './message'
 import isEqual from 'lodash/isEqual';
 import {convertColumnsToCsvFields} from './util';
 const json2csv = require('json2csv').parse;
+
+const {Refresh, Delete} = actions;
 
 const NEW_DOC = 'New'
 const EDIT_MODE = 'Edit Mode';
