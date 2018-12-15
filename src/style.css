@@ -1,0 +1,229 @@
+.ra-adminLayout {
+    position: relative;
+}
+.ra-sideModal-full {
+    background-color: transparent;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    width: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    bottom: 0;
+}
+.ra-topRightLoader {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+}
+
+.ra-tableWrapper .ant-table-body {
+    height: calc(100vh - 290px) !important;
+    max-height: calc(100vh - 290px) !important;
+    overflow: auto !important;
+}
+.ra-tableWrapper .ant-table-header {
+    overflow: auto !important;
+}
+
+.ra-tableWrapper , .ra-docWrapper { /* Container*/
+    padding: 15px;
+    background-color: #f1f3f6;
+}
+.ra-docWrapper .ra-tableWrapper{ /* Container*/
+    padding: 0px;
+}
+
+.ra-tableContent , .ra-docContent {/* Content*/
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+    padding: 15px;
+    overflow: auto;
+    height: calc(100vh - 100px) !important;
+    max-height: calc(100vh - 100px) !important;
+}
+.ra-docContent {/* Content*/
+    height: calc(100vh - 100px) !important;
+    max-height: calc(100vh - 100px) !important;
+}
+.ra-tableContent  {/* Content*/
+    height: calc(100vh - 175px) !important;
+    max-height: calc(100vh - 175px) !important;
+    overflow: hidden;
+    border-top: 0px;
+}
+
+.ra-tableHeader {
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-bottom: 0px;
+    padding: 15px;
+
+}
+.ra-tableHeader-row {
+    display: flex;
+    justify-content: space-between;
+}
+.ra-docBody {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 58px);
+}
+
+.ra-docFields {
+    flex: 1;
+    max-height: 100%;
+    overflow: auto;
+    padding-right: 15px;
+    margin-bottom: 15px;
+}
+.ra-docFooter {
+    display: flex;
+    justify-content: flex-end;
+}
+.ra-docHeader {
+    display: flex;
+    height: 55px;
+    align-items: center;
+}
+.ra-docHeader-back {
+    margin-right: 5px;
+}
+.ra-docHeader-title {
+    padding-top: 15px;
+}
+.ra-fieldsArrayGroupNumber {
+    display: flex !important;
+    align-items: center;
+    margin-bottom: 7px;
+}
+.ra-fieldsArrayGroupNumber .ant-input-group-addon{
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: -2px;
+    width: 39px;
+    border-left: 1px solid #d9d9d9;
+}
+.ra-translatesMessage {
+    position: absolute;
+    top: 7px;
+    right: 50px;
+}
+.ra-marginRight5 {
+    margin-right: 5px;
+}
+.ra-marginLeft5 {
+    margin-left: 5px;
+}
+.ra-translates {
+    position: relative;
+}
+.ra-translates .addBtn{
+    position: absolute;
+    right: 0;
+    z-index: 200;
+    color: black;
+    border: none;
+    box-shadow: initial;
+    background: transparent;
+}
+.padding5 { 
+    padding: 5px;
+}
+.ra-mr15 {
+    margin-right: 15px;
+}
+.ra-filtersOptionsWrapper {
+    padding: 5px;
+    margin-top: 15px;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+    width: 100%;
+}
+.ra-filters{
+    width: 100%;
+}
+.ra-filters-toggle {
+    margin-right: 10px;
+}
+.ra-filters-toggle.hidden {
+    visibility: hidden;
+}
+.ra-filtersOptions{
+    width: 100%;
+    max-width: 750px;
+}
+.ra-filtersOptionsRow {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    position: relative;
+    padding-right: 15px;
+}
+.ra-simpleSearchBtn {
+    color: black;
+    border: none;
+    opacity: 0.7;
+}
+.ra-simpleSearchBtn:hover {
+    opacity: 1;
+}
+.ra-filtersOptionsTitle{
+    margin: 15px 0px;
+    color: #2d3446;
+    text-decoration: underline;
+}
+.ra-filtersOptionsFooter {
+    width: 100%;
+    display: flex;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+.ra-removeFilterRow {
+    color: black;
+    font-size: 6px;
+}
+/* .ra-adminLayout .ant-table td { white-space: nowrap; } */
+.ra-adminLayout .ant-table-thead > tr > th{
+    background-color: transparent;
+}
+.ra-adminLayout .ant-table-header {
+    background-color: transparent;
+}
+.ra-text-line-through {
+    text-decoration: line-through
+}
+.ra-hideSelectBorder .ant-select-selection {
+    border: 0px;
+}
+.ra-table-action-btns {
+    width: 100%;
+    display: block;
+    text-align: right;
+}
+.ra-columnsFilters {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.ra-columnsFilters .ra-columnsFiltersList {
+    display: flex;
+    flex-direction: column;
+    padding: 0 8px;
+}
+.ra-columnsFilters .ra-columnsFiltersList .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+    margin-left: 0px;
+}
+#ra-columnsFilters-btn {
+    height: 50px;
+    font-size: 15px;
+    margin-right: 5px;
+}

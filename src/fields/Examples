@@ -1,0 +1,72 @@
+      
+      // How to make your form inline?
+      wrap your form with class="ant-form ant-form-inline"
+      <form classNam='ant-form ant-form-inline'>
+        <Input name="title" required label={'Title'} />
+      </form>
+      
+      <Input name="title" required label={'Title'} />
+      <Input name="src" required label={'Url'} />
+      <Input name="value" required label={'Value'} />
+      <ParseServerReference url={'classes/Category'} customHandleResponse={res => res.data.results} getParamsByValue={(value) => null}>
+        {({data, onSearchValueChanged, loading}) => {
+          return (
+            <MultiSelect
+              data={data}
+              onSearchValueChanged={onSearchValueChanged}
+              loading={loading}
+              name='categories'
+              label='Categories'
+              optionLabel={'name'}
+              optionKey={'objectId'}
+              labelInValue
+              parseValuesOnChange={(values) => {
+                return values.map(item => {
+                  return {
+                    className: 'Category',
+                    objectId: item.objectId,
+                    __type: 'Pointer',
+                    name: item.name
+                  }
+                })
+              }}
+            />
+          )
+        }}
+      </ParseServerReference>
+
+            <Consumer>
+        {({values}) => {
+          if(values.objectId) {
+            return (
+              <div className='ant-row ant-form-item'>
+                <label className='ant-form-item-label'>Seasons:</label>
+                <Season
+                  params={{where: {program: values.objectId}, include: 'program'}}
+                  syncWithUrl={false}
+                  showBreadcrumb={false}
+                  initialValues={{
+                    program: {
+                      className: 'Program',
+                      objectId: values.objectId,
+                      __type: 'Pointer',
+                    }
+                  }}
+                />
+              </div>
+            )
+          }
+          return <Alert message='Save your program and start adding a new seasons'/>
+        }}
+      </Consumer>
+
+      <Select
+        data={[{value: 'movie', label: 'Movie'}, {value: 'series', label: 'Series'}]}
+        name='type'
+        label='Type'
+        optionLabel={'label'}
+        optionKey={'value'}
+        showSearch={false}
+      />
+      <TextArea name="description" required label={'Description'} />
+      <InputNumber name="year" required label={'Year'} />
