@@ -1,6 +1,6 @@
 {
   "name": "redux-admin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Admin React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -30,7 +30,8 @@
     "react-redux": "^5.1.1",
     "redux": "^4.0.1",
     "redux-saga": "^0.16.2",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0",
+    "yup": "^0.26.6"
   },
   "peerDependencies": {
     "react": "16.x"
