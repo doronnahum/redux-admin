@@ -3,5 +3,6 @@ module.exports = {
   npm: {
     esModules: false,
     umd: false
-  }
+  },
+  cherryPick: 'antd'
 }
