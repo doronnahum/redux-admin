@@ -4,5 +4,7 @@ module.exports = {
     esModules: false,
     umd: false
   },
-  cherryPick: 'antd'
+  babel: {
+    cherryPick: 'antd'
+  }
 }
