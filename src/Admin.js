@@ -8,10 +8,10 @@ import { Layout, Breadcrumb, Modal } from 'antd'
 import router from './router';
 import { sendMessage } from './message'
 import isEqual from 'lodash/isEqual';
-import {convertColumnsToCsvFields} from './util';
+import { convertColumnsToCsvFields } from './util';
 const json2csv = require('json2csv').parse;
 
-const {Refresh, Delete} = actions;
+const { Refresh, Delete } = actions;
 
 const NEW_DOC = 'New'
 const EDIT_MODE = 'Edit Mode';
@@ -86,10 +86,10 @@ class Admin extends Component {
   };
 
   detectBrowserBackButton(event) {
-    if(event && event.currentTarget === window) {
+    if (event && event.currentTarget === window) {
       console.log('detectBrowserBackButton() - Need to test if this a cross browser solution')
       return true
-    }else{
+    } else {
       return false
     }
   }
@@ -102,9 +102,9 @@ class Admin extends Component {
         but only if the event is from the browser and not from user button click
       */
       const hasBrowserBackButtonClick = this.detectBrowserBackButton(event)
-      if(!hasBrowserBackButtonClick) return
+      if (!hasBrowserBackButtonClick) return
       const params = router.onGetParams() || {};
-      const {queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey} = this.props
+      const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey } = this.props
       const routeParams = params || router.onGetParams() || {};
       const _queryParamsNew = routeParams[`${queryParamsPrefix}${queryParamsNewKey}`];
       const _queryParamsView = routeParams[`${queryParamsPrefix}${queryParamsViewKey}`];
@@ -119,7 +119,7 @@ class Admin extends Component {
 
   handleRoute(type, data) {
     if (!this.props.syncWithUrl) return
-    const {queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey} = this.props
+    const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey } = this.props
     if (type === BACK) {
       if (this.previousRoutes > 0) {
         this.previousRoutes = this.previousRoutes - 1
@@ -167,18 +167,18 @@ class Admin extends Component {
    */
   syncDocIdFromQueryParams(params, replaceParams = false, updateParamsType) {
     if (this.props.syncWithUrl) {
-      const {queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey, allowViewMode} = this.props
+      const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey, allowViewMode } = this.props
       const routeParams = params || router.onGetParams() || {};
       const _queryParamsNew = routeParams[`${queryParamsPrefix}${queryParamsNewKey}`] || '';
       const _queryParamsView = routeParams[`${queryParamsPrefix}${queryParamsViewKey}`] || '';
       const _queryParamsEdit = routeParams[`${queryParamsPrefix}${queryParamsEditKey}`] || '';
       const { canCreate, canUpdate, canRead, excludeFields } = this.getRoleConfig()
       const _excludeFields = excludeFields.length
-      if(_queryParamsNew.length && (canCreate || _excludeFields)) {
+      if (_queryParamsNew.length && (canCreate || _excludeFields)) {
         this.onNewClick(replaceParams, updateParamsType)
-      }else if(_queryParamsEdit.length && (canUpdate || _excludeFields)) {
+      } else if (_queryParamsEdit.length && (canUpdate || _excludeFields)) {
         this.onEditClick(null, _queryParamsEdit, replaceParams, updateParamsType)
-      }else if(_queryParamsView.length && (canRead || _excludeFields) && allowViewMode) {
+      } else if (_queryParamsView.length && (canRead || _excludeFields) && allowViewMode) {
         this.onViewDocClick(null, _queryParamsView, replaceParams, updateParamsType)
       }
     }
@@ -263,7 +263,7 @@ class Admin extends Component {
    * @description This will open a document on New mode
    */
   onNewClick(syncParams = true, updateParamsType = SET_PARAMS) {
-    const {getDocumentSource, url, queryParamsPrefix, queryParamsNewKey} = this.props
+    const { getDocumentSource, url, queryParamsPrefix, queryParamsNewKey } = this.props
     const docSource = getDocumentSource({ url, targetKey: getDocTargetKey(url) })
     this.setState({ docSource, showDoc: true, currentId: null, docMode: NEW_DOC, currentDocData: null })
     const _queryParamsNewKey = `${queryParamsPrefix}${queryParamsNewKey}`;
@@ -281,7 +281,7 @@ class Admin extends Component {
    */
   onCreateEnd(res) {
     const { data } = res
-    const {queryParamsPrefix, queryParamsEditKey, queryParamsNewKey} = this.props
+    const { queryParamsPrefix, queryParamsEditKey, queryParamsNewKey } = this.props
     this.props.actions.Refresh({ targetKey: this.listTarget })
     const { getIdFromNewDocResponse, rowKey, idKey } = this.props
     const newDocId = getIdFromNewDocResponse ? getIdFromNewDocResponse(data) : data[rowKey || idKey]
@@ -357,9 +357,9 @@ class Admin extends Component {
 
   onSearchValueChange(eventOrString) {
     const value = (eventOrString && eventOrString.target) ? eventOrString.target.value : eventOrString
-    if(this.props.onSearchValueChange) {
+    if (this.props.onSearchValueChange) {
       this.props.onSearchValueChange(value)
-    }else{
+    } else {
       this.setState({ searchValue: value, skip: 0 }, this.onQueryParametersChanged)
     }
   }
@@ -388,11 +388,11 @@ class Admin extends Component {
     if (!roleConfig) return DEFAULT_ROLE_CONFIG
     else return roleConfig
   }
-  onDownloadPdf({data, columnsToDisplay, columns}) {
-    console.log('redux-admin missing onDownloadPdf', {data, columnsToDisplay, columns})
+  onDownloadPdf({ data, columnsToDisplay, columns }) {
+    console.log('redux-admin missing onDownloadPdf', { data, columnsToDisplay, columns })
   }
-  onDownloadExcel({data, columnsToDisplay, columns}) {
-    console.log('redux-admin missing onDownloadPdf', {data, columnsToDisplay, columns})
+  onDownloadExcel({ data, columnsToDisplay, columns }) {
+    console.log('redux-admin missing onDownloadPdf', { data, columnsToDisplay, columns })
     const opts = { fields: convertColumnsToCsvFields(columns), quote: '' };
     try {
       const csv = json2csv(data, opts);
@@ -558,6 +558,7 @@ Admin.propTypes = {
   showBreadcrumb: PropTypes.bool, // true by default, set false, relevant when you render more then one component at the same page
   editAfterSaved: PropTypes.bool, // true by default, when true new document will stay open after submit
   onChangeEnd: PropTypes.func, // optional Call back After create/update/delete
+  onReadEnd: PropTypes.func, // optional Call back After list fetch end
   initialSearchValue: PropTypes.string,
   onSearchValueChange: PropTypes.func, // If You Want To Handle it By Your self
   searchValue: PropTypes.string, // relevant when you pass onSearchValueChange

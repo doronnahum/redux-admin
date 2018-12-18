@@ -1,5 +1,7 @@
 import {allOperators} from '../filters/FilterOptions'
 import isArray from 'lodash/isArray';
+import {getDeepObjectValue} from '../util'
+import isEqual from 'lodash/isEqual'
 
 export const mongooseGetParams = ({limit, skip, sort, filters}, defaultFilter) => {
   let filter;
@@ -38,9 +40,37 @@ export const mongooseGetParams = ({limit, skip, sort, filters}, defaultFilter) =
   const options = {}
   if(limit) options.limit = limit;
   if(skip) options.skip = skip;
-  if(sort) options.sort = sort;
+  if(sort && !sort.undefined) options.sort = sort; // !sort.undefined - workaround to fix issue with initial value on Admin
   return {
     options,
     filter,
+  }
+}
+
+export const getListWithCount = ({ url, targetKey, params, body, onEnd }) => {
+  return {
+    targetKey: targetKey,
+    url: url,
+    params,
+    body,
+    onEnd,
+    getCountRequestConfig: ({actionPayload, response, fetchObject}) => {
+      const currentCount = fetchObject.count
+      const lastFilters = getDeepObjectValue(fetchObject, 'lastRead.params.filter')
+      const newFilter = getDeepObjectValue(actionPayload, 'params.filter')
+      if((currentCount || currentCount === 0) && isEqual(lastFilters, newFilter)) {
+        return false // persist count
+      }
+      const config = {
+        url: actionPayload.url + '/count',
+        method: actionPayload.method,
+      }
+      const filter = getDeepObjectValue(response, 'config.params.filter')
+      if(filter) { config.params = {filter} }
+      return config
+    },
+    getCountFromResponse: (response) => {
+      return getDeepObjectValue(response, 'data.count') || 0
+    }
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {NetProvider} from 'net-provider';
-import {getFirestore} from '../firebase/initFirebase';
+import { NetProvider } from 'net-provider';
+import { getFirestore } from '../firebase/initFirebase';
 
 class FireStoreReference extends React.Component {
   constructor(props) {
@@ -12,7 +12,7 @@ class FireStoreReference extends React.Component {
     this.collectionRef = getFirestore().collection(this.props.url);
   }
   getPayload() {
-    const {url, lazyLoad, params, getParamsByValue, targetKey} = this.props
+    const { url, lazyLoad, params, getParamsByValue, targetKey } = this.props
     const _targetKey = targetKey || `${url}-Reference`
     return {
       targetKey: _targetKey,
@@ -24,14 +24,14 @@ class FireStoreReference extends React.Component {
         try {
           result = await new Promise((resolve, reject) => {
             let ref = this.collectionRef;
-            if(params && params.sort){
-              ref =  this.collectionRef.orderBy(params.sort)
+            if (params && params.sort) {
+              ref = this.collectionRef.orderBy(params.sort)
             };
             ref.limit(5).get()
               .then(snapshot => {
                 let data = [];
                 snapshot.forEach(doc => {
-                  data.push({...doc.data(), id: doc.id})
+                  data.push({ ...doc.data(), id: doc.id })
                 })
                 resolve(data)
               })
@@ -42,12 +42,12 @@ class FireStoreReference extends React.Component {
         } catch (error) {
           console.log('error', error)
         }
-        return {data: result}
+        return { data: result }
       }
+    }
   }
-}
   render() {
-    const {url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount} = this.props
+    const { url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount } = this.props
     const _targetKey = targetKey || `${url}-Reference`
     return (
       <NetProvider
@@ -55,12 +55,12 @@ class FireStoreReference extends React.Component {
         loadData={lazyLoad ? this.getPayload() : null}
         clearOnUnMount={clearOnUnMount}
       >
-        {({data, crudActions, loading, status}) => {
+        {({ data, crudActions, loading, status }) => {
           return this.props.children({
             data,
             loading,
             onFocus: () => {
-              if(!lazyLoad && !status) {
+              if (!lazyLoad && !status) {
                 crudActions.Refresh(this.getPayload())
               }
             },
@@ -82,7 +82,7 @@ FireStoreReference.defaultProps = {
   getParamsByValue: (value) => {
     // eslint-disable-next-line no-console
     console.log('Reference Field - missing getParamsByValue')
-    if((value && value !== '')) return {filter: {name: value}}
+    if ((value && value !== '')) return { filter: { name: value } }
     return null
   }
 };

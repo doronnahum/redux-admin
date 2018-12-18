@@ -56,6 +56,10 @@
     overflow: hidden;
     border-top: 0px;
 }
+.noTableHeader .ra-tableContent {
+    height: calc(100vh - 105px) !important;
+    max-height: calc(100vh - 105px) !important;
+}
 
 .ra-tableHeader {
     background-color: #ffffff;

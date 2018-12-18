@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {NetProvider} from 'net-provider';
+import { NetProvider } from 'net-provider';
 
 class Reference extends React.Component {
   render() {
-    const {url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount} = this.props
+    const { url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount } = this.props
     const _targetKey = targetKey || `${url}-Reference`
     return (
       <NetProvider
@@ -17,12 +17,12 @@ class Reference extends React.Component {
         } : null}
         clearOnUnMount={clearOnUnMount}
       >
-        {({data, crudActions, loading, status}) => {
+        {({ data, crudActions, loading, status }) => {
           return this.props.children({
             data,
             loading,
             onFocus: () => {
-              if(!lazyLoad && !status) {
+              if (!lazyLoad && !status) {
                 crudActions.Refresh({
                   targetKey: _targetKey,
                   method: 'get',
@@ -53,7 +53,7 @@ Reference.defaultProps = {
   getParamsByValue: (value) => {
     // eslint-disable-next-line no-console
     console.log('Reference Field - missing getParamsByValue')
-    if((value && value !== '')) return {filter: {name: value}}
+    if ((value && value !== '')) return { filter: { name: value } }
     return null
   }
 };

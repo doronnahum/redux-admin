@@ -4,16 +4,13 @@ import {buildColumnFilterFromData} from './listView/Table/helpers'
 import SideModal from './docWrappers/SideModal.js';
 import SimpleDoc from './docView/SimpleDoc.js';
 import _Translates from './Translates';
-import {Layout} from 'antd';
-export {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as _filters from './filters';
 import * as _fields from './fields';
 import * as _parseServer from './parse-server';
 import * as _mongoose from './mongoose';
+import _Layout from './Layout'
 export {setRouteConfig} from './router'
-export const layouts = {
-  Admin: Layout
-}
+
 export const tableHelpers = {
   buildColumnFilterFromData
 }
@@ -27,6 +24,7 @@ export const docViews = {
   SimpleDoc
 }
 
+export const Layout = _Layout;
 export const fields = _fields;
 export const filters = _filters;
 export const parseServer = _parseServer;
