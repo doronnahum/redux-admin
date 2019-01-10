@@ -5,6 +5,6 @@ module.exports = {
     umd: false
   },
   babel: {
-    cherryPick: 'antd'
+    cherryPick: ['antd','formik']
   }
 }
