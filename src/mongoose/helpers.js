@@ -3,7 +3,7 @@ import isArray from 'lodash/isArray';
 import {getDeepObjectValue} from '../util'
 import isEqual from 'lodash/isEqual'
 
-export const mongooseGetParams = ({limit, skip, sort, filters}, defaultFilter) => {
+export const mongooseGetParams = ({limit, skip, sort, filters}, defaultFilter, defaultOptions = {}) => {
   let filter;
   if(((filters && filters.length) || defaultFilter)) {
     filter = [];
@@ -37,7 +37,7 @@ export const mongooseGetParams = ({limit, skip, sort, filters}, defaultFilter) =
       filter = {$and: filter}
     }
   }
-  const options = {}
+  const options = {...defaultOptions}
   if(limit) options.limit = limit;
   if(skip) options.skip = skip;
   if(sort && !sort.undefined) options.sort = sort; // !sort.undefined - workaround to fix issue with initial value on Admin

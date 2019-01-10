@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Input, Icon, Dropdown, Menu } from 'antd';
+import { Table, Input, Icon, Dropdown, Menu, Pagination } from 'antd';
 import Filters from '../../filters';
 import uniq from 'lodash/uniq';
 import {getMinTableWidth} from './helpers';
@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import FilterColumns from './FilterColumns'
 
 const Search = Input.Search;
-export default class ReTable extends React.Component {
+class ReTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -97,17 +97,24 @@ export default class ReTable extends React.Component {
   };
 
   getFilterFields = (columns) => {
-    if(this.props.getFilterFields) return this.props.getFilterFields(this.props)
-    return columns.map(item => {
-      return {
-        key: item.key || item.dataIndex,
-        title: item.title,
-        type: item.type || String,
-        getData: () => {
-          return uniq(this.props.data.map(value => value[item.key || item.dataIndex]))
-        }
+    const {getFilterFields, filtersFields} = this.props
+    if(getFilterFields) return getFilterFields(this.props)
+    const filterFields = []
+    columns.map(item => {
+      const _filtersField = filtersFields && filtersFields.find(filtersField => filtersField.key === (item.key || item.dataIndex))
+      if(!filtersFields || _filtersField) {
+        filterFields.push({
+          key: item.key || item.dataIndex,
+          title: item.title,
+          type: item.type || String,
+          // getData: () => {
+          //   return uniq(this.props.data.map(value => value[item.key || item.dataIndex]))
+          // },
+          options: _filtersField ? _filtersField.options : null
+        })
       }
     })
+    return filterFields
   }
   hideAdvanceOptions = () => {
     this.setState({showAdvanceFiltersOptions: false})
@@ -121,6 +128,7 @@ export default class ReTable extends React.Component {
       getColumns,
       allowColumnFilters
     } = this.props;
+
     this.columns = getColumns(this.props)
     this.columnsFiltersMenu = allowColumnFilters ? (this.columnsFiltersMenu || this.columns.map(field => ({title: field.title, key: field.key || field.dataIndex}))) : null
     if(!this.state.columnsFilters || !this.state.columnsFilters.length) {
@@ -138,7 +146,8 @@ export default class ReTable extends React.Component {
       onDownloadExcel({
         data,
         columns: this.columns,
-        columnsToDisplay: this.state.columnsFilters
+        columnsToDisplay: this.state.columnsFilters,
+        columnsFilters: this.state.columnsFilters
       })
     }
   }
@@ -201,6 +210,9 @@ export default class ReTable extends React.Component {
       allowFilters,
       loading,
       allowColumnFilters,
+      showHeaders,
+      expandedRowRender,
+      renderHeaders
       // allowAdvanceFilters,
       // onNewClick,
       // onRefreshClick,
@@ -211,64 +223,81 @@ export default class ReTable extends React.Component {
     } = this.props;
     if (!getColumns) return 'Table missing getColumns';
     const columns = this.columnsToRender()
+    const minWidth = getMinTableWidth(columns)
+    const paginationProps = {
+      total: this.props.count,
+      pageSize: this.props.limit,
+      current: this.getCurrentPage(),
+      pageSizeOptions: [
+        '5',
+        '10',
+        '15',
+        '20',
+        '25',
+        '30',
+        '40',
+        '50',
+        '60',
+        '100'
+      ],
+      size: 'small',
+      onChange: this.props.onPageChange,
+      onShowSizeChange: this.props.onPageSizeChange,
+      showSizeChanger: true,
+      showTotal: (total, [from, to]) => {
+        if(total > 0) return `Showing ${from} to ${to} of ${total} entries`
+        return ''
+      }
+    }
     return (
       <div className="ra-tableWrapper">
-        <div className="ra-tableHeader">
-          <div className="ra-tableHeader-row">
-            <div className="ra-tableHeader-left">
-              {allowFilters &&
-                <Filters
-                  fields={this.getFilterFields(this.columns)}
-                  onFiltersChanged={onFiltersChanged}
-                  hideAdvanceOptions={this.hideAdvanceOptions}
-                  showAdvanceOptions={this.state.showAdvanceFiltersOptions}
-                />
-              }
-              {showSearchField && <Search
-                placeholder="input search text"
-                onSearch={onSearch}
-                onChange={onSearchValueChange}
-                value={searchValue}
-                style={{ width: 200 }}
-              />}
-            </div>
-            <div className="ra-tableHeaderActions">
-              {this.renderMenu()}
+        {renderHeaders && renderHeaders(this.props)}
+        {showHeaders &&
+          <div className="ra-tableHeader">
+            <div className="ra-tableHeader-row">
+              <div className="ra-tableHeader-left">
+                {allowFilters &&
+                  <Filters
+                    fields={this.getFilterFields(this.columns)}
+                    onFiltersChanged={onFiltersChanged}
+                    hideAdvanceOptions={this.hideAdvanceOptions}
+                    showAdvanceOptions={this.state.showAdvanceFiltersOptions}
+                  />
+                }
+                {showSearchField && <Search
+                  placeholder="input search text"
+                  onSearch={onSearch}
+                  onChange={onSearchValueChange}
+                  value={searchValue}
+                  style={{ width: 200 }}
+                />}
+              </div>
+              <div className="ra-tableHeaderActions">
+                {this.renderMenu()}
+              </div>
             </div>
           </div>
-        </div>
+        }
         <div className="ra-tableContent">
-          <Table
-            scroll={{ y: 240, x: getMinTableWidth(columns) }}
-            columns={columns}
-            dataSource={data}
-            onChange={this.handleChange}
-            onRow={onRow}
-            rowKey={rowKey}
-            locale={locale}
-            pagination={{
-              total: this.props.count,
-              pageSize: this.props.limit,
-              current: this.getCurrentPage(),
-              pageSizeOptions: [
-                '5',
-                '10',
-                '15',
-                '20',
-                '25',
-                '30',
-                '40',
-                '50',
-                '60',
-                '100'
-              ],
-              size: 'small',
-              onChange: this.props.onPageChange,
-              onShowSizeChange: this.props.onPageSizeChange,
-              showSizeChanger: true
-            }}
-            loading={loading}
-          />
+          <div className='ra-tableContent-table'>
+            <div style={{minWidth: minWidth + 20}}>
+              <Table
+                scroll={{ y: 240, x: minWidth }}
+                columns={columns}
+                dataSource={data}
+                onChange={this.handleChange}
+                onRow={onRow}
+                rowKey={rowKey}
+                locale={locale}
+                pagination={false}
+                loading={loading}
+                expandedRowRender={expandedRowRender}
+              />
+            </div>
+          </div>
+          <div className='ra-tableContent-pagination'>
+            <Pagination {...paginationProps}/>
+          </div>
           {(allowColumnFilters && this.columns) &&
           <FilterColumns
             visible={this.state.showFilterColumns}
@@ -305,6 +334,9 @@ ReTable.defaultProps = {
   allowAdvanceFilters: true,
   getFilterFields: null, // function that will return [{value: 'title', label: 'Title', type: String}, {value: 'age', label: 'Age', , type: Number}]
   allowColumnFilters: true,
+  showHeaders: true,
+  expandedRowRender: null,
+  renderHeaders: null,
 };
 
 ReTable.propTypes = {
@@ -335,8 +367,15 @@ ReTable.propTypes = {
   count: PropTypes.number,
   onPageChange: PropTypes.func,
   onPageSizeChange: PropTypes.func,
-  onDownloadPdf: PropTypes.func,
-  onDownloadExcel: PropTypes.func,
   onViewDocClick: PropTypes.func,
   showColumnFilters: PropTypes.bool,
+  filtersFields: PropTypes.array, // when empty all table fields ar filters fields, pass array of fieldKeys to allow only some of them , Example [{key: 'status', options: {value: 'ctr', label: 'Create'}}]
+  allowExportToExcel: PropTypes.bool, // true by default,
+  onDownloadExcel: PropTypes.func, // to override local export pass function to handle this ({data, columnsToDisplay, onDownloadExcel}) => {....}
+  allowExportToPdf: PropTypes.bool, // false by default
+  onDownloadPdf: PropTypes.func, // pass function to handle this ({data, columnsToDisplay, onDownloadExcel}) => {....}
+  expandedRowRender: PropTypes.func, // antd table expandedRowRender
+  renderHeaders: PropTypes.func, // render content inside headers renderHeaders(props) => <div>Hello</div>
 };
+
+export default ReTable;

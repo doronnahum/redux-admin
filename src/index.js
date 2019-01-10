@@ -9,13 +9,18 @@ import * as _fields from './fields';
 import * as _parseServer from './parse-server';
 import * as _mongoose from './mongoose';
 import _Layout from './Layout'
+import {getDocField} from './helpers'
 export {setRouteConfig} from './router'
+export {Field, Form} from 'formik';
 
 export const tableHelpers = {
   buildColumnFilterFromData
 }
 export const docWrappers = {
   SideModal
+}
+export const docHelpers = {
+  getDocField
 }
 export const listViews = {
   Table

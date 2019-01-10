@@ -1,5 +1,12 @@
+:root {
+    --distanceFromTopList: 170px;
+    --distanceFromTopDoc: 100px;
+}
 .ra-adminLayout {
     position: relative;
+}
+.ra-adminLayout h1, .ra-adminLayout h2, .ra-adminLayout h3,{
+    color: black;
 }
 .ra-sideModal-full {
     background-color: transparent;
@@ -22,10 +29,16 @@
 }
 
 .ra-tableWrapper .ant-table-body {
-    height: calc(100vh - 290px) !important;
-    max-height: calc(100vh - 290px) !important;
+    /* height: calc(100vh - 290px) !important;
+    max-height: calc(100vh - 290px) !important; */
     overflow: auto !important;
 }
+.ra-tableWrapper .ant-table-body .ant-table-body{
+    height: auto !important;
+    max-height: auto !important;
+    overflow: auto !important;
+}
+
 .ra-tableWrapper .ant-table-header {
     overflow: auto !important;
 }
@@ -33,6 +46,7 @@
 .ra-tableWrapper , .ra-docWrapper { /* Container*/
     padding: 15px;
     background-color: #f1f3f6;
+    
 }
 .ra-docWrapper .ra-tableWrapper{ /* Container*/
     padding: 0px;
@@ -43,22 +57,35 @@
     border: 1px solid #e5e5e5;
     padding: 15px;
     overflow: auto;
-    height: calc(100vh - 100px) !important;
-    max-height: calc(100vh - 100px) !important;
 }
 .ra-docContent {/* Content*/
-    height: calc(100vh - 100px) !important;
-    max-height: calc(100vh - 100px) !important;
+    height: calc(100vh - var(--distanceFromTopDoc));
+    max-height: calc(100vh - var(--distanceFromTopDoc));
 }
 .ra-tableContent  {/* Content*/
-    height: calc(100vh - 175px) !important;
-    max-height: calc(100vh - 175px) !important;
-    overflow: hidden;
+    height: calc(100vh - var(--distanceFromTopList));
+    max-height: calc(100vh - var(--distanceFromTopList));
     border-top: 0px;
+    padding: 5px;
+}
+.ra-tableContent .ra-tableContent-table{
+    /* height: calc(100% - 24px);
+    max-height: calc(100% - 24px); */
+    height: calc(100% - 30px);
+    overflow: auto;
+}
+.ra-tableContent .ra-tableContent-table .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
+    max-height: calc(100vh - var(--distanceFromTopList) - 124px) !important;
+}
+
+.ra-tableContent .ra-tableContent-pagination{
+    height: 30px;
+    padding-top: 5px;
+    text-align: right;
 }
 .noTableHeader .ra-tableContent {
-    height: calc(100vh - 105px) !important;
-    max-height: calc(100vh - 105px) !important;
+    /* height: calc(100vh - 105px) !important;
+    max-height: calc(100vh - 105px) !important; */
 }
 
 .ra-tableHeader {
@@ -113,6 +140,11 @@
     margin-left: -2px;
     width: 39px;
     border-left: 1px solid #d9d9d9;
+}
+.ra-fieldsArrayObjectRow{
+    border: 1px solid #d9d9d9;
+    padding: 5px;
+    margin-bottom: 5px;
 }
 .ra-translatesMessage {
     position: absolute;
@@ -230,4 +262,15 @@
     height: 50px;
     font-size: 15px;
     margin-right: 5px;
+}
+.ant-table-wrapper.overFlowScroll {
+    overflow: auto;
+    max-height: 100%;
+}
+.ra-printObject-item {
+    display: block;
+}
+.ra-printObject-item-wrapper {
+    margin-bottom: 5px;
+    display: table;
 }

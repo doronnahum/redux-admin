@@ -1,17 +1,22 @@
 import forOwn from 'lodash/forOwn';
-
+import isEqual from 'lodash/isEqual'
 export const isString = function(value) {
   return typeof value === 'string';
 }
 
-export const getChangedData = function(values, dataFromServer) {
+export const getChangedData = function(values, dataFromServer, immutableKeys) {
   let dataToSend = null
   if(values && dataFromServer) {
     forOwn(values, function(value, key) {
-      if(dataFromServer[key] !== value) {
+      if(!isEqual(dataFromServer[key], value)) {
         if(!dataToSend) { dataToSend = {} }
         dataToSend[key] = value
       }
+    })
+  }
+  if(immutableKeys && dataToSend) {
+    immutableKeys.forEach(item => {
+      delete dataToSend[item]
     })
   }
   return dataToSend
@@ -55,7 +60,6 @@ export const getDeepObjectValue = function(obj, keypath) {
   });
 }
 
-
 export const isObject = function(obj) {
   return obj === Object(obj);
 }
@@ -65,9 +69,9 @@ let forEachKeyInKeypath = function(object, keypath, callback) {
     return undefined;
   }
 
-  var key = ""
-    , i
-    , escape = false;
+  var key = '',
+     i,
+     escape = false;
 
   for (i = 0; i < keypath.length; ++i) {
     switch (keypath[i]) {
@@ -77,7 +81,7 @@ let forEachKeyInKeypath = function(object, keypath, callback) {
           key += '.';
         } else {
           object = callback(object, key, false);
-          key = "";
+          key = '';
         }
         break;
 

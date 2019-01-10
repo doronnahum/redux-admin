@@ -9,7 +9,7 @@ export const getMinTableWidth = function(columns) {
   if(columns) {
     columns.forEach(item => {
       if(item.width) {
-        value = value + item.width
+        value = value + (item.width || 100)
       }
     })
   }

@@ -50,7 +50,7 @@ class SelectInput extends React.Component {
                 value={value || undefined}
                 style={style}
               >
-                {data && data.map(d => <Option key={d[optionKey]}>{this.renderLabel(d, optionLabel, optionKey, startCase, renderLabel)}</Option>)}
+                {data && data.map((d, index) => <Option key={d[optionKey] || index}>{this.renderLabel(d, optionLabel, optionKey, startCase, renderLabel)}</Option>)}
               </Select>
             </Form.Item>
           )

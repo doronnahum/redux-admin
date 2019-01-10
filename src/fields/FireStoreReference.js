@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NetProvider } from 'net-provider';
+import { NetProvider } from 'src/components/net-provider';
 import { getFirestore } from '../firebase/initFirebase';
 
 class FireStoreReference extends React.Component {
@@ -52,7 +52,7 @@ class FireStoreReference extends React.Component {
     return (
       <NetProvider
         targetKey={_targetKey}
-        loadData={lazyLoad ? this.getPayload() : null}
+        loadData={lazyLoad ? null : this.getPayload()}
         clearOnUnMount={clearOnUnMount}
       >
         {({ data, crudActions, loading, status }) => {
@@ -60,7 +60,7 @@ class FireStoreReference extends React.Component {
             data,
             loading,
             onFocus: () => {
-              if (!lazyLoad && !status) {
+              if (lazyLoad && !status) {
                 crudActions.Refresh(this.getPayload())
               }
             },
@@ -78,7 +78,7 @@ class FireStoreReference extends React.Component {
 export default FireStoreReference;
 
 FireStoreReference.defaultProps = {
-  lazyLoad: false,
+  lazyLoad: true,
   getParamsByValue: (value) => {
     // eslint-disable-next-line no-console
     console.log('Reference Field - missing getParamsByValue')

@@ -4,9 +4,48 @@ import {Field, FieldArray} from 'formik'
 import {sanitizeFormItemProps, getFieldValueByName} from './util'
 import Consumer from './Consumer'
 
-class MultiSelect extends React.Component {
+class ArrayInput extends React.Component {
+  renderField({index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label}){
+    const _objectKey = objectKey ? `.${objectKey}` : ''
+    const fieldName= `${name}.${index}${_objectKey}`
+    return (
+      <Field name={fieldName} key={fieldName}>
+      {({field}) => {
+        if(itemType === 'string' || itemType === String) {
+          return (
+            <Input {...field}
+              placeholder={label}
+              addonAfter={showRemoveBtn ? <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/> : null}
+            />
+          )
+        }else if(itemType === 'number' || itemType === Number) {
+          return (
+            <div className='ant-input-group ra-fieldsArrayGroupNumber'>
+              <InputNumber
+                style={{width: '100%'}}
+                onChange={(value) => {
+                  form.setFieldValue(fieldName, value)
+                }}
+                onBlur={() => {
+                  form.setFieldTouched(fieldName, true)
+                }}
+                value={field.value}
+              />
+              <div className='ant-input-group-addon'>
+                <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/>
+              </div>
+            </div>
+          )
+        }
+      }}
+    </Field>
+    )
+  }
   render() {
-    const { name, label, itemType } = this.props;
+    const { name, label, itemType, objectStructure } = this.props;
+    if(itemType === 'object' && !objectStructure){
+      return 'redux-admin ArrayInput, missing props.objectStructure: [{key, type, label}]'
+    }
     return (
       <Consumer>
         {(form) => {
@@ -20,37 +59,36 @@ class MultiSelect extends React.Component {
                 name={name}
                 render={arrayHelpers => (
                   <div>
-                    {value && value.map((item, index) => (
-                      <Field name={`${name}.${index}`} key={index}>
-                        {({field}) => {
-                          if(itemType === 'string') {
-                            return (
-                              <Input {...field}
-                                addonAfter={<Icon type="minus" onClick={() => arrayHelpers.remove(index)}/>}
-                              />
-                            )
-                          }else if(itemType === 'number') {
-                            return (
-                              <div className='ant-input-group ra-fieldsArrayGroupNumber'>
-                                <InputNumber
-                                  style={{width: '100%'}}
-                                  onChange={(value) => {
-                                    form.setFieldValue(field.name, value)
-                                  }}
-                                  onBlur={() => {
-                                    form.setFieldTouched(field.name, true)
-                                  }}
-                                  value={field.value}
-                                />
-                                <div className='ant-input-group-addon'>
-                                  <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/>
-                                </div>
-                              </div>
-                            )
-                          }
-                        }}
-                      </Field>
-                    ))}
+                    {value && value.map((item, index)=> {
+                      if(itemType === 'object'){
+                        return <div className='ra-fieldsArrayObjectRow'>
+                        {
+                          objectStructure.map(({key, type, label}, i) => {
+                            const showRemoveBtn = i === (objectStructure.length - 1);
+                            return this.renderField({
+                              index,
+                              name,
+                              itemType: type,
+                              objectKey: key,
+                              showRemoveBtn,
+                              arrayHelpers,
+                              form,
+                              label: label || key 
+                            })
+                          })
+                        }
+                        </div>
+                      }
+                      return this.renderField({
+                        index,
+                        name,
+                        itemType,
+                        objectKey: null,
+                        showRemoveBtn: true,
+                        arrayHelpers,
+                        form
+                      })
+                    })}
                     <Button onClick={() => arrayHelpers.push(null)} >  Add {label} </Button>
                   </div>
                 )}
@@ -62,9 +100,9 @@ class MultiSelect extends React.Component {
     )
   }
 }
-export default MultiSelect;
+export default ArrayInput;
 
-MultiSelect.defaultValue = {
+ArrayInput.defaultValue = {
   numberInputStyle: {width: '100%'}
 }
 

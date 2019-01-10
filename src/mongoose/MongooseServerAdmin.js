@@ -1,24 +1,81 @@
 import React, { Component } from 'react';
 import Admin from '../Admin';
 import PropTypes from 'prop-types';
-import {mongooseGetParams, getListWithCount} from './helpers'
+import {getDeepObjectValue} from '../util'
+import {mongooseGetParams} from './helpers'
+import isEqual from 'lodash/isEqual'
 
 export default class MongooseServerAdmin extends Component {
+  getListWithCount = ({ url, targetKey, params, body, onEnd }) => {
+    return {
+      targetKey: targetKey,
+      url: url,
+      params,
+      body,
+      onEnd,
+      getCountRequestConfig: ({actionPayload, response, fetchObject}) => {
+        const currentCount = fetchObject.count
+        const lastFilters = getDeepObjectValue(fetchObject, 'lastRead.params.filter')
+        const newFilter = getDeepObjectValue(actionPayload, 'params.filter')
+        if((currentCount || currentCount === 0) && isEqual(lastFilters, newFilter)) {
+          return false // persist count
+        }
+        const config = {
+          url: actionPayload.url + '/count',
+          method: actionPayload.method,
+        }
+        if(newFilter) { config.params = {filter: newFilter} }
+        return config
+      },
+      getCountFromResponse: (response) => {
+        return getDeepObjectValue(response, 'data.count') || 0
+      },
+      customHandleResponse: this.props.customHandleResponse
+    }
+  }
+
   render() {
-    const {count} = this.props
-    const props = {}
+    const {count, customHandleResponse} = this.props
+    const _props = {}
     if(count) {
-      props.getListSource = getListWithCount
+      _props.getListSource = this.getListWithCount
     }
     return (
       <Admin
         rowKey='_id'
-        getParams={(res) => mongooseGetParams(res, this.props.defaultFilter)}
+        getParams={(res) => mongooseGetParams(res, this.props.defaultFilter, this.props.defaultOptions)}
+        getDocumentSource={({ url, targetKey, params, body, id, data }) => {
+          let _params = null;
+          if(this.props.defaultDocOptions) {
+            _params = {options: this.props.defaultDocOptions}
+          }
+          const config = {
+            targetKey: targetKey,
+            url: id ? `${url}/${id}` : url,
+            id,
+            refreshType: 'none'
+          }
+          if(_params) {
+            config.params = _params
+          }
+          return config
+        }}
+        getListSource={({ url, targetKey, params, body, onEnd }) => {
+          return {
+            targetKey: targetKey,
+            url: url,
+            params,
+            body,
+            onEnd,
+            customHandleResponse // Optional
+            // getCountFromResponse: res => res.data.count
+          }
+        }}
         // onReadEnd={({response}) => {
         //   const filters = getDeepObjectValue(response, 'config.params.options').config
         //   debugger
         // }}
-        {...props}
+        {..._props}
         {...this.props}
       />
     );

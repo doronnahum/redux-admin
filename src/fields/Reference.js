@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NetProvider } from 'net-provider';
+import { NetProvider } from 'src/components/net-provider';
 
 class Reference extends React.Component {
   render() {
-    const { url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount } = this.props
-    const _targetKey = targetKey || `${url}-Reference`
+    const { url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount, targetKeyPrefix } = this.props
+    const _targetKey = targetKey || `${url + targetKeyPrefix}-Reference`
     return (
       <NetProvider
         targetKey={_targetKey}
@@ -13,7 +13,7 @@ class Reference extends React.Component {
           targetKey: _targetKey,
           method: 'get',
           url: url,
-          params: params,
+          params: getParamsByValue(null),
         } : null}
         clearOnUnMount={clearOnUnMount}
       >
@@ -55,7 +55,8 @@ Reference.defaultProps = {
     console.log('Reference Field - missing getParamsByValue')
     if ((value && value !== '')) return { filter: { name: value } }
     return null
-  }
+  },
+  referenceKey: ''
 };
 
 Reference.propTypes = {

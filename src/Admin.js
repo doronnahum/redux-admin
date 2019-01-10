@@ -3,15 +3,13 @@ import React, { Component, Fragment, cloneElement } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { NetProvider, idKey, Selector, actions } from 'net-provider';
+import { NetProvider, idKey, Selector, actions } from 'src/components/net-provider';
 import { Layout, Breadcrumb, Modal } from 'antd'
 import router from './router';
 import { sendMessage } from './message'
 import isEqual from 'lodash/isEqual';
-import { convertColumnsToCsvFields } from './util';
-const json2csv = require('json2csv').parse;
 
-const { Refresh, Delete } = actions;
+const { Refresh, Delete, Update } = actions;
 
 const NEW_DOC = 'New'
 const EDIT_MODE = 'Edit Mode';
@@ -50,6 +48,7 @@ class Admin extends Component {
     this.renderList = this.renderList.bind(this)
     this.renderDoc = this.renderDoc.bind(this)
     this.onClose = this.onClose.bind(this)
+    this.onCloseFromBreadcrumb = this.onCloseFromBreadcrumb.bind(this)
     this.onEditClick = this.onEditClick.bind(this)
     this.onViewDocClick = this.onViewDocClick.bind(this)
     this.onDeleteClick = this.onDeleteClick.bind(this)
@@ -68,16 +67,20 @@ class Admin extends Component {
     this.onQueryParametersChanged = this.onQueryParametersChanged.bind(this)
     this.getParams = this.getParams.bind(this)
     this.onFiltersChanged = this.onFiltersChanged.bind(this)
-    this.onDownloadExcel = this.onDownloadExcel.bind(this)
-    this.onDownloadPdf = this.onDownloadPdf.bind(this)
+    this.onUpdateFromList = this.onUpdateFromList.bind(this)
+    this.onRefreshList = this.onRefreshList.bind(this)
     this.listTarget = getListTargetKey(this.props.url)
     this.previousRoutes = 0; // This we help us to navigate back only if needed
     this.routeByComponentStart = false; // This will help the popstate listener to not interfere if we are initiated the navigate
   };
 
   componentDidMount() {
-    this.handleListFetchOnLoad()
-    this.syncDocIdFromQueryParams()
+    if(this.props.syncWithUrl) {
+      this.syncDocIdFromQueryParams(null, null, null, 'handleListFetchOnLoad')
+    }else{
+      this.handleListFetchOnLoad()
+    }
+
     this._isMounted = true;
     if (this.props.syncWithUrl) {
       this.popstateListenerAdded = true;
@@ -165,7 +168,7 @@ class Admin extends Component {
    * @function syncDocIdFromQueryParams
    * @description This will make the document to stay open on page reload
    */
-  syncDocIdFromQueryParams(params, replaceParams = false, updateParamsType) {
+  syncDocIdFromQueryParams(params, replaceParams = false, updateParamsType, handleListFetchOnLoad) {
     if (this.props.syncWithUrl) {
       const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey, allowViewMode } = this.props
       const routeParams = params || router.onGetParams() || {};
@@ -173,13 +176,15 @@ class Admin extends Component {
       const _queryParamsView = routeParams[`${queryParamsPrefix}${queryParamsViewKey}`] || '';
       const _queryParamsEdit = routeParams[`${queryParamsPrefix}${queryParamsEditKey}`] || '';
       const { canCreate, canUpdate, canRead, excludeFields } = this.getRoleConfig()
-      const _excludeFields = excludeFields.length
+      const _excludeFields = excludeFields && excludeFields.length
       if (_queryParamsNew.length && (canCreate || _excludeFields)) {
         this.onNewClick(replaceParams, updateParamsType)
       } else if (_queryParamsEdit.length && (canUpdate || _excludeFields)) {
         this.onEditClick(null, _queryParamsEdit, replaceParams, updateParamsType)
       } else if (_queryParamsView.length && (canRead || _excludeFields) && allowViewMode) {
         this.onViewDocClick(null, _queryParamsView, replaceParams, updateParamsType)
+      }else{
+        if(handleListFetchOnLoad) this.handleListFetchOnLoad() // We want to load list on load only id doc is not open
       }
     }
   }
@@ -256,6 +261,24 @@ class Admin extends Component {
       },
     });
   }
+  /**
+   * Put data from list
+   */
+  onUpdateFromList({id, data}) {
+    this.props.actions.Update({
+      targetKey: getListTargetKey(this.props.url),
+      id,
+      data,
+      onEnd: () => {
+        sendMessage('Update successfully');
+        this.onChangeEndFromList()
+      },
+      onFailed: () => {
+        sendMessage('Update failed');
+      },
+      customFetch: this.props.customListFetch
+    })
+  }
 
   /**
    * @function onNewClick
@@ -282,7 +305,7 @@ class Admin extends Component {
   onCreateEnd(res) {
     const { data } = res
     const { queryParamsPrefix, queryParamsEditKey, queryParamsNewKey } = this.props
-    this.props.actions.Refresh({ targetKey: this.listTarget })
+    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: this.listTarget }) }
     const { getIdFromNewDocResponse, rowKey, idKey } = this.props
     const newDocId = getIdFromNewDocResponse ? getIdFromNewDocResponse(data) : data[rowKey || idKey]
     if (this.props.editAfterSaved) {
@@ -306,7 +329,7 @@ class Admin extends Component {
    * The purpose of this is to keep the list update on each document change
    */
   onDeleteEnd(res) {
-    this.props.actions.Refresh({ targetKey: this.listTarget })
+    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: this.listTarget }) }
     if (this.props.onChangeEnd) this.props.onChangeEnd(res)
   }
 
@@ -318,7 +341,6 @@ class Admin extends Component {
    * @param {object} res.data The data from the response
    */
   onChangeEndFromList(res) {
-    // this.props.actions.Refresh({targetKey: this.listTarget})
     if (this.props.onChangeEnd) this.props.onChangeEnd(res)
   }
 
@@ -332,18 +354,31 @@ class Admin extends Component {
    * The purpose of this is to keep the list update on each document change
    */
   onUpdateEnd(res) {
-    this.props.actions.Refresh({ targetKey: this.listTarget })
+    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: this.listTarget }) }
     if (this.props.onChangeEnd) this.props.onChangeEnd(res)
   }
 
+  onCloseFromBreadcrumb() {
+    this.onClose('syncWithUrl', false)
+  }
   /**
    * @function onClose
    * @description This will close the document and navigate back to list
    */
-  onClose(syncWithUrl = true) {
-    if (this.state.showDoc) {
-      if (syncWithUrl) this.handleRoute(BACK)
-      this.setState({ currentId: null, docSource: null, showDoc: false, docMode: null, currentDocData: null })
+  onClose(syncWithUrl = true, checkBackToParams = true) {
+    const params = router.onGetParams() || {}
+    if(checkBackToParams && params.backTo && params.backTo.length && !this.state.listSource) {
+      // This a situation when we navigate from one list to document in other list
+      // for example - from products we click on user and it take as to user doc in the users screen
+      router.onBack()
+    }else{
+      if (this.state.showDoc) {
+        if (syncWithUrl) this.handleRoute(BACK)
+        if(!this.state.listSource) {
+          this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
+        }
+        this.setState({ currentId: null, docSource: null, showDoc: false, docMode: null, currentDocData: null })
+      }
     }
   }
 
@@ -379,8 +414,12 @@ class Admin extends Component {
     if (!isEqual(sort, this.state.sort)) this.setState({ sort }, this.onQueryParametersChanged)
   }
   onQueryParametersChanged() {
-    const params = this.getParams()
-    this.props.actions.Refresh({ targetKey: this.listTarget, params })
+    if(!this.state.listSource) {
+      this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
+    }else{
+      const params = this.getParams()
+      this.props.actions.Refresh({ targetKey: this.listTarget, params })
+    }
   }
 
   getRoleConfig() {
@@ -388,29 +427,18 @@ class Admin extends Component {
     if (!roleConfig) return DEFAULT_ROLE_CONFIG
     else return roleConfig
   }
-  onDownloadPdf({ data, columnsToDisplay, columns }) {
-    console.log('redux-admin missing onDownloadPdf', { data, columnsToDisplay, columns })
-  }
-  onDownloadExcel({ data, columnsToDisplay, columns }) {
-    console.log('redux-admin missing onDownloadPdf', { data, columnsToDisplay, columns })
-    const opts = { fields: convertColumnsToCsvFields(columns), quote: '' };
-    try {
-      const csv = json2csv(data, opts);
-      var element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
-      element.setAttribute('download', 'Report.csv');
-      element.style.display = 'none';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-    } catch (err) {
-      console.error(err);
+
+  onRefreshList() {
+    if(!this.state.listSource) {
+      this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
+    }else{
+      this.props.actions.Refresh({ targetKey: this.listTarget })
     }
   }
 
   renderList() {
     const { listSource, showDoc } = this.state
-    const { list, renderList, rowKey, listClearOnUnMount, allowExportToExcel, allowExportToPdf, allowViewMode } = this.props
+    const { list, renderList, rowKey, listClearOnUnMount, allowViewMode } = this.props
     const { canCreate, canDelete, canUpdate, canRead, excludeFields } = this.getRoleConfig()
     if (listSource) {
       return (
@@ -423,8 +451,9 @@ class Admin extends Component {
                 rowKey: rowKey || idKey,
                 onNewClick: this.onNewClick,
                 onViewDocClick: allowViewMode ? this.onViewDocClick : null,
-                onRefreshClick: props.crudActions.Refresh,
+                onRefreshClick: this.onRefreshList,
                 onDeleteClick: this.onDeleteClick,
+                onUpdate: this.onUpdateFromList,
                 searchValue: this.state.searchValue,
                 onSearch: this.onSearch,
                 onSearchValueChange: this.onSearchValueChange,
@@ -437,9 +466,7 @@ class Admin extends Component {
                 onPageSizeChange: this.onPageSizeChange,
                 onPageChange: this.onPageChange,
                 onSortChange: this.onSortChange,
-                onFiltersChanged: this.onFiltersChanged,
-                onDownloadExcel: allowExportToExcel ? this.onDownloadExcel : null,
-                onDownloadPdf: allowExportToPdf ? this.onDownloadPdf : null
+                onFiltersChanged: this.onFiltersChanged
               }
               if (showDoc) return null;
               if (renderList) return renderList(propsToPass)
@@ -458,6 +485,10 @@ class Admin extends Component {
     const { docWrapper, doc, renderDoc, url, getDocTitle, customDocFetch, disabledFetchDocOnEdit } = this.props
     const Wrapper = docWrapper || Fragment
     const newDocMode = docMode === NEW_DOC;
+    const params = router.onGetParams() || {}
+    const backToText = (params.backTo && params.backTo.length && !this.state.listSource) ? params.backTo : null;
+    // TO OD
+    // disabledFetchDocOnEdit NEED TO WORK ONLY WHEN DATA EXIST, NOT WHEN FULL RELOAD
     const loadDataOnMount = newDocMode ? false : (!disabledFetchDocOnEdit || !(disabledFetchDocOnEdit && currentDocData));
     const initialValues = currentDocData || this.props.initialValues;
     const wrapperProps = docWrapper ? { onClose: this.onClose, targetKey: docSource.targetKey } : {}
@@ -489,6 +520,7 @@ class Admin extends Component {
               canUpdate,
               canRead,
               excludeFields,
+              backToText
             }
             if (renderDoc) return renderDoc(propsToPass);
             if (doc) return cloneElement(doc, propsToPass);
@@ -512,7 +544,7 @@ class Admin extends Component {
           return (
             <Breadcrumb className='ra-breadcrumb'>
               <Breadcrumb.Item onClick={this.goHome}> Home </Breadcrumb.Item>
-              <Breadcrumb.Item onClick={this.onClose}> {this.props.title} </Breadcrumb.Item>
+              <Breadcrumb.Item onClick={this.onCloseFromBreadcrumb}> {this.props.title} </Breadcrumb.Item>
               {(editDocMode || viewDocMode) && <Breadcrumb.Item>{title}</Breadcrumb.Item>}
               {newDocMode && <Breadcrumb.Item>New</Breadcrumb.Item>}
             </Breadcrumb>
@@ -535,7 +567,7 @@ class Admin extends Component {
     return (
       <Layout className='ra-adminLayout'>
         {this.props.showBreadcrumb && this.renderBreadcrumb()}
-        <Layout.Content>{this.renderList()}</Layout.Content>
+        <Layout.Content className='ra-adminLayout-list-wrapper'>{this.renderList()}</Layout.Content>
         {this.props.doc && <Layout.Content className='ra-docWra'>{this.renderDoc()}</Layout.Content>}
       </Layout>
     );
@@ -553,6 +585,8 @@ Admin.propTypes = {
   queryParamsPrefix: PropTypes.string, // This is required when you render more then one component at the same page
   getListSource: PropTypes.func,
   getDocumentSource: PropTypes.func,
+  customDocFetch: PropTypes.func, // Net-provider customFetch That will pass to document
+  customListFetch: PropTypes.func, // Net-provider customFetch That will pass to list
   allowViewMode: PropTypes.bool, // set false to block user from watching the document
   syncWithUrl: PropTypes.bool, // true by default, set false to disabled this feature
   showBreadcrumb: PropTypes.bool, // true by default, set false, relevant when you render more then one component at the same page
@@ -575,10 +609,6 @@ Admin.propTypes = {
     excludeFields: PropTypes.array // [] by default
   }),
   disabledFetchDocOnEdit: PropTypes.bool, // false by default, set true to save query and use the data the from list as document data
-  allowExportToExcel: PropTypes.bool, // true by default,
-  onDownloadExcel: PropTypes.func, // to override local export pass function to handle this ({data, columnsToDisplay, onDownloadExcel}) => {....}
-  allowExportToPdf: PropTypes.bool, // false by default
-  onDownloadPdf: PropTypes.func, // pass function to handle this ({data, columnsToDisplay, onDownloadExcel}) => {....}
   getParams: PropTypes.func.isRequired // pass function that build query params from the filters parameters getParams({skip, sort, limit, searchValue})
 };
 Admin.defaultProps = {
@@ -604,7 +634,7 @@ Admin.defaultProps = {
       refreshType: 'none'
     }
   },
-  allowViewMode: true,
+  allowViewMode: false,
   syncWithUrl: true,
   showBreadcrumb: true,
   editAfterSaved: true,
@@ -633,10 +663,9 @@ Admin.defaultProps = {
   }
 };
 
-
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ Refresh, Delete }, dispatch)
+    actions: bindActionCreators({ Refresh, Delete, Update }, dispatch)
   };
 }
 export default connect(null, mapDispatchToProps)(Admin);

@@ -55,7 +55,7 @@ class SimpleDoc extends Component {
     if(this.props.isNewDoc) {
       this.Create({data: this.props.parseDataBeforeSubmit({dataToSend: values, values}), url: this.props.url})
     }else{
-      let dataToSend = getChangedData(values, this.props.data || this.props.initialValues)
+      let dataToSend = getChangedData(values, this.props.data || this.props.initialValues, this.props.immutableKeys)
       if(dataToSend) {
         this.Update({data: this.props.parseDataBeforeSubmit({dataToSend, values})})
       }else{
@@ -94,6 +94,7 @@ class SimpleDoc extends Component {
       canDelete,
       canUpdate,
       viewMode,
+      backToText,
       excludeFields} = this.props;
     const initialValuesToUse = isNewDoc ? (this.props.newDocInitialValues || this.props.initialValues) : this.props.initialValues
     const dataFromServer = data || initialValuesToUse;
@@ -102,7 +103,7 @@ class SimpleDoc extends Component {
         <div className='ra-docWrapper ra-simpleForm'>
           <div className='ra-docContent'>
             <div className='ra-docHeader'>
-              <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} />
+              <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{backToText ? `Back to ${backToText}` : ''}</Button>
               <h1 className='ra-docHeader-title'></h1>
             </div>
             <div className='ra-docBody'>
@@ -117,8 +118,8 @@ class SimpleDoc extends Component {
         <div className={'ra-docWrapper ra-simpleForm viewMode'}>
           <div className='ra-docContent'>
             <div className='ra-docHeader'>
-              <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} />
-              <h1 className='ra-docHeader-title'>{getTitle(dataFromServer)}</h1>
+              <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{backToText ? `Back to ${backToText}` : ''}</Button>
+              <h1 className='ra-docHeader-title'>{this.props.showTitle && getTitle(dataFromServer)}</h1>
             </div>
             <div className='ra-docBody'> {/* We didn't use <Formik.Form> because we want to enabled nested forms, (form inside form)*/}
               <div className='ra-docFields'>
@@ -159,13 +160,14 @@ class SimpleDoc extends Component {
               canCreate,
               canUpdate,
               excludeFields
-            }
+            },
+            props: this.props
           }
           return (
             <div className={`ra-docWrapper ra-simpleForm ${isNewDoc ? 'newDoc' : ''}`}>
               <div className='ra-docContent'>
                 <div className='ra-docHeader'>
-                  <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} />
+                  <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{backToText ? `Back to ${backToText}` : ''}</Button>
                   <h1 className='ra-docHeader-title'>{getTitle(dataFromServer)}</h1>
                 </div>
                 <div className='ra-docBody'> {/* We didn't use <Formik.Form> because we want to enabled nested forms, (form inside form)*/}
@@ -197,7 +199,10 @@ SimpleDoc.defaultProps = {
   canUpdate: true,
   parseDataBeforeSubmit: ({dataToSend, values}) => dataToSend, // Use if you want to manipulate the data before PUT/POST to the server
   renderDocViewComponent: () => 'Missing renderDocViewComponent - <Admin renderDocViewComponent />',
-  viewMode: false
+  viewMode: false,
+  showTitle: true,
+  backToText: null, // Text to display after < In back button
+  immutableKeys: null // pass array of keys to remove before put
 };
 
 export default SimpleDoc;

@@ -23,7 +23,16 @@ class SelectInput extends React.Component {
                 filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
                 onSearch={onSearchValueChanged}
                 onChange={(value) => {
-                  form.setFieldValue(field.name, value)
+                  if(labelInValue) {
+                    const newValue = data.find(option => option[optionKey] === value)
+                    const valueToSet = parseValuesOnChange(newValue);
+                    form.setFieldValue(field.name, valueToSet)
+                    if(onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
+                  }else{
+                    const valueToSet = parseValuesOnChange(value);
+                    form.setFieldValue(field.name, valueToSet)
+                    if(onValuesChanged) onValuesChanged(form.values, value, form.setFieldValue, form)
+                  }
                 }}
                 onBlur={() => {
                   form.setFieldTouched(field.name, true)
