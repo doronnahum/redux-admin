@@ -3,7 +3,7 @@ import React, { Component, Fragment, cloneElement } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { NetProvider, idKey, Selector, actions } from 'src/components/net-provider';
+import { NetProvider, idKey, Selector, actions } from 'net-provider';
 import { Layout, Breadcrumb, Modal } from 'antd'
 import router from './router';
 import { sendMessage } from './message'

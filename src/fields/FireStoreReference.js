@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NetProvider } from 'src/components/net-provider';
+import { NetProvider } from 'net-provider';
 import { getFirestore } from '../firebase/initFirebase';
 
 class FireStoreReference extends React.Component {
