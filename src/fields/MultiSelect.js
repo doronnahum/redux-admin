@@ -47,6 +47,7 @@ class MultiSelect extends React.Component {
           const values = getFieldValueByName(name, form.values)
           const _values = (labelInValue && values) ? values.map(item => item[optionKey]) : values
           const _data = getDataWithValuesLabels({ data, values, optionKey, optionLabel })
+          
           return (
             <Form.Item
               {...sanitizeFormItemProps(this.props, { name }, form)}

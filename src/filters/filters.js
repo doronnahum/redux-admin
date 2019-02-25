@@ -24,6 +24,14 @@ class Filters extends Component {
     })
   }
 
+  onTagClick = (e) => {
+    const classNames = (e && e.target && e.target.getAttribute && e.target.getAttribute('class')) || []
+    const isOutOFThCloseButton = classNames.includes('activeFilters')
+    if(isOutOFThCloseButton) {
+      this.props.onShowAdvanceOptions();
+    }
+  };
+
   renderActiveFilters = () => {
     const {activeFilters} = this.state
     if(activeFilters.length) {
@@ -32,8 +40,8 @@ class Filters extends Component {
           <h2 style={{colors: 'black'}}>Filters:</h2>
           {
             activeFilters.map(({key, id, operator, value, type, label, active}) => {
-              if(type === 'logical') return <Tag color="lightBlue" key={id} id={id} closable onClose={() => this.removeTag(id)}>{allLogical[value] && allLogical[value].label}</Tag>
-              return <Tag className={active ? '' : 'ra-text-line-through'} key={id} id={id} closable onClose={() => this.removeTag(id)}>{`${key} - ${allOperators[operator] && allOperators[operator].label} - ${allOperators[operator].formatter ? allOperators[operator].formatter(value) : value}`}</Tag>
+              if(type === 'logical') return <Tag className='activeFilters' onClick={this.onTagClick} color="lightBlue" key={id} id={id} closable onClose={() => this.removeTag(id)}>{allLogical[value] && allLogical[value].label}</Tag>
+              return <Tag className={active ? 'activeFilters' : 'ra-text-line-through activeFilters'} onClick={this.onTagClick} key={id} id={id} closable onClose={() => this.removeTag(id)}>{`${key} - ${allOperators[operator] && allOperators[operator].label} - ${allOperators[operator].formatter ? allOperators[operator].formatter(value) : value}`}</Tag>
             })
           }
         </div>

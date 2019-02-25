@@ -1,6 +1,17 @@
 import isArray from 'lodash/isArray';
 import {getDeepObjectValue} from '../util'
+
 export const getFieldValueByName = function(name = '', values) {
+  var _name = name;
+  if(_name.includes('[')) {
+    return getDeepObjectValue(values, _name.replace('[', '.').replace(']', '.'))
+  } else if(_name.includes('.')) {
+    return getDeepObjectValue(values, _name)
+  }else{
+    return values[_name]
+  }
+}
+export const getFieldErrorByName = function(name = '', values) {
   var _name = name;
   if(_name.includes('[')) {
     return getDeepObjectValue(values, _name.replace('[', '.').replace(']', '.'))
@@ -18,7 +29,7 @@ const getTextWithoutFieldName = (value, fieldName) => {
   if(isArray(value)) return value.map(val => val.replace(_fieldName, ''))
 }
 export const sanitizeFormItemProps = function(props, field, form) {
-  const {label, help, required, colon, extra, labelCol, wrapperCol, hideLabel} = props
+  const {label, help, required, colon, extra, labelCol, wrapperCol, hideLabel, inputProps = {}} = props
   /*
         colon	Used with label, whether to display : after label text.	boolean	true
         extra	The extra prompt message. It is similar to help. Usage example: to display error message and prompt message at the same time.	string|ReactNode
@@ -39,7 +50,9 @@ export const sanitizeFormItemProps = function(props, field, form) {
     colon,
     extra,
     labelCol,
-    wrapperCol
+    wrapperCol,
+    className: 'rc-fieldName-' + field.name,
+    ...inputProps
   }
 }
 export const sanitizeFormikFieldProps = function({name}) {

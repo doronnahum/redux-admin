@@ -5,7 +5,7 @@ import { NetProvider } from 'net-provider';
 class Reference extends React.Component {
   render() {
     const { url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount, targetKeyPrefix } = this.props
-    const _targetKey = targetKey || `${url + targetKeyPrefix}-Reference`
+    const _targetKey = targetKey || `${url + (targetKeyPrefix || '')}-Reference`
     return (
       <NetProvider
         targetKey={_targetKey}

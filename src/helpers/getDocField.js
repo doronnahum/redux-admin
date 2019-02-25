@@ -7,13 +7,15 @@ import {
   Select,
   ArrayInput, DatePicker,
   CheckBox,
-  InputNumber
+  InputNumber,
+  ObjectEditor,
+  Dropzone
 } from '../fields'
 
 const getItemTypeAsString = function (type) {
-  if (type === Number) return 'number'
-  if (type === Object) return 'object'
-  if (type === String) return 'string'
+  if (type === Number || type === 'number') return 'number'
+  if (type === Object || type === 'object') return 'object'
+  if (type === String || type === 'string') return 'string'
 }
 
 export const isFieldDisabled = function (fieldName, documentRollConfig = { canCreate: true, canUpdate: true, excludeFields: [] }, isNewDoc) {
@@ -30,47 +32,87 @@ export const isFieldDisabled = function (fieldName, documentRollConfig = { canCr
   return isDisabled
 }
 
-const getDocField = function ({ key, type, label, required, ref, RefComponent = Reference, referenceKey, labelInValue, arrayItemType = String, multiSelect = false, disabled = false, documentRollConfig, isNewDoc, optionLabel, optionKey, options, getParamsByValue, placeholder, objectStructure }) {
+const getDocField = function ({ key, type, label, required, ref, RefComponent = Reference, referenceKey, labelInValue, arrayItemType = String, multiSelect = false, disabled = false, documentRollConfig, isNewDoc, optionLabel, optionKey, options, getParamsByValue, placeholder, objectStructure, nestedArray, inputType, inputProps }) {
   const _disabled = disabled || isFieldDisabled(key, documentRollConfig, isNewDoc)
   const _label = label || startCase(key)
-
-  if (ref) {
+  if(inputType === 'file'){
     return (
-      <RefComponent url={ref} targetKeyPrefix={referenceKey} key={referenceKey || key} getParamsByValue={getParamsByValue}>
+      <Dropzone key={key} inputProps={inputProps} name={key} required={required} label={_label} disabled={_disabled} placeholder={placeholder} />
+    ) 
+  }
+  if (ref) {
+    const fieldProps = {
+      name: key,
+      label: _label,
+      disabled: _disabled,
+      optionLabel: optionLabel,
+      optionKey: optionKey,
+      placeholder: placeholder,
+      labelInValue: labelInValue,
+      multiSelect,
+      required
+    }
+    return (
+      <RefComponent url={ref} targetKeyPrefix={referenceKey} key={referenceKey || key} getParamsByValue={getParamsByValue} fieldProps={fieldProps}>
         {({ data, onSearchValueChanged, loading, onFocus }) => {
-          if (multiSelect) return <MultiSelect data={data} onSearchValueChanged={onSearchValueChanged} loading={loading} name={key} label={_label} onFocus={onFocus} disabled={_disabled} optionLabel={optionLabel} optionKey={optionKey} placeholder={placeholder} labelInValue={labelInValue} />
-          return <Select data={data} onSearchValueChanged={onSearchValueChanged} loading={loading} name={key} label={_label} onFocus={onFocus} optionLabel={optionLabel} optionKey={optionKey} disabled={_disabled} placeholder={placeholder} labelInValue={labelInValue} />
+          const resProps = {data, onSearchValueChanged, loading, onFocus}
+          if (multiSelect) return <MultiSelect  {...fieldProps} {...resProps}/>
+          return <Select  {...fieldProps} {...resProps}/>
         }}
       </RefComponent>
     )
   }
   if (options) {
-    return <Select data={options} name={key} key={key} label={_label} optionLabel={optionLabel} optionKey={optionKey} placeholder={placeholder} />
+    let _options = options;
+    let _optionKey = optionKey;
+    let _optionLabel = optionLabel;
+    if(multiSelect){
+      const itemType = getItemTypeAsString(arrayItemType)
+      if(itemType === 'string' && options && typeof options[0] === 'string'){
+        _optionKey = 'value'
+        _options = options.map(item => ({value: item, label: startCase(item)}))
+      }
+      return <MultiSelect data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled}/>
+    }
+    if (options && typeof options[0] === 'string'){
+      _optionKey = 'value'
+      _optionLabel = 'label'
+      _options = options.map(item => ({value: item, label: startCase(item)}))
+    }
+    return <Select data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled} />
   }
-  if (type === String) {
+  if (type === String || type === 'string') {
     return (
-      <Input name={key} required={required} label={_label} key={key} disabled={_disabled} placeholder={placeholder} />
+      <Input name={key} required={required} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
     )
   }
-  if (type === Number) {
+  if (type === Number || type === 'number') {
     return (
-      <InputNumber name={key} required={required} label={_label} key={key} disabled={_disabled} placeholder={placeholder} />
+      <InputNumber name={key} required={required} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
     )
   }
-  if (type === Boolean) {
+  if (type === Boolean || type === 'boolean') {
     return (
-      <CheckBox name={key} label={_label} key={key} disabled={_disabled} placeholder={placeholder} />
+      <CheckBox name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
     )
   }
-  if (type === Array) {
+  if (type === Array || type === 'array') {
     const itemType = getItemTypeAsString(arrayItemType)
+    if(nestedArray){
+      return <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} defaultValue={[]}/>
+    }
     return (
-      <ArrayInput name={key} label={_label} key={key} itemType={itemType} disabled={_disabled} placeholder={placeholder} objectStructure={objectStructure} />
+      <ArrayInput name={key} label={_label} key={key} inputProps={inputProps} itemType={itemType} disabled={_disabled} placeholder={placeholder} objectStructure={objectStructure} />
     )
   }
-  if (type === Date) {
+  if (type === Date || type === 'date' || type === 'date-time') {
     return (
-      <DatePicker name={key} label={_label} key={key} disabled={_disabled} placeholder={placeholder} />
+      <DatePicker name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
+    )
+  }
+  if (type === Object || type === 'object') {
+    return (
+      <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
     )
   }
 };

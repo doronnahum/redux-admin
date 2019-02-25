@@ -27,7 +27,7 @@ const DEFAULT_ROLE_CONFIG = {
 }
 
 const getDocTargetKey = url => `Admin-${url}-doc`
-export const getListTargetKey = url => `Admin-${url}-list`
+export const getListTargetKey = (url, listTargetKeyPrefix = '') => `Admin-${url}-list${listTargetKeyPrefix}`
 
 class Admin extends Component {
   constructor(props) {
@@ -43,7 +43,8 @@ class Admin extends Component {
       limit: this.props.initialLimit,
       skip: this.props.initialSkip,
       sort: this.props.initialSort,
-      filters: []
+      filters: [],
+      hasError: false
     };
     this.renderList = this.renderList.bind(this)
     this.renderDoc = this.renderDoc.bind(this)
@@ -69,7 +70,7 @@ class Admin extends Component {
     this.onFiltersChanged = this.onFiltersChanged.bind(this)
     this.onUpdateFromList = this.onUpdateFromList.bind(this)
     this.onRefreshList = this.onRefreshList.bind(this)
-    this.listTarget = getListTargetKey(this.props.url)
+    this.listTarget = getListTargetKey(this.props.url, this.props.targetKeyPrefix)
     this.previousRoutes = 0; // This we help us to navigate back only if needed
     this.routeByComponentStart = false; // This will help the popstate listener to not interfere if we are initiated the navigate
   };
@@ -87,6 +88,13 @@ class Admin extends Component {
       window.addEventListener('popstate', this.handleBackEvent);
     }
   };
+
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    this.setState({ hasError: true });
+    // You can also log the error to an error reporting service
+    console.log('redux-admin catch err', error, info)
+  }
 
   detectBrowserBackButton(event) {
     if (event && event.currentTarget === window) {
@@ -158,9 +166,9 @@ class Admin extends Component {
   }
 
   handleListFetchOnLoad() {
-    const { getListSource, url, onReadEnd } = this.props
+    const { getListSource, url, onReadEnd, listTargetKeyPrefix } = this.props
     this.setState({
-      listSource: getListSource({ url, targetKey: getListTargetKey(url), params: this.getParams(), onEnd: onReadEnd })
+      listSource: getListSource({ url, targetKey: getListTargetKey(url, listTargetKeyPrefix), params: this.getParams(), onEnd: onReadEnd })
     })
   }
 
@@ -227,7 +235,7 @@ class Admin extends Component {
    * @description This will open a document in Edit mode
    */
   onDeleteClick(row, docId, syncParams = true) {
-    const { url, rowKey } = this.props
+    const { url, rowKey, listTargetKeyPrefix } = this.props
     if (!row && !docId) {
       console.warn('onDeleteClick Missing row or docId')
     }
@@ -244,7 +252,7 @@ class Admin extends Component {
       onOk() {
         return new Promise((resolve, reject) => {
           _this.props.actions.Delete({
-            targetKey: getListTargetKey(url),
+            targetKey: getListTargetKey(url, listTargetKeyPrefix),
             id,
             onEnd: () => {
               sendMessage('Delete successfully');
@@ -266,7 +274,7 @@ class Admin extends Component {
    */
   onUpdateFromList({id, data}) {
     this.props.actions.Update({
-      targetKey: getListTargetKey(this.props.url),
+      targetKey: getListTargetKey(this.props.url, this.props.listTargetKeyPrefix),
       id,
       data,
       onEnd: () => {
@@ -307,7 +315,7 @@ class Admin extends Component {
     const { queryParamsPrefix, queryParamsEditKey, queryParamsNewKey } = this.props
     if(this.state.listSource) { this.props.actions.Refresh({ targetKey: this.listTarget }) }
     const { getIdFromNewDocResponse, rowKey, idKey } = this.props
-    const newDocId = getIdFromNewDocResponse ? getIdFromNewDocResponse(data) : data[rowKey || idKey]
+    const newDocId = getIdFromNewDocResponse ? getIdFromNewDocResponse(res) : data[rowKey || idKey]
     if (this.props.editAfterSaved) {
       this.onEditClick(null, newDocId, null)
       const _queryParamsNewKey = `${queryParamsPrefix}${queryParamsNewKey}`;
@@ -564,6 +572,12 @@ class Admin extends Component {
   }
 
   render() {
+    if(this.state.hasError) {
+      return <div>
+        Oops! something went wrong
+        <a onClick={() => this.setState({hasError: false})}>Retry</a>
+      </div>
+    }
     return (
       <Layout className='ra-adminLayout'>
         {this.props.showBreadcrumb && this.renderBreadcrumb()}
@@ -660,7 +674,8 @@ Admin.defaultProps = {
   onDownloadExcel: null, // to override local export pass function to handle this ({data, columnsToDisplay, onDownloadExcel}) => {....}
   getParams: (res) => {
     console.log('Redux-admin missing getParams, getParams({skip, sort, limit, searchValue})', res)
-  }
+  },
+  listTargetKeyPrefix: '' // helpful when we render admin inside admin
 };
 
 function mapDispatchToProps(dispatch) {

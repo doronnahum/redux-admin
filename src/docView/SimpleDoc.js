@@ -53,11 +53,13 @@ class SimpleDoc extends Component {
   onSubmit(values) {
     // same shape as initial values
     if(this.props.isNewDoc) {
-      this.Create({data: this.props.parseDataBeforeSubmit({dataToSend: values, values}), url: this.props.url})
+      let headers = this.props.getHeadersBeforeSubmit ? this.props.getHeadersBeforeSubmit({dataToSend: values, values}) : null;
+      this.Create({data: this.props.parseDataBeforeSubmit({dataToSend: values, values}), url: this.props.url, headers})
     }else{
       let dataToSend = getChangedData(values, this.props.data || this.props.initialValues, this.props.immutableKeys)
       if(dataToSend) {
-        this.Update({data: this.props.parseDataBeforeSubmit({dataToSend, values})})
+        let headers = this.props.getHeadersBeforeSubmit ? this.props.getHeadersBeforeSubmit({dataToSend, values}) : null;
+        this.Update({data: this.props.parseDataBeforeSubmit({dataToSend, values}), headers})
       }else{
         console.log('redux-admin update data request is not send because data was not changed')
       }
@@ -88,9 +90,9 @@ class SimpleDoc extends Component {
     }
     return this.props.renderDocViewComponent(propsToPass)
   }
-  
+
   render() {
-    const {initialLoadFinished, data, validationSchema, getDocFields, crudActions, isNewDoc, status, getTitle, onClose, btnSubmitLoading, id, showFooter, canCreate,
+    const {initialLoadFinished, data, validationSchema, validate, getDocFields, crudActions, isNewDoc, status, getTitle, onClose, btnSubmitLoading, id, showFooter, canCreate,
       canDelete,
       canUpdate,
       viewMode,
@@ -135,10 +137,13 @@ class SimpleDoc extends Component {
         key={isNewDoc ? 'new' : id}
         initialValues={data ? {...data, ...initialValuesToUse} : initialValuesToUse}
         validationSchema={validationSchema}
+        validate={validate}
         onSubmit={this.onSubmit}
       >
-        {({isValid, resetForm, touched, values, errors}) => {
-          const disabledSubmit = btnSubmitLoading || (!isNewDoc && !getChangedData(values, dataFromServer))
+        {({isValid, resetForm, touched, values, errors, setFieldTouched}) => {
+          const changedData = getChangedData(values, dataFromServer)
+          const disabledSubmit = btnSubmitLoading || (!isNewDoc && !changedData)
+          console.log({values, changedData, errors, disabledSubmit})
           const propsToPass = {
             isValid,
             resetForm,
@@ -163,6 +168,11 @@ class SimpleDoc extends Component {
             },
             props: this.props
           }
+          const showAllError = () => {
+            Object.keys(errors).forEach(item => {
+              setFieldTouched(item, true)
+            })
+          }
           return (
             <div className={`ra-docWrapper ra-simpleForm ${isNewDoc ? 'newDoc' : ''}`}>
               <div className='ra-docContent'>
@@ -177,9 +187,18 @@ class SimpleDoc extends Component {
                   {showFooter && <div className='ra-docFooter'>
                     <Button
                       type="primary"
+                      className={`ra-submitBtn ra-submitBtn-${isValid ? 'valid' : 'notValid'}`}
                       loading={btnSubmitLoading}
-                      onClick={() => this.onSubmit(values)}
-                      disabled={disabledSubmit || !isValid}>{isNewDoc ? 'Create' : 'Update'}</Button>
+                      onClick={() => {
+                        if(isValid) {
+                          this.onSubmit(values)
+                        }else{
+                          showAllError()
+                        }
+                      }}
+                    >
+                      {isNewDoc ? 'Create' : 'Update'}
+                    </Button>
                   </div>}
                 </div>
               </div>
@@ -198,6 +217,7 @@ SimpleDoc.defaultProps = {
   newDocInitialValues: null, // initailValues that pass only at new Document
   canUpdate: true,
   parseDataBeforeSubmit: ({dataToSend, values}) => dataToSend, // Use if you want to manipulate the data before PUT/POST to the server
+  // getHeadersBeforeSubmit: ({dataToSend, values}) =>  {"content-type": "multipart/form-data"}, // Use if you want to add headers for specific request
   renderDocViewComponent: () => 'Missing renderDocViewComponent - <Admin renderDocViewComponent />',
   viewMode: false,
   showTitle: true,

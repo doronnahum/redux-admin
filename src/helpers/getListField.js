@@ -10,12 +10,13 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
     dataIndex: key,
     width,
     sorter,
-    type
+    type,
+    className: key
   }
   if (render) {
     field.render = render
   } else {
-    if (type === Array) {
+    if (type === Array || type === 'array') {
       field.render = function (fieldValue) {
         if (fieldValue && fieldValue.length) return fieldValue.map((val, index) => {
           if(itemType === Object) return <Tag key={index} style={{ height: 'auto' }} color={'geekblue'}>{printObject(val)}</Tag>
@@ -23,14 +24,18 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
         });
         return defaultValue
       }
-    } else if (type === Date) {
+    } else if (type === Date || type === 'date') {
       field.width = field.width || 100
       field.render = function (fieldValue) { return fieldValue ? moment(fieldValue).format('MM/DD/YY HH:mm:ss') : defaultValue }
-    } else if (type === Boolean) {
+    } else if (type === Boolean || type === 'boolean') {
       field.width = 80
       field.render = function (fieldValue) { return fieldValue ? <span>&#10004;</span> : <span>&#10008;</span> }
-    } else if(type === Object){
-      field.render = function (fieldValue) { return fieldValue ? fieldValue[labelKey] : '' }
+    } else if(type === Object || type === 'object'){
+      if(!labelKey) {
+        field.render = function (fieldValue) { return JSON.stringify(fieldValue || {})}
+      } else{
+        field.render = function (fieldValue) { return fieldValue ? fieldValue[labelKey] : '' }
+      }
     }
   }
   return field

@@ -10,6 +10,7 @@ import * as _parseServer from './parse-server';
 import * as _mongoose from './mongoose';
 import _Layout from './Layout'
 import {getDocField} from './helpers'
+export {FeathersAdmin} from './feathers'
 export {setRouteConfig} from './router'
 export {Field, Form} from 'formik';
 

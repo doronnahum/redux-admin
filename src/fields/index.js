@@ -14,7 +14,9 @@ import Password from './Password';
 import TextArea from './TextArea';
 import Media from './Media';
 import AutoComplete from './AutoComplete';
-
+import ObjectEditor from './ObjectEditor';
+import Dropzone from './Dropzone';
+import * as util from './util';
 export {
   Input,
   InputNumber,
@@ -31,5 +33,9 @@ export {
   Password,
   TextArea,
   Media,
-  AutoComplete
+  AutoComplete,
+  ObjectEditor,
+  Dropzone,
+  util
+
 }

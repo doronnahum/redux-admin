@@ -5,49 +5,49 @@ import {sanitizeFormItemProps, getFieldValueByName} from './util'
 import Consumer from './Consumer'
 
 class ArrayInput extends React.Component {
-  renderField({index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label}){
+  renderField({index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label}) {
     const _objectKey = objectKey ? `.${objectKey}` : ''
-    const fieldName= `${name}.${index}${_objectKey}`
+    const fieldName = `${name}.${index}${_objectKey}`
     return (
-      <Field name={fieldName} key={fieldName}>
-      {({field}) => {
-        if(itemType === 'string' || itemType === String) {
-          return (
-            <Input {...field}
-              placeholder={label}
-              addonAfter={showRemoveBtn ? <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/> : null}
-            />
-          )
-        }else if(itemType === 'number' || itemType === Number) {
-          return (
-            <div className='ant-input-group ra-fieldsArrayGroupNumber'>
-              <InputNumber
-                style={{width: '100%'}}
-                onChange={(value) => {
-                  form.setFieldValue(fieldName, value)
-                }}
-                onBlur={() => {
-                  form.setFieldTouched(fieldName, true)
-                }}
-                value={field.value}
+      <Field name={fieldName} key={fieldName} className={fieldName}>
+        {({field}) => {
+          if(itemType === 'string' || itemType === String) {
+            return (
+              <Input {...field}
+                placeholder={label}
+                addonAfter={showRemoveBtn ? <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/> : null}
               />
-              <div className='ant-input-group-addon'>
-                <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/>
+            )
+          }else if(itemType === 'number' || itemType === Number) {
+            return (
+              <div className='ant-input-group ra-fieldsArrayGroupNumber'>
+                <InputNumber
+                  style={{width: '100%'}}
+                  onChange={(value) => {
+                    form.setFieldValue(fieldName, value)
+                  }}
+                  onBlur={() => {
+                    form.setFieldTouched(fieldName, true)
+                  }}
+                  value={field.value}
+                />
+                <div className='ant-input-group-addon'>
+                  <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/>
+                </div>
               </div>
-            </div>
-          )
-        }
-      }}
-    </Field>
+            )
+          }
+        }}
+      </Field>
     )
   }
   render() {
     const { name, label, itemType, objectStructure } = this.props;
-    if(itemType === 'object' && !objectStructure){
+    if(itemType === 'object' && !objectStructure) {
       return 'redux-admin ArrayInput, missing props.objectStructure: [{key, type, label}]'
     }
     return (
-      <Consumer>
+      <Consumer >
         {(form) => {
           const {values} = form
           const value = getFieldValueByName(name, values)
@@ -59,24 +59,24 @@ class ArrayInput extends React.Component {
                 name={name}
                 render={arrayHelpers => (
                   <div>
-                    {value && value.map((item, index)=> {
-                      if(itemType === 'object'){
+                    {value && value.map((item, index) => {
+                      if(itemType === 'object') {
                         return <div className='ra-fieldsArrayObjectRow'>
-                        {
-                          objectStructure.map(({key, type, label}, i) => {
-                            const showRemoveBtn = i === (objectStructure.length - 1);
-                            return this.renderField({
-                              index,
-                              name,
-                              itemType: type,
-                              objectKey: key,
-                              showRemoveBtn,
-                              arrayHelpers,
-                              form,
-                              label: label || key 
+                          {
+                            objectStructure.map(({key, type, label}, i) => {
+                              const showRemoveBtn = i === (objectStructure.length - 1);
+                              return this.renderField({
+                                index,
+                                name,
+                                itemType: type,
+                                objectKey: key,
+                                showRemoveBtn,
+                                arrayHelpers,
+                                form,
+                                label: label || key
+                              })
                             })
-                          })
-                        }
+                          }
                         </div>
                       }
                       return this.renderField({

@@ -262,6 +262,7 @@ class ReTable extends React.Component {
                     onFiltersChanged={onFiltersChanged}
                     hideAdvanceOptions={this.hideAdvanceOptions}
                     showAdvanceOptions={this.state.showAdvanceFiltersOptions}
+                    onShowAdvanceOptions={this.showAdvanceOptions}
                   />
                 }
                 {showSearchField && <Search
@@ -292,6 +293,7 @@ class ReTable extends React.Component {
                 pagination={false}
                 loading={loading}
                 expandedRowRender={expandedRowRender}
+                rowSelection={this.props.rowSelection}
               />
             </div>
           </div>

@@ -80,10 +80,13 @@ export const allOperators = {
 const getDefaultOperator = function(type) {
   switch (type) {
     case String:
+    case 'string':
       return stringEqual
     case Date:
+    case 'date':
       return dateEqual
     case Number:
+    case 'number':
       return equal
     default:
       return stringEqual
@@ -124,12 +127,16 @@ export default class FilterOptions extends React.Component {
     const filedType = fields.find(item => item.key === filedKey).type
     switch (filedType) {
       case String:
+      case 'string':
         return [stringEqual, stringNotEquals]
       case Number:
+      case 'number':
         return [equal, notEquals, greaterThan, greaterThanOrEqual, lessThan, lessThanOrEqual]
       case Date:
+      case 'date':
         return [before, after]
       case Array:
+      case 'array':
         return [allInArray, noneInArray, matchInArray]
       default:
         return []

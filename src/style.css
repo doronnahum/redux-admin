@@ -274,3 +274,43 @@
     margin-bottom: 5px;
     display: table;
 }
+.ra-fieldsGroup {
+    border: 1px solid #e5e5e5;
+    padding: 5px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+.ra-submitBtn-notValid {
+    opacity: 0.3;
+}
+.ra-dropZone {
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    transition: all 0.3s;
+    padding: 15px;
+}
+.ra-dropZone__file {
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    transition: all 0.3s;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5px;
+    cursor: pointer;
+}
+.ra-dropZone__clear-url {
+    margin-left: calc(100% - 25px);
+    position: absolute;
+    margin-top: 12px;
+    cursor: pointer;
+}
+.ra-dropZone__clear-file {
+    cursor: pointer;
+    margin-left: 15px;
+}
