@@ -11,7 +11,7 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
     width,
     sorter,
     type,
-    className: key
+    className: `ra-listField-${key}`
   }
   if (render) {
     field.render = render

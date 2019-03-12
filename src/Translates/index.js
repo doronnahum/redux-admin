@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 import React, { Component } from 'react';
-import {Modal, AutoComplete, Tabs, Tooltip, Button} from 'antd';
+// import {Modal, Tabs, Tooltip, Button} from 'antd';
 import codes from './codes';
 import {
   Consumer,
+  AutoComplete
 } from '../fields'
 
 /*

@@ -51,7 +51,7 @@ export const sanitizeFormItemProps = function(props, field, form) {
     extra,
     labelCol,
     wrapperCol,
-    className: 'rc-fieldName-' + field.name,
+    className: 'ra-docField-' + field.name,
     ...inputProps
   }
 }

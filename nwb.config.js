@@ -1,10 +1,10 @@
 module.exports = {
   type: 'react-component',
   npm: {
-    esModules: false,
+    esModules: true,
     umd: false
   },
-  babel: {
-    cherryPick: ['antd','formik']
-  }
+  // babel: {
+  //   cherryPick: ['antd','formik']
+  // }
 }

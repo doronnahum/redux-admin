@@ -7,7 +7,7 @@ import Consumer from './Consumer'
 class ArrayInput extends React.Component {
   renderField({index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label}) {
     const _objectKey = objectKey ? `.${objectKey}` : ''
-    const fieldName = `${name}.${index}${_objectKey}`
+    const fieldName = `ra-docField-${name}.${index}${_objectKey}`
     return (
       <Field name={fieldName} key={fieldName} className={fieldName}>
         {({field}) => {
