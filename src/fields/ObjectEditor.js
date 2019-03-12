@@ -34,7 +34,7 @@ class ObjectEditor extends Component {
                     const obj = JSON.parse(e.target.value)
                     setFieldValue(name, obj)
                     this.setState({inputKey: this.state.inputKey + 1})
-                  }catch{
+                  }catch(e){
                     sendMessage('This is not valid json')
                   }
                 }}
