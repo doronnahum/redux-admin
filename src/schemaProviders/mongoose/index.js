@@ -2,6 +2,7 @@
 /* mongoose
 The permitted SchemaTypes are: String Number Date Buffer Boolean Mixed _id Array Decimal128 Map
 */
+import React from 'react';
 import forOwn from 'lodash/forOwn';
 import startCase from 'lodash/startCase';
 import isArray from 'lodash/isArray';

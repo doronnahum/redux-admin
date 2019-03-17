@@ -1,3 +1,4 @@
+import React from 'react';
 import {allOperators} from '../filters/FilterOptions'
 import isArray from 'lodash/isArray';
 import {getDeepObjectValue} from '../util'

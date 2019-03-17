@@ -1,3 +1,4 @@
+import React from 'react';
 import startCase from 'lodash/startCase'
 import { Tag } from 'antd';
 import moment from 'moment'

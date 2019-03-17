@@ -1,3 +1,4 @@
+import React from 'react';
 import forOwn from 'lodash/forOwn';
 import startCase from 'lodash/startCase';
 import isArray from 'lodash/isArray';

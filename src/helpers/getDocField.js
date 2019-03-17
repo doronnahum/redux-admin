@@ -1,3 +1,5 @@
+import React from 'react';
+
 import startCase from 'lodash/startCase'
 
 import {
