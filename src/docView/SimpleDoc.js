@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Formik } from 'formik';
 // import PropTypes from 'prop-types';
-import {getChangedData} from '../util'
+import {getChangedData, objDig} from '../util'
 import {Button} from 'antd'
 import {sendMessage} from '../message'
 
@@ -26,7 +26,8 @@ class SimpleDoc extends Component {
     if(this.props.onUpdateEnd) { this.props.onUpdateEnd(payload) }
   }
   onUpdateFailed(payload) {
-    sendMessage('Update failed');
+    const message = objDig(payload, 'error.response.data.message') || 'Update failed';
+    sendMessage(message);
     if(this.props.onUpdateFailed) { this.props.onUpdateFailed(payload) }
   }
   onCreateEnd(payload) {
@@ -34,7 +35,8 @@ class SimpleDoc extends Component {
     if(this.props.onCreateEnd) { this.props.onCreateEnd(payload) }
   }
   onCreateFailed(payload) {
-    sendMessage('Create failed');
+    const message = objDig(payload, 'error.response.data.message') || 'Create failed'
+    sendMessage(message);
     if(this.props.onCreateFailed) { this.props.onCreateFailed(payload) }
   }
   onDeleteEnd(payload) {
@@ -42,7 +44,8 @@ class SimpleDoc extends Component {
     if(this.props.onDeleteEnd) { this.props.onDeleteEnd(payload) }
   }
   onDeleteFailed(payload) {
-    sendMessage('Delete failed');
+    const message = objDig(payload, 'error.response.data.message') || 'Delete failed'
+    sendMessage(message);
     if(this.props.onDeleteFailed) { this.props.onDeleteFailed(payload) }
   }
 
@@ -97,7 +100,9 @@ class SimpleDoc extends Component {
       canUpdate,
       viewMode,
       backToText,
-      excludeFields} = this.props;
+      excludeFields,
+      updateCounter
+    } = this.props;
     const initialValuesToUse = isNewDoc ? (this.props.newDocInitialValues || this.props.initialValues) : this.props.initialValues
     const dataFromServer = data || initialValuesToUse;
     if(!initialLoadFinished) {
@@ -134,7 +139,7 @@ class SimpleDoc extends Component {
     }
     return (
       <Formik
-        key={isNewDoc ? 'new' : id}
+        key={isNewDoc ? 'new' : (id + updateCounter)}
         initialValues={data ? {...data, ...initialValuesToUse} : initialValuesToUse}
         validationSchema={validationSchema}
         validate={validate}
@@ -142,7 +147,11 @@ class SimpleDoc extends Component {
       >
         {({isValid, resetForm, touched, values, errors, setFieldTouched}) => {
           const changedData = getChangedData(values, dataFromServer)
-          const disabledSubmit = btnSubmitLoading || (!isNewDoc && !changedData)
+          // TODO - make a better disabledSubmit
+          const disabledSubmit =
+            btnSubmitLoading ||
+            (!changedData || Object.keys(changedData).length === 0) ||
+            (errors && Object.keys(errors).length > 0);
           console.log({values, changedData, errors, disabledSubmit})
           const propsToPass = {
             isValid,
@@ -173,6 +182,7 @@ class SimpleDoc extends Component {
               setFieldTouched(item, true)
             })
           }
+ 
           return (
             <div className={`ra-docWrapper ra-simpleForm ${isNewDoc ? 'newDoc' : ''}`}>
               <div className='ra-docContent'>
@@ -187,10 +197,10 @@ class SimpleDoc extends Component {
                   {showFooter && <div className='ra-docFooter'>
                     <Button
                       type="primary"
-                      className={`ra-submitBtn ra-submitBtn-${isValid ? 'valid' : 'notValid'}`}
+                      className={`ra-submitBtn ra-submitBtn-${!disabledSubmit ? 'valid' : 'notValid'}`}
                       loading={btnSubmitLoading}
                       onClick={() => {
-                        if(isValid) {
+                        if(!disabledSubmit) {
                           this.onSubmit(values)
                         }else{
                           showAllError()

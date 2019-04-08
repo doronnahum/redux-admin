@@ -1,5 +1,9 @@
 import forOwn from 'lodash/forOwn';
 import isEqual from 'lodash/isEqual'
+
+import { getDeepObjectValue as _getDeepObjectValue } from 'validate.js';
+export const objDig = _getDeepObjectValue;
+
 export const isString = function(value) {
   return typeof value === 'string';
 }

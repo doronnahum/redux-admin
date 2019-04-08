@@ -4,8 +4,9 @@
 }
 .ra-adminLayout {
     position: relative;
+    z-index: 1;
 }
-.ra-adminLayout h1, .ra-adminLayout h2, .ra-adminLayout h3,{
+.ra-adminLayout h1, .ra-adminLayout h2, .ra-adminLayout h3{
     color: black;
 }
 .ra-sideModal-full {
@@ -32,6 +33,10 @@
     /* height: calc(100vh - 290px) !important;
     max-height: calc(100vh - 290px) !important; */
     overflow: auto !important;
+}
+.ra-tableWrapper .ant-table-thead > tr, .ra-tableWrapper .ant-table-tbody > tr {
+    word-break: break-word;
+    cursor: pointer;
 }
 .ra-tableWrapper .ant-table-body .ant-table-body{
     height: auto !important;
@@ -62,6 +67,7 @@
     height: calc(100vh - var(--distanceFromTopDoc));
     max-height: calc(100vh - var(--distanceFromTopDoc));
 }
+
 .ra-tableContent  {/* Content*/
     height: calc(100vh - var(--distanceFromTopList));
     max-height: calc(100vh - var(--distanceFromTopList));
@@ -76,6 +82,7 @@
 }
 .ra-tableContent .ra-tableContent-table .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
     max-height: calc(100vh - var(--distanceFromTopList) - 124px) !important;
+    min-height: calc(100vh - var(--distanceFromTopList) - 124px) !important;
 }
 
 .ra-tableContent .ra-tableContent-pagination{
@@ -112,6 +119,9 @@
     padding-right: 15px;
     margin-bottom: 15px;
 }
+.ra-docFields .ant-form-item:not(.flex-row){
+    max-width: 600px;
+}
 .ra-docFooter {
     display: flex;
     justify-content: flex-end;
@@ -125,7 +135,8 @@
     margin-right: 5px;
 }
 .ra-docHeader-title {
-    padding-top: 15px;
+    padding-top: 10px;
+    font-size: 19px;
 }
 .ra-fieldsArrayGroupNumber {
     display: flex !important;
@@ -145,6 +156,22 @@
     border: 1px solid #d9d9d9;
     padding: 5px;
     margin-bottom: 5px;
+    position: relative;
+}
+.ra-fieldsArrayRow{
+    border: 1px solid #d9d9d9;
+    padding: 5px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.ra-fieldsArrayObjectRow_remove {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: #e8e8e8;
+    padding: 6px;
+    box-shadow: 1px -1px #dadada;
 }
 .ra-translatesMessage {
     position: absolute;
@@ -313,4 +340,20 @@
 .ra-dropZone__clear-file {
     cursor: pointer;
     margin-left: 15px;
+}
+.ra-linkStyle {
+    color: blue !important;
+    border-bottom: 1px solid blue;
+}
+/* doc fields style*/
+.ra-docContent .ant-form-item .ant-switch {
+    width: 44px;
+    height: 22px
+}
+.ra-docContent .ant-select {
+    width: 100% !important
+}
+.ra-docContent .ant-switch::after {
+    width: 18px;
+    height: 18px;
 }

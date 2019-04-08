@@ -3,11 +3,12 @@ import React, { Component, Fragment, cloneElement } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { NetProvider, idKey, Selector, actions } from 'net-provider';
+import { NetProvider, idKey, Selector, actions, dispatchAction } from 'net-provider';
 import { Layout, Breadcrumb, Modal } from 'antd'
 import router from './router';
 import { sendMessage } from './message'
 import isEqual from 'lodash/isEqual';
+import {objDig} from './util';
 
 const { Refresh, Delete, Update } = actions;
 
@@ -44,7 +45,8 @@ class Admin extends Component {
       skip: this.props.initialSkip,
       sort: this.props.initialSort,
       filters: [],
-      hasError: false
+      hasError: false,
+      updateCounter: 0
     };
     this.renderList = this.renderList.bind(this)
     this.renderDoc = this.renderDoc.bind(this)
@@ -70,7 +72,6 @@ class Admin extends Component {
     this.onFiltersChanged = this.onFiltersChanged.bind(this)
     this.onUpdateFromList = this.onUpdateFromList.bind(this)
     this.onRefreshList = this.onRefreshList.bind(this)
-    this.listTarget = getListTargetKey(this.props.url, this.props.targetKeyPrefix)
     this.previousRoutes = 0; // This we help us to navigate back only if needed
     this.routeByComponentStart = false; // This will help the popstate listener to not interfere if we are initiated the navigate
   };
@@ -205,10 +206,10 @@ class Admin extends Component {
    * @description This will open a document in Edit mode
    */
   onEditClick(row, docId, syncParams = true, updateParamsType = SET_PARAMS) {
-    const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsEditKey } = this.props
+    const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsEditKey, disabledFetchDocOnEdit } = this.props
     const newCurrentId = docId || row[rowKey || idKey]
     const docSource = getDocumentSource({ url, id: newCurrentId, targetKey: getDocTargetKey(url) })
-    this.setState({ docSource, showDoc: true, currentId: newCurrentId, docMode: EDIT_MODE, currentDocData: row })
+    this.setState({ updateCounter: this.state.updateCounter + 1, docSource, showDoc: true, currentId: newCurrentId, docMode: EDIT_MODE, currentDocData: disabledFetchDocOnEdit ? row : null })
     const _queryParamsEditKey = `${queryParamsPrefix}${queryParamsEditKey}`;
     if (syncParams) this.handleRoute(updateParamsType, { [_queryParamsEditKey]: newCurrentId })
   }
@@ -220,10 +221,10 @@ class Admin extends Component {
    * @description This will open a document in Edit mode
    */
   onViewDocClick(row, docId, syncParams = true, updateParamsType = SET_PARAMS) {
-    const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsViewKey } = this.props
+    const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsViewKey, disabledFetchDocOnEdit } = this.props
     const newCurrentId = docId || row[rowKey || idKey]
     const docSource = getDocumentSource({ url, id: newCurrentId, targetKey: getDocTargetKey(url) })
-    this.setState({ docSource, showDoc: true, currentId: newCurrentId, docMode: VIEW_MODE, currentDocData: row })
+    this.setState({ docSource, showDoc: true, currentId: newCurrentId, docMode: VIEW_MODE, currentDocData: disabledFetchDocOnEdit ? row : null })
     const _queryParamsViewKey = `${queryParamsPrefix}${queryParamsViewKey}`;
     if (syncParams) this.handleRoute(updateParamsType, { [_queryParamsViewKey]: newCurrentId })
   }
@@ -259,9 +260,10 @@ class Admin extends Component {
               _this.onChangeEndFromList()
               resolve()
             },
-            onFailed: () => {
+            onFailed: (payload) => {
               resolve()
-              sendMessage('Delete failed');
+              const message = objDig(payload, 'error.response.data.message') || 'Delete failed'
+              sendMessage(message);
             },
             customFetch: _this.props.customDocFetch
           })
@@ -281,8 +283,9 @@ class Admin extends Component {
         sendMessage('Update successfully');
         this.onChangeEndFromList()
       },
-      onFailed: () => {
-        sendMessage('Update failed');
+      onFailed: (payload) => {
+        const message = objDig(payload, 'error.response.data.message') || 'Update failed'
+        sendMessage(message);
       },
       customFetch: this.props.customListFetch
     })
@@ -295,6 +298,7 @@ class Admin extends Component {
    */
   onNewClick(syncParams = true, updateParamsType = SET_PARAMS) {
     const { getDocumentSource, url, queryParamsPrefix, queryParamsNewKey } = this.props
+    const targetKey = getDocTargetKey(url);
     const docSource = getDocumentSource({ url, targetKey: getDocTargetKey(url) })
     this.setState({ docSource, showDoc: true, currentId: null, docMode: NEW_DOC, currentDocData: null })
     const _queryParamsNewKey = `${queryParamsPrefix}${queryParamsNewKey}`;
@@ -312,8 +316,8 @@ class Admin extends Component {
    */
   onCreateEnd(res) {
     const { data } = res
-    const { queryParamsPrefix, queryParamsEditKey, queryParamsNewKey } = this.props
-    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: this.listTarget }) }
+    const { queryParamsPrefix, queryParamsEditKey, queryParamsNewKey, listTargetKeyPrefix, url } = this.props
+    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
     const { getIdFromNewDocResponse, rowKey, idKey } = this.props
     const newDocId = getIdFromNewDocResponse ? getIdFromNewDocResponse(res) : data[rowKey || idKey]
     if (this.props.editAfterSaved) {
@@ -337,7 +341,8 @@ class Admin extends Component {
    * The purpose of this is to keep the list update on each document change
    */
   onDeleteEnd(res) {
-    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: this.listTarget }) }
+    const {url, listTargetKeyPrefix} = this.props;
+    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
     if (this.props.onChangeEnd) this.props.onChangeEnd(res)
   }
 
@@ -362,7 +367,9 @@ class Admin extends Component {
    * The purpose of this is to keep the list update on each document change
    */
   onUpdateEnd(res) {
-    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: this.listTarget }) }
+    const {url, listTargetKeyPrefix} = this.props;
+    this.setState({updateCounter: this.state.updateCounter + 1}) // Help to refresh the doc
+    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
     if (this.props.onChangeEnd) this.props.onChangeEnd(res)
   }
 
@@ -374,6 +381,7 @@ class Admin extends Component {
    * @description This will close the document and navigate back to list
    */
   onClose(syncWithUrl = true, checkBackToParams = true) {
+    const { url } = this.props
     const params = router.onGetParams() || {}
     if(checkBackToParams && params.backTo && params.backTo.length && !this.state.listSource) {
       // This a situation when we navigate from one list to document in other list
@@ -386,6 +394,8 @@ class Admin extends Component {
           this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
         }
         this.setState({ currentId: null, docSource: null, showDoc: false, docMode: null, currentDocData: null })
+        const docTargetKey = getDocTargetKey(url);
+        dispatchAction.Clean({targetKey: docTargetKey});
       }
     }
   }
@@ -422,11 +432,12 @@ class Admin extends Component {
     if (!isEqual(sort, this.state.sort)) this.setState({ sort }, this.onQueryParametersChanged)
   }
   onQueryParametersChanged() {
+    const {url, listTargetKeyPrefix} = this.props;
     if(!this.state.listSource) {
       this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
     }else{
       const params = this.getParams()
-      this.props.actions.Refresh({ targetKey: this.listTarget, params })
+      this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix), params })
     }
   }
 
@@ -437,10 +448,11 @@ class Admin extends Component {
   }
 
   onRefreshList() {
+    const {url, listTargetKeyPrefix} = this.props;
     if(!this.state.listSource) {
       this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
     }else{
-      this.props.actions.Refresh({ targetKey: this.listTarget })
+      this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) })
     }
   }
 
@@ -489,7 +501,7 @@ class Admin extends Component {
 
   renderDoc() {
     if (!this.state.showDoc) return
-    const { docSource, currentId, docMode, currentDocData } = this.state
+    const { docSource, currentId, docMode, currentDocData, updateCounter } = this.state
     const { docWrapper, doc, renderDoc, url, getDocTitle, customDocFetch, disabledFetchDocOnEdit } = this.props
     const Wrapper = docWrapper || Fragment
     const newDocMode = docMode === NEW_DOC;
@@ -528,7 +540,8 @@ class Admin extends Component {
               canUpdate,
               canRead,
               excludeFields,
-              backToText
+              backToText,
+              updateCounter
             }
             if (renderDoc) return renderDoc(propsToPass);
             if (doc) return cloneElement(doc, propsToPass);

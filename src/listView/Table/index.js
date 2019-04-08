@@ -57,7 +57,10 @@ class ReTable extends React.Component {
               <a
                 href="javascript:;"
                 className="padding5 ra-marginRight5"
-                onClick={() => onViewDocClick(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewDocClick(record)
+                }}
               >
                 <Icon type="eye" theme="outlined" />
               </a>
@@ -66,7 +69,10 @@ class ReTable extends React.Component {
               <a
                 href="javascript:;"
                 className="padding5 ra-marginRight5"
-                onClick={() => onEditClick(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEditClick(record)
+                }}
               >
                 <Icon type="edit" theme="outlined" />
               </a>
@@ -75,7 +81,10 @@ class ReTable extends React.Component {
               <a
                 href="javascript:;"
                 className="padding5"
-                onClick={() => onDeleteClick(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteClick(record)
+                }}
               >
                 <Icon type="delete" theme="outlined" />
               </a>
@@ -195,11 +204,19 @@ class ReTable extends React.Component {
       )
     }
   }
+
+  onRow = (row) => {
+    if(this.props.onRow) return this.props.onRow(row);
+    const { editable, canRead, onEditClick, onViewDocClick } = this.props;
+    const canView = onViewDocClick && canRead
+    return {
+      onClick: () => canView ? onViewDocClick(row) : (editable ? onEditClick(row) : null)
+    };
+  }
   render() {
     const {
       getColumns,
       data,
-      onRow,
       rowKey,
       searchValue,
       onSearch,
@@ -287,7 +304,7 @@ class ReTable extends React.Component {
                 columns={columns}
                 dataSource={data}
                 onChange={this.handleChange}
-                onRow={onRow}
+                onRow={this.onRow}
                 rowKey={rowKey}
                 locale={locale}
                 pagination={false}

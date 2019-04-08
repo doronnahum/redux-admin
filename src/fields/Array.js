@@ -1,42 +1,29 @@
 import React from 'react';
-import { InputNumber, Form, Input, Icon, Button } from 'antd';
+import { InputNumber, Form, Input, Icon, Button, DatePicker } from 'antd';
 import {Field, FieldArray} from 'formik'
 import {sanitizeFormItemProps, getFieldValueByName} from './util'
 import Consumer from './Consumer'
+import getDocField from '../helpers/getDocField';
 
 class ArrayInput extends React.Component {
   renderField({index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label}) {
     const _objectKey = objectKey ? `.${objectKey}` : ''
     const fieldName = `${name}.${index}${_objectKey}`
+    const defaultLabel = `${index + 1} - ${_objectKey ? `${_objectKey} -` : ''} ${name} `
     return (
       <Field name={fieldName} key={fieldName} className={'ra-docField-' + fieldName}>
         {({field}) => {
-          if(itemType === 'string' || itemType === String) {
-            return (
-              <Input {...field}
-                placeholder={label}
-                addonAfter={showRemoveBtn ? <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/> : null}
-              />
-            )
-          }else if(itemType === 'number' || itemType === Number) {
-            return (
-              <div className='ant-input-group ra-fieldsArrayGroupNumber'>
-                <InputNumber
-                  style={{width: '100%'}}
-                  onChange={(value) => {
-                    form.setFieldValue(fieldName, value)
-                  }}
-                  onBlur={() => {
-                    form.setFieldTouched(fieldName, true)
-                  }}
-                  value={field.value}
-                />
-                <div className='ant-input-group-addon'>
-                  <Icon type="minus" onClick={() => arrayHelpers.remove(index)}/>
-                </div>
-              </div>
-            )
-          }
+          return (
+            <React.Fragment>
+              {getDocField({
+                key: fieldName,
+                type: itemType,
+                label: label || defaultLabel
+              })}
+              {showRemoveBtn && <Icon className='ra-fieldsArrayObjectRow_remove' type="close" onClick={() => arrayHelpers.remove(index)}/>
+              }
+            </React.Fragment>
+          )
         }}
       </Field>
     )
@@ -44,7 +31,8 @@ class ArrayInput extends React.Component {
   render() {
     const { name, label, itemType, objectStructure } = this.props;
     if(itemType === 'object' && !objectStructure) {
-      return 'redux-admin ArrayInput, missing props.objectStructure: [{key, type, label}]'
+      // eslint-disable-next-line quotes
+      return "redux-admin ArrayInput, missing props.objectStructure: [{key: 'date', type: 'date', label: 'Date'}, {key: 'text', type: 'string', label: 'Text'}]"
     }
     return (
       <Consumer >
@@ -61,7 +49,7 @@ class ArrayInput extends React.Component {
                   <div>
                     {value && value.map((item, index) => {
                       if(itemType === 'object') {
-                        return <div className='ra-fieldsArrayObjectRow'>
+                        return <div className='ra-fieldsArrayObjectRow' key={index}>
                           {
                             objectStructure.map(({key, type, label}, i) => {
                               const showRemoveBtn = i === (objectStructure.length - 1);
@@ -79,17 +67,22 @@ class ArrayInput extends React.Component {
                           }
                         </div>
                       }
-                      return this.renderField({
-                        index,
-                        name,
-                        itemType,
-                        objectKey: null,
-                        showRemoveBtn: true,
-                        arrayHelpers,
-                        form
-                      })
+                      return (
+                        <div key={index} className='ra-fieldsArrayRow'>
+                          {this.renderField({
+                            index,
+                            name,
+                            itemType,
+                            objectKey: null,
+                            showRemoveBtn: true,
+                            arrayHelpers,
+                            form
+                          })
+                          }
+                        </div>
+                      )
                     })}
-                    <Button onClick={() => arrayHelpers.push(null)} >  Add {label} </Button>
+                    <Button onClick={() => arrayHelpers.push(null)} >{(!value || value.length < 1) ? `Add - ${label}` : '+'} </Button>
                   </div>
                 )}
               />

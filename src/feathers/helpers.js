@@ -63,15 +63,14 @@ export const mongooseGetParams = ({limit, skip, sort, filters}, defaultFilter, d
       filter = {$and: filter}
     }
   }
-  const options = {...defaultOptions}
   if(!filter && (limit || skip || sort)) filter = {};
-  if(limit) options.limit = filter.$limit = limit;
-  if(skip) options.skip = filter.$skip = skip;
+  if(limit) filter.$limit = limit;
+  if(skip) filter.$skip = skip;
   if(sort && !sort.undefined) {
     const sortKeys = Object.keys(sort)
     filter[`$sort[${sortKeys[0]}]`] = sort[sortKeys[0]]
   }// !sort.undefined - workaround to fix issue with initial value on Admin
-  return filter;
+  return {...filter, ...defaultOptions};
 }
 
 export const getListWithCount = ({ url, targetKey, params, body, onEnd }) => {

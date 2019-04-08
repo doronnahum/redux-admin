@@ -32,6 +32,7 @@ class SelectInput extends React.Component {
                 notFoundContent={loading ? <Spin size="small" /> : null}
                 filterOption={false}
                 onSearch={onSearchValueChanged}
+                allowClear
                 onChange={(value) => {
                   if(labelInValue) {
                     const newValue = data.find(option => option[optionKey] === value)

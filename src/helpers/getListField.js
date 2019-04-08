@@ -20,7 +20,7 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
     if (type === Array || type === 'array') {
       field.render = function (fieldValue) {
         if (fieldValue && fieldValue.length) return fieldValue.map((val, index) => {
-          if(itemType === Object) return <Tag key={index} style={{ height: 'auto' }} color={'geekblue'}>{printObject(val)}</Tag>
+          if(itemType === Object || (val && typeof val === 'object')) return <Tag key={index} style={{ height: 'auto' }} color={'geekblue'}>{labelKey ? val[labelKey] : printObject(val)}</Tag>
           return <Tag key={index} color={'geekblue'}>{val}</Tag>
         });
         return defaultValue
@@ -33,10 +33,21 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
       field.render = function (fieldValue) { return fieldValue ? <span>&#10004;</span> : <span>&#10008;</span> }
     } else if(type === Object || type === 'object'){
       if(!labelKey) {
-        field.render = function (fieldValue) { return JSON.stringify(fieldValue || {})}
+        field.render = function (fieldValue) { 
+          if(typeof fieldValue === 'string') return fieldValue
+          return JSON.stringify(fieldValue || {})
+        }
       } else{
-        field.render = function (fieldValue) { return fieldValue ? fieldValue[labelKey] : '' }
+        field.render = function (fieldValue) { 
+          if(typeof fieldValue === 'string') return fieldValue
+          return fieldValue ? fieldValue[labelKey] : (fieldValue || '') 
+        }
       }
+    }else if(type === 'link'){
+      field.render = function (fieldValue) { return fieldValue ? <a className='ra-linkStyle' onClick={e => {
+        e.stopPropagation();
+        window.open(fieldValue);
+      }}>{fieldValue.substring(fieldValue.lastIndexOf('/')+1)}</a> : ''}
     }
   }
   return field

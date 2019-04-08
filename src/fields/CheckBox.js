@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox, Form } from 'antd';
+import { Switch, Form, Icon } from 'antd';
 import Consumer from './Consumer';
 import {sanitizeFormItemProps, getFieldValueByName} from './util'
 import {antdFormItem, formikField} from './propTypes';
@@ -18,9 +18,11 @@ class CheckboxInput extends Component {
               style={flex}
               {...sanitizeFormItemProps(this.props, {name}, form)}
             >
-              <Checkbox
+              <Switch
                 checked={value}
                 onChange={() => { setFieldValue(name, !value) }}
+                disabled={this.props.disabled}
+                checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="close" />}
               />
             </Form.Item>
           )
