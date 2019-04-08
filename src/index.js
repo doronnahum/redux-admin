@@ -9,7 +9,7 @@ import * as _fields from './fields';
 import * as _parseServer from './parse-server';
 import * as _mongoose from './mongoose';
 import _Layout from './Layout'
-import {getDocField} from './helpers'
+import {getDocField, getListField} from './helpers'
 export {FeathersAdmin} from './feathers'
 export {setRouteConfig} from './router'
 export {Field, Form} from 'formik';
@@ -22,6 +22,9 @@ export const docWrappers = {
 }
 export const docHelpers = {
   getDocField
+}
+export const listHelpers = {
+  getListField
 }
 export const listViews = {
   Table
