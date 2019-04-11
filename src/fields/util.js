@@ -8,7 +8,7 @@ export const getFieldValueByName = function(name = '', values) {
   } else if(_name.includes('.')) {
     return getDeepObjectValue(values, _name)
   }else{
-    return values[_name]
+    return values && values[_name]
   }
 }
 export const getFieldErrorByName = function(name = '', values) {
@@ -18,7 +18,7 @@ export const getFieldErrorByName = function(name = '', values) {
   } else if(_name.includes('.')) {
     return getDeepObjectValue(values, _name)
   }else{
-    return values[_name]
+    return values && values[_name]
   }
 }
 
