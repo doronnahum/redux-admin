@@ -55,7 +55,7 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
       required
     }
     return (
-      <RefComponent url={ref} targetKeyPrefix={referenceKey} key={referenceKey || key} getParamsByValue={getParamsByValue} fieldProps={fieldProps}>
+      <RefComponent url={ref} targetKeyPrefix={referenceKey} key={referenceKey || key} getParamsByValue={getParamsByValue} fieldProps={fieldProps} disabled={_disabled}>
         {({ data, onSearchValueChanged, loading, onFocus }) => {
           const resProps = {data, onSearchValueChanged, loading, onFocus}
           if (multiSelect) return <MultiSelect  {...fieldProps} {...resProps}/>
