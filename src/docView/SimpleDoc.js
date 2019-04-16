@@ -182,7 +182,7 @@ class SimpleDoc extends Component {
               setFieldTouched(item, true)
             })
           }
- 
+          const showBtn = isNewDoc ? canCreate : canUpdate;
           return (
             <div className={`ra-docWrapper ra-simpleForm ${isNewDoc ? 'newDoc' : ''}`}>
               <div className='ra-docContent'>
@@ -194,8 +194,8 @@ class SimpleDoc extends Component {
                   <div className='ra-docFields'>
                     {getDocFields(propsToPass)}
                   </div>
-                  {showFooter && <div className='ra-docFooter'>
-                    <Button
+                  {(showFooter && showBtn) && <div className='ra-docFooter'>
+                    {showBtn && <Button
                       type="primary"
                       className={`ra-submitBtn ra-submitBtn-${!disabledSubmit ? 'valid' : 'notValid'}`}
                       loading={btnSubmitLoading}
@@ -209,6 +209,7 @@ class SimpleDoc extends Component {
                     >
                       {isNewDoc ? 'Create' : 'Update'}
                     </Button>
+                    }
                   </div>}
                 </div>
               </div>
@@ -226,6 +227,7 @@ SimpleDoc.defaultProps = {
   initialValues: {},
   newDocInitialValues: null, // initailValues that pass only at new Document
   canUpdate: true,
+  canCreate: true,
   parseDataBeforeSubmit: ({dataToSend, values}) => dataToSend, // Use if you want to manipulate the data before PUT/POST to the server
   // getHeadersBeforeSubmit: ({dataToSend, values}) =>  {"content-type": "multipart/form-data"}, // Use if you want to add headers for specific request
   renderDocViewComponent: () => 'Missing renderDocViewComponent - <Admin renderDocViewComponent />',

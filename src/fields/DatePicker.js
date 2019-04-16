@@ -21,7 +21,6 @@ class DatePickerInput extends Component {
   }
 
   handlePanelChange = (value, mode) => {
-    console.log(value, mode);
     this.setState({ mode });
   }
   render() {
