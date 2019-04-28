@@ -317,6 +317,7 @@
     border-radius: 4px;
     transition: all 0.3s;
     padding: 15px;
+    position: relative;
 }
 .ra-dropZone__file {
     background-color: #fff;
@@ -332,15 +333,18 @@
     cursor: pointer;
 }
 .ra-dropZone__clear-url {
-    margin-left: calc(100% - 25px);
     position: absolute;
     margin-top: 12px;
     cursor: pointer;
+    right: 25px;
 }
 .ra-dropZone__clear-file {
     cursor: pointer;
     margin-left: 15px;
 }
+.ra-dropZone input {
+    padding-right: 35px; 
+  }
 .ra-linkStyle {
     color: blue !important;
     border-bottom: 1px solid blue;
@@ -356,4 +360,17 @@
 .ra-docContent .ant-switch::after {
     width: 18px;
     height: 18px;
+}
+.ra-ml5 {
+    margin-left: 5px;
+}
+.ra-list-text-ellipsis, .ra-list-tr-ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 50px;
+    white-space: nowrap;
+}
+.ra-helpText-underField {
+        font-size: 12px;
+
 }

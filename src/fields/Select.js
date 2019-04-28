@@ -36,11 +36,17 @@ class SelectInput extends React.Component {
                 onChange={(value) => {
                   if(labelInValue) {
                     const newValue = data.find(option => option[optionKey] === value)
-                    const valueToSet = parseValuesOnChange(newValue);
+                    let valueToSet = parseValuesOnChange(newValue);
+                    if(typeof value === 'undefined') {
+                      valueToSet = null;
+                    }
                     form.setFieldValue(field.name, valueToSet)
                     if(onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
                   }else{
-                    const valueToSet = parseValuesOnChange(value);
+                    let valueToSet = parseValuesOnChange(value);
+                    if(typeof value === 'undefined') {
+                      valueToSet = null;
+                    }
                     form.setFieldValue(field.name, valueToSet)
                     if(onValuesChanged) onValuesChanged(form.values, value, form.setFieldValue, form)
                   }

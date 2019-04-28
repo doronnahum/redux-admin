@@ -22,30 +22,30 @@ class SimpleDoc extends Component {
     this.onSubmit = this.onSubmit.bind(this)
   };
   onUpdateEnd(payload) {
-    sendMessage('Update successfully');
+    sendMessage('Update successfully', 'success');
     if(this.props.onUpdateEnd) { this.props.onUpdateEnd(payload) }
   }
   onUpdateFailed(payload) {
     const message = objDig(payload, 'error.response.data.message') || 'Update failed';
-    sendMessage(message);
+    sendMessage(message, 'error');
     if(this.props.onUpdateFailed) { this.props.onUpdateFailed(payload) }
   }
   onCreateEnd(payload) {
-    sendMessage('Create successfully');
+    sendMessage('Create successfully', 'success');
     if(this.props.onCreateEnd) { this.props.onCreateEnd(payload) }
   }
   onCreateFailed(payload) {
     const message = objDig(payload, 'error.response.data.message') || 'Create failed'
-    sendMessage(message);
+    sendMessage(message, 'error');
     if(this.props.onCreateFailed) { this.props.onCreateFailed(payload) }
   }
   onDeleteEnd(payload) {
-    sendMessage('Delete successfully');
+    sendMessage('Delete successfully', 'success');
     if(this.props.onDeleteEnd) { this.props.onDeleteEnd(payload) }
   }
   onDeleteFailed(payload) {
     const message = objDig(payload, 'error.response.data.message') || 'Delete failed'
-    sendMessage(message);
+    sendMessage(message, 'error');
     if(this.props.onDeleteFailed) { this.props.onDeleteFailed(payload) }
   }
 

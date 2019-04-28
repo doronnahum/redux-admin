@@ -256,14 +256,14 @@ class Admin extends Component {
             targetKey: getListTargetKey(url, listTargetKeyPrefix),
             id,
             onEnd: () => {
-              sendMessage('Delete successfully');
+              sendMessage('Delete successfully', 'success');
               _this.onChangeEndFromList()
               resolve()
             },
             onFailed: (payload) => {
               resolve()
               const message = objDig(payload, 'error.response.data.message') || 'Delete failed'
-              sendMessage(message);
+              sendMessage(message, 'error');
             },
             customFetch: _this.props.customDocFetch
           })
@@ -280,12 +280,12 @@ class Admin extends Component {
       id,
       data,
       onEnd: () => {
-        sendMessage('Update successfully');
+        sendMessage('Update successfully', 'success');
         this.onChangeEndFromList()
       },
       onFailed: (payload) => {
         const message = objDig(payload, 'error.response.data.message') || 'Update failed'
-        sendMessage(message);
+        sendMessage(message, 'error');
       },
       customFetch: this.props.customListFetch
     })

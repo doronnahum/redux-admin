@@ -7,7 +7,7 @@ import {antdFormItem, formikField} from './propTypes';
 const flex = {display: 'flex'}
 class CheckboxInput extends Component {
   render() {
-    const { name } = this.props;
+    const { name, disabled } = this.props;
     return (
       <Consumer>
         {(form) => {
@@ -17,13 +17,17 @@ class CheckboxInput extends Component {
             <Form.Item
               style={flex}
               {...sanitizeFormItemProps(this.props, {name}, form)}
+              label={disabled ? <span>{this.props.label}  {value ? <Icon type="check" /> : <Icon type="close" />}</span> : this.props.label}
             >
-              <Switch
-                checked={value}
-                onChange={() => { setFieldValue(name, !value) }}
-                disabled={this.props.disabled}
-                checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="close" />}
-              />
+              {disabled
+                ? null
+                : <Switch
+                  checked={value}
+                  onChange={() => { setFieldValue(name, !value) }}
+                  disabled={disabled}
+                  checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="close" />}
+                />
+              }
             </Form.Item>
           )
         }}

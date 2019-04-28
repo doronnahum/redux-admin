@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Input, Form, Icon } from 'antd';
 import Consumer from './Consumer';
-import {sanitizeFormItemProps, getFieldValueByName, sanitizeAntdTextInputProps} from './util'
-
+import {sanitizeFormItemProps, getFieldValueByName, sanitizeAntdTextInputProps, validURL} from './util'
 import {antdFormItem, formikField} from './propTypes';
 import ReactDropzone from 'react-dropzone';
 
@@ -15,14 +14,15 @@ class Dropzone extends Component {
           const { setFieldValue, values } = form
           const value = getFieldValueByName(name, values)
           const _isEmpty = !value || (typeof value === 'string' && value.trim().length === 0);
-          const isUrl = !_isEmpty && typeof value === 'string';
+          const _isUrl = !_isEmpty && validURL(value);
+          const isString = !_isEmpty && typeof value === 'string';
           return (
             <Form.Item
               {...sanitizeFormItemProps(this.props, {name}, form)}
             >
               <section className='ra-dropZone'>
-                {(_isEmpty || isUrl) && <span>
-                  <label>Enter file url</label>
+                {(_isEmpty || isString) && <span>
+                  <label>Enter file url</label>{_isUrl && <a className='ra-ml5 ra-dropZone-download' href={value} download><Icon type="download" /></a>}
                   <Input
                     {...sanitizeAntdTextInputProps(this.props)}
                     value={value}
@@ -37,7 +37,7 @@ class Dropzone extends Component {
                 </span>
                 }
                 {_isEmpty && <p>OR</p>}
-                {(_isEmpty || !isUrl) && <ReactDropzone
+                {(_isEmpty || !isString) && <ReactDropzone
                   multiple={false}
                   onDrop={(acceptedFiles) => {
                     if(multiple) {

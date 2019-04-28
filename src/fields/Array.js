@@ -6,7 +6,7 @@ import Consumer from './Consumer'
 import getDocField from '../helpers/getDocField';
 
 class ArrayInput extends React.Component {
-  renderField({index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label}) {
+  renderField({index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label, disabled}) {
     const _objectKey = objectKey ? `.${objectKey}` : ''
     const fieldName = `${name}.${index}${_objectKey}`
     const defaultLabel = `${index + 1} - ${_objectKey ? `${_objectKey} -` : ''} ${name} `
@@ -18,9 +18,10 @@ class ArrayInput extends React.Component {
               {getDocField({
                 key: fieldName,
                 type: itemType,
-                label: label || defaultLabel
+                label: label || defaultLabel,
+                disabled
               })}
-              {showRemoveBtn && <Icon className='ra-fieldsArrayObjectRow_remove' type="close" onClick={() => arrayHelpers.remove(index)}/>
+              {(showRemoveBtn && !disabled) && <Icon className='ra-fieldsArrayObjectRow_remove' type="close" onClick={() => arrayHelpers.remove(index)}/>
               }
             </React.Fragment>
           )
@@ -29,7 +30,7 @@ class ArrayInput extends React.Component {
     )
   }
   render() {
-    const { name, label, itemType, objectStructure } = this.props;
+    const { name, label, itemType, objectStructure, helpText, disabled } = this.props;
     if(itemType === 'object' && !objectStructure) {
       // eslint-disable-next-line quotes
       return "redux-admin ArrayInput, missing props.objectStructure: [{key: 'date', type: 'date', label: 'Date'}, {key: 'text', type: 'string', label: 'Text'}]"
@@ -61,7 +62,8 @@ class ArrayInput extends React.Component {
                                 showRemoveBtn,
                                 arrayHelpers,
                                 form,
-                                label: label || key
+                                label: label || key,
+                                disabled
                               })
                             })
                           }
@@ -76,13 +78,16 @@ class ArrayInput extends React.Component {
                             objectKey: null,
                             showRemoveBtn: true,
                             arrayHelpers,
-                            form
+                            form,
+                            disabled
                           })
                           }
                         </div>
                       )
                     })}
-                    <Button onClick={() => arrayHelpers.push(null)} >{(!value || value.length < 1) ? `Add - ${label}` : '+'} </Button>
+                    {disabled && (!value || !value.length) && <Input disabled/>}
+                    {(helpText && helpText.length > 0 && value && value.length > 0) && <p className='ra-helpText-underField'>{helpText}</p>}
+                    {(!disabled) && <Button onClick={() => arrayHelpers.push(null)} >{(!value || value.length < 1) ? `Add - ${label}` : '+'} </Button>}
                   </div>
                 )}
               />

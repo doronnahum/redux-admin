@@ -34,7 +34,7 @@ export const isFieldDisabled = function (fieldName, documentRollConfig = { canCr
   return isDisabled
 }
 
-const getDocField = function ({ key, type, label, required, ref, RefComponent = Reference, referenceKey, labelInValue, arrayItemType = String, multiSelect = false, disabled = false, documentRollConfig, isNewDoc, optionLabel, optionKey, options, getParamsByValue, placeholder, objectStructure, nestedArray, inputType, inputProps }) {
+const getDocField = function ({ key, type, label, required, ref, RefComponent = Reference, referenceKey, labelInValue, arrayItemType = String, multiSelect = false, disabled = false, documentRollConfig, isNewDoc, optionLabel, optionKey, options, getParamsByValue, placeholder, objectStructure, nestedArray, inputType, inputProps, helpText }) {
   const _disabled = disabled || isFieldDisabled(key, documentRollConfig, isNewDoc)
   const _label = label || startCase(key)
   if(inputType === 'file'){
@@ -105,7 +105,7 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
       return <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} defaultValue={[]}/>
     }
     return (
-      <ArrayInput name={key} label={_label} key={key} inputProps={inputProps} itemType={itemType} disabled={_disabled} placeholder={placeholder} objectStructure={objectStructure} />
+      <ArrayInput name={key} label={_label} key={key} inputProps={inputProps} itemType={itemType} disabled={_disabled} placeholder={placeholder} objectStructure={objectStructure} helpText={helpText}/>
     )
   }
   if (type === Date || type === 'date' || type === 'date-time') {

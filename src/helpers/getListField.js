@@ -12,7 +12,7 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
     width,
     sorter,
     type,
-    className: `ra-listField-${key}`
+    className: `ra-listField-${key} ${type === 'link' ? 'ra-list-tr-ellipsis' : ''}`
   }
   if (render) {
     field.render = render
@@ -44,10 +44,10 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
         }
       }
     }else if(type === 'link'){
-      field.render = function (fieldValue) { return fieldValue ? <a className='ra-linkStyle' onClick={e => {
+      field.render = function (fieldValue) { return fieldValue ? <a className='ra-linkStyle ra-list-text-ellipsis' onClick={e => {
         e.stopPropagation();
         window.open(fieldValue);
-      }}>{fieldValue.substring(fieldValue.lastIndexOf('/')+1)}</a> : ''}
+      }}>{fieldValue}</a> : ''}
     }
   }
   return field

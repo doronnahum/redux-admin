@@ -22,6 +22,11 @@ export const getFieldErrorByName = function(name = '', values) {
   }
 }
 
+export function validURL(s) {
+  var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+  return regexp.test(s);
+}
+
 const getTextWithoutFieldName = (value, fieldName) => {
   if(!value) return null
   const _fieldName = fieldName.includes(']') ? fieldName.replace(']', '].') : fieldName
