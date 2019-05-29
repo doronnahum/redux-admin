@@ -1,6 +1,6 @@
 :root {
-    --distanceFromTopList: 170px;
-    --distanceFromTopDoc: 100px;
+    --distanceFromTopList: 155px;
+    --distanceFromTopDoc: 85px;
 }
 .ra-adminLayout {
     position: relative;
@@ -120,7 +120,11 @@
     margin-bottom: 15px;
 }
 .ra-docFields .ant-form-item:not(.flex-row){
-    max-width: 600px;
+    max-width: 500px;
+    display: block !important;
+}
+.ra-docFields .ant-form-item:not(.flex-row) .ant-calendar-picker{
+    width: 245px;
 }
 .ra-docFooter {
     display: flex;
@@ -373,4 +377,47 @@
 .ra-helpText-underField {
         font-size: 12px;
 
+}
+.ra-checkboxWithIconRow {
+    display: flex;
+    flex-flow: wrap;
+}
+
+.ra-checkboxWithIcon {
+    width: 105px;
+    height: 105px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+}
+.ra-checkboxWithIcon:hover {
+    border: 1px solid #a5a5a5;
+}
+.ra-checkboxWithIcon .ant-checkbox , .ra-checkboxWithIcon .ant-radio{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+.ra-checkboxWithIcon label{
+    position: initial !important;
+    pointer-events: none;
+}
+.ra-checkboxWithIcon label .ra-checkboxWithIconContent{
+    display: flex;
+    flex-direction: column;
+    width: 60px;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    padding-top: 16px;
+}
+.ra-checkboxWithIcon label .ra-checkboxWithIconContent .anticon{
+    font-size: 35px;
+    margin-bottom: 5px;
 }

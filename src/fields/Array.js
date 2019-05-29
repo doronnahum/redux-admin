@@ -11,7 +11,7 @@ class ArrayInput extends React.Component {
     const fieldName = `${name}.${index}${_objectKey}`
     const defaultLabel = `${index + 1} - ${_objectKey ? `${_objectKey} -` : ''} ${name} `
     return (
-      <Field name={fieldName} key={fieldName} className={'ra-docField-' + fieldName}>
+      <Field name={fieldName} key={fieldName} className={'ra-docFieldWrapper ra-docField-' + fieldName}>
         {({field}) => {
           return (
             <React.Fragment>

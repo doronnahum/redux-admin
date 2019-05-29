@@ -27,7 +27,6 @@ export default class FirestroeAdmin extends Component {
 
   customDocFetch = async ({payload, data, method}) => {
     let result;
-    debugger
     try {
       result = await new Promise((resolve, reject) => {
         if(method === 'delete') {
@@ -94,7 +93,6 @@ export default class FirestroeAdmin extends Component {
                 }else{
                   _ref = ref
                 }
-                debugger
                 _ref.get().then(snapshot => {
                   let data = [];
                   snapshot.forEach(doc => {
@@ -114,7 +112,6 @@ export default class FirestroeAdmin extends Component {
           }
         }}
         getDocumentSource={({url, targetKey, params, body, id, data}) => {
-          debugger
           return {
             targetKey: targetKey,
             url: id ? `${url}/${id}` : url,

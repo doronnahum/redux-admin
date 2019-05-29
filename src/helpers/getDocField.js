@@ -4,6 +4,7 @@ import startCase from 'lodash/startCase'
 
 import {
   Input,
+  TextArea,
   MultiSelect,
   Reference,
   Select,
@@ -11,7 +12,9 @@ import {
   CheckBox,
   InputNumber,
   ObjectEditor,
-  Dropzone
+  Dropzone,
+  BoxSelect,
+  CheckboxWithIcon
 } from '../fields'
 
 const getItemTypeAsString = function (type) {
@@ -70,23 +73,26 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
     let _optionKey = optionKey;
     let _optionLabel = optionLabel;
     if(multiSelect){
+      const Element = inputType === 'boxSelect' ? BoxSelect : MultiSelect;
       const itemType = getItemTypeAsString(arrayItemType)
       if(itemType === 'string' && options && typeof options[0] === 'string'){
         _optionKey = 'value'
         _options = options.map(item => ({value: item, label: startCase(item)}))
       }
-      return <MultiSelect data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled}/>
+      return <Element data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled}/>
     }
     if (options && typeof options[0] === 'string'){
       _optionKey = 'value'
       _optionLabel = 'label'
       _options = options.map(item => ({value: item, label: startCase(item)}))
     }
-    return <Select data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled} />
+    const Element = inputType === 'boxSelect' ? CheckboxWithIcon : Select;
+    return <Element data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled} />
   }
   if (type === String || type === 'string') {
+    const Element = inputType === 'textArea' ? TextArea : Input;
     return (
-      <Input name={key} required={required} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
+      <Element name={key} required={required} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
     )
   }
   if (type === Number || type === 'number') {

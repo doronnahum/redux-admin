@@ -229,7 +229,8 @@ class ReTable extends React.Component {
       allowColumnFilters,
       showHeaders,
       expandedRowRender,
-      renderHeaders
+      renderHeaders,
+      renderOnTop
       // allowAdvanceFilters,
       // onNewClick,
       // onRefreshClick,
@@ -267,6 +268,8 @@ class ReTable extends React.Component {
       }
     }
     return (
+      <React.Fragment>
+      {renderOnTop && renderOnTop(this.props)}
       <div className="ra-tableWrapper">
         {renderHeaders && renderHeaders(this.props)}
         {showHeaders &&
@@ -300,7 +303,7 @@ class ReTable extends React.Component {
           <div className='ra-tableContent-table'>
             <div style={{minWidth: minWidth + 20}}>
               <Table
-                scroll={{ y: 240, x: minWidth }}
+                scroll={{ y: 200, x: minWidth }}
                 columns={columns}
                 dataSource={data}
                 onChange={this.handleChange}
@@ -329,6 +332,7 @@ class ReTable extends React.Component {
           }
         </div>
       </div>
+      </React.Fragment>
     );
   }
 }
@@ -394,6 +398,7 @@ ReTable.propTypes = {
   allowExportToPdf: PropTypes.bool, // false by default
   onDownloadPdf: PropTypes.func, // pass function to handle this ({data, columnsToDisplay, onDownloadExcel}) => {....}
   expandedRowRender: PropTypes.func, // antd table expandedRowRender
+  renderOnTop: PropTypes.func, // render content outside the table, on the top screen  renderOnTop(props) => <div>Hello</div>
   renderHeaders: PropTypes.func, // render content inside headers renderHeaders(props) => <div>Hello</div>
 };
 

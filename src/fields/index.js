@@ -16,6 +16,8 @@ import Media from './Media';
 import AutoComplete from './AutoComplete';
 import ObjectEditor from './ObjectEditor';
 import Dropzone from './Dropzone';
+import BoxSelect from './BoxSelect';
+import CheckboxWithIcon from './CheckboxWithIcon';
 import * as util from './util';
 export {
   Input,
@@ -36,6 +38,8 @@ export {
   AutoComplete,
   ObjectEditor,
   Dropzone,
+  BoxSelect,
+  CheckboxWithIcon,
   util
 
 }

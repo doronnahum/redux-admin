@@ -321,3 +321,30 @@ Examples-
 	const getDocFields = () => (<Field  type="email"  name="email"  placeholder="Email"  />
 	)
 	```
+## Fields - to use only inside Formik
+```jsx
+import { fields } from  'redux-admin';
+
+const {
+	Input,
+	InputNumber,
+	MultiSelect,
+	Reference,
+	ParseServerReference,
+	FireStoreReference,
+	Select,
+	ArrayInput,
+	Consumer,
+	CheckBox,
+	DatePicker,
+	TimePicker,
+	Password,
+	TextArea,
+	Media,
+	AutoComplete,
+	ObjectEditor,
+	Dropzone,
+	BoxSelect,
+	CheckboxWithIcon
+} =  fields;
+```
