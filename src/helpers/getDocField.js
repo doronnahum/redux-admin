@@ -108,20 +108,20 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
   if (type === Array || type === 'array') {
     const itemType = getItemTypeAsString(arrayItemType)
     if(nestedArray){
-      return <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} defaultValue={[]}/>
+      return <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} defaultValue={[]} required={required}/>
     }
     return (
-      <ArrayInput name={key} label={_label} key={key} inputProps={inputProps} itemType={itemType} disabled={_disabled} placeholder={placeholder} objectStructure={objectStructure} helpText={helpText}/>
+      <ArrayInput name={key} label={_label} key={key} inputProps={inputProps} itemType={itemType} disabled={_disabled} placeholder={placeholder} objectStructure={objectStructure} helpText={helpText} required={required}/>
     )
   }
   if (type === Date || type === 'date' || type === 'date-time') {
     return (
-      <DatePicker name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
+      <DatePicker name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} required={required}/>
     )
   }
   if (type === Object || type === 'object') {
     return (
-      <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
+      <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} required={required}/>
     )
   }
 };

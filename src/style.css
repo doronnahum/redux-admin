@@ -421,3 +421,7 @@
     font-size: 35px;
     margin-bottom: 5px;
 }
+.ra-tableContent-table .ant-tag {
+    max-width: 200px;
+    overflow: auto;
+}
