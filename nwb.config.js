@@ -1,10 +1,15 @@
 module.exports = {
-  type: 'react-component',
   npm: {
-    esModules: true,
-    umd: false
-  },
-  // babel: {
-  //   cherryPick: ['antd','formik']
-  // }
+    umd: {
+      externals: {
+        'net-provider': 'net-provider',
+        'antd': 'antd',
+        'react': 'React',
+        'react-redux': 'react-redux',
+        'react-dom': 'react-dom',
+        'redux': 'redux',
+        'redux-saga': 'redux-saga'
+      }
+    }
+  }
 }
