@@ -86,7 +86,7 @@ export default Posts;
 
  1. You can install redux-admin with [NPM](https://npmjs.com/), [Yarn](https://yarnpkg.com/)
 	```jsx
-	npm install redux-admin --save
+	npm install redux-admin formik antd net-provider --save
 	```
  2. [Follow Net-Provider Installation instruction](https://github.com/doronnahum/net-provider#installation) 
  Net-provider is the connection to your api

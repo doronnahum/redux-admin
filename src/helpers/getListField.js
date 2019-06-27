@@ -29,7 +29,7 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
       field.width = field.width || 100
       field.render = function (fieldValue) { return fieldValue ? moment(fieldValue).format('MM/DD/YY HH:mm:ss') : defaultValue }
     } else if (type === Boolean || type === 'boolean') {
-      field.width = 80
+      field.width = field.width || 80
       field.render = function (fieldValue) { return fieldValue ? <span>&#10004;</span> : <span>&#10008;</span> }
     } else if(type === Object || type === 'object'){
       if(!labelKey) {
