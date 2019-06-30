@@ -13,7 +13,7 @@ class SelectInput extends React.Component {
     return startCase ? toStartCase(text) : text
   }
   render() {
-    const { loading, onSearchValueChanged, data, mode, onFocus, startCase, optionKey, optionLabel, showSearch, parseValuesOnChange, labelInValue, style, disabled, onValuesChanged, renderLabel, placeholder, classNames } = this.props;
+    const { loading, onSearchValueChanged, data, mode, onFocus, startCase, optionKey, optionLabel, showSearch, parseValuesOnChange, labelInValue, style, disabled, onValuesChanged, renderLabel, placeholder, classNames, allowClear } = this.props;
     return (
       <Field {...sanitizeFormikFieldProps(this.props)}>
         {({ field, form }) => {
@@ -32,7 +32,7 @@ class SelectInput extends React.Component {
                 notFoundContent={loading ? <Spin size="small" /> : null}
                 filterOption={false}
                 onSearch={onSearchValueChanged}
-                allowClear
+                allowClear={allowClear}
                 onChange={(value) => {
                   if(labelInValue) {
                     const newValue = data.find(option => option[optionKey] === value)
@@ -76,6 +76,7 @@ SelectInput.defaultProps = {
   startCase: true, // When True it will show you label like this 'My Display'
   showSearch: true,
   placeholder: 'Type here...',
+  allowClear: true,
   parseValuesOnChange: values => values, // You can pass function that get values and return the values to send to server
   // onValuesChanged: (values,value, setFieldValue, form) => {} // Use if you want to change other field in each change
 
