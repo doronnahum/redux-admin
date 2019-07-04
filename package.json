@@ -17,7 +17,9 @@
     "start": "nwb serve-react-demo",
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
-    "test:watch": "nwb test-react --server"
+    "test:watch": "nwb test-react --server",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "immer": "3.1.3",
@@ -27,7 +29,8 @@
     "reselect": "4.0.0",
     "validate.js": "0.13.1",
     "yup": "0.27.0",
-    "moment": "2.24.0"
+    "moment": "2.24.0",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "nwb": "^0.23.0",
@@ -55,5 +58,6 @@
     "admin",
     "redux",
     "saga"
-  ]
+  ],
+  "snyk": true
 }
