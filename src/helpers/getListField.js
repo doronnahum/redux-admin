@@ -19,10 +19,16 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
   } else {
     if (type === Array || type === 'array') {
       field.render = function (fieldValue) {
-        if (fieldValue && fieldValue.length) return fieldValue.map((val, index) => {
-          if(itemType === Object || (val && typeof val === 'object')) return <Tag key={index} style={{ height: 'auto' }} color={'geekblue'}>{labelKey ? val[labelKey] : printObject(val)}</Tag>
-          return <Tag key={index} color={'geekblue'}>{val}</Tag>
-        });
+        if (fieldValue && fieldValue.length) return (
+          <div>
+            {
+              fieldValue.map((val, index) => {
+                if (itemType === Object || (val && typeof val === 'object')) return <Tag key={index} style={{ height: 'auto' }} color={'geekblue'}>{labelKey ? val[labelKey] : printObject(val)}</Tag>
+                return <Tag key={index} color={'geekblue'}>{val}</Tag>
+              })
+            }
+          </div>
+        )
         return defaultValue
       }
     } else if (type === Date || type === 'date') {
@@ -31,23 +37,25 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
     } else if (type === Boolean || type === 'boolean') {
       field.width = field.width || 80
       field.render = function (fieldValue) { return fieldValue ? <span>&#10004;</span> : <span>&#10008;</span> }
-    } else if(type === Object || type === 'object'){
-      if(!labelKey) {
-        field.render = function (fieldValue) { 
-          if(typeof fieldValue === 'string') return fieldValue
+    } else if (type === Object || type === 'object') {
+      if (!labelKey) {
+        field.render = function (fieldValue) {
+          if (typeof fieldValue === 'string') return fieldValue
           return JSON.stringify(fieldValue || {})
         }
-      } else{
-        field.render = function (fieldValue) { 
-          if(typeof fieldValue === 'string') return fieldValue
-          return fieldValue ? fieldValue[labelKey] : (fieldValue || '') 
+      } else {
+        field.render = function (fieldValue) {
+          if (typeof fieldValue === 'string') return fieldValue
+          return fieldValue ? fieldValue[labelKey] : (fieldValue || '')
         }
       }
-    }else if(type === 'link'){
-      field.render = function (fieldValue) { return fieldValue ? <a className='ra-linkStyle ra-list-text-ellipsis' onClick={e => {
-        e.stopPropagation();
-        window.open(fieldValue);
-      }}>{fieldValue}</a> : ''}
+    } else if (type === 'link') {
+      field.render = function (fieldValue) {
+        return fieldValue ? <a className='ra-linkStyle ra-list-text-ellipsis' onClick={e => {
+          e.stopPropagation();
+          window.open(fieldValue);
+        }}>{fieldValue}</a> : ''
+      }
     }
   }
   return field
