@@ -3,5 +3,6 @@
         "activityBar.background": "#510B57",
         "titleBar.activeBackground": "#720F7A",
         "titleBar.activeForeground": "#FEFCFF"
-    }
+    },
+    "deepscan.enable": true
 }
