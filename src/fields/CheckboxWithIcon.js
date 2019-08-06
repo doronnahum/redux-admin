@@ -42,25 +42,25 @@ class CheckboxWithIcon extends React.Component {
             field.value && typeof field.value === 'object'
               ? field.value[optionKey]
               : field.value;
-           const setNewValue = (e) => {
-                  const value = e.target.value;
-                  if(labelInValue) {
-                    const newValue = data.find(item => item[optionKey] === value)
-                    let valueToSet = parseValuesOnChange(newValue);
-                    if(typeof value === 'undefined') {
-                      valueToSet = null;
-                    }
-                    form.setFieldValue(field.name, valueToSet)
-                    if(onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
-                  }else{
-                    let valueToSet = parseValuesOnChange(value);
-                    if(typeof value === 'undefined') {
-                      valueToSet = null;
-                    }
-                    form.setFieldValue(field.name, valueToSet)
-                    if(onValuesChanged) onValuesChanged(form.values, value, form.setFieldValue, form)
-                  }
-                }
+          const setNewValue = (e) => {
+            const value = e.target.value;
+            if (labelInValue) {
+              const newValue = data.find(item => item[optionKey] === value)
+              let valueToSet = parseValuesOnChange(newValue);
+              if (typeof value === 'undefined') {
+                valueToSet = null;
+              }
+              form.setFieldValue(field.name, valueToSet)
+              if (onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
+            } else {
+              let valueToSet = parseValuesOnChange(value);
+              if (typeof value === 'undefined') {
+                valueToSet = null;
+              }
+              form.setFieldValue(field.name, valueToSet)
+              if (onValuesChanged) onValuesChanged(form.values, value, form.setFieldValue, form)
+            }
+          }
           return (
             <Form.Item
               {...sanitizeFormItemProps(this.props, field, form)}
@@ -75,27 +75,29 @@ class CheckboxWithIcon extends React.Component {
                   {data &&
                     data.map((d, index) => {
                       const val = d ? d[optionKey] || d : d;
+                      const isActive = value === val;
+                      const classNamePrefix = isActive ? 'is-active' : 'is-not-active'
                       return (
                         <div
-                            className="ra-checkboxWithIcon"
-                            key={d[optionKey] || index}
-                            onClick={() => setNewValue({target: {value:  val}})}
+                          className={`ra-checkboxWithIcon ${classNamePrefix}`}
+                          key={d ? d[optionKey] : index}
+                          onClick={() => setNewValue({ target: { value: val } })}
                         >
                           <Radio value={val}>
                             <div className='ra-checkboxWithIconContent'>
-                            {!!(d && d.icon) && <Icon type={d.icon}/>}
-                            <p>{this.renderLabel(
-                              d,
-                              optionLabel,
-                              optionKey,
-                              startCase,
-                              renderLabel
-                            ).toString()}</p>
+                              {!!(d && d.icon) && <Icon type={d.icon} />}
+                              <p>{this.renderLabel(
+                                d,
+                                optionLabel,
+                                optionKey,
+                                startCase,
+                                renderLabel
+                              ).toString()}</p>
                             </div>
                           </Radio>
                         </div>
                       )
- })}
+                    })}
                 </div>
               </Radio.Group>
             </Form.Item>
