@@ -20,7 +20,7 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
     if (type === Array || type === 'array') {
       field.render = function (fieldValue) {
         if (fieldValue && fieldValue.length) return (
-          <div>
+          <div className='ra-max100'>
             {
               fieldValue.map((val, index) => {
                 if (itemType === Object || (val && typeof val === 'object')) return <Tag key={index} style={{ height: 'auto' }} color={'geekblue'}>{labelKey ? val[labelKey] : printObject(val)}</Tag>

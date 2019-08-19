@@ -8,8 +8,7 @@ import { Layout, Breadcrumb, Modal } from 'antd'
 import router from './router';
 import { sendMessage } from './message'
 import isEqual from 'lodash/isEqual';
-import {objDig} from './util';
-
+import {objDig, capitalize} from './util';
 const { Refresh, Delete, Update } = actions;
 
 const NEW_DOC = 'New'
@@ -565,8 +564,8 @@ class Admin extends Component {
           return (
             <Breadcrumb className='ra-breadcrumb'>
               <Breadcrumb.Item onClick={this.goHome}> Home </Breadcrumb.Item>
-              <Breadcrumb.Item onClick={this.onCloseFromBreadcrumb}> {this.props.title} </Breadcrumb.Item>
-              {(editDocMode || viewDocMode) && <Breadcrumb.Item>{title}</Breadcrumb.Item>}
+              <Breadcrumb.Item onClick={this.onCloseFromBreadcrumb}> {capitalize(this.props.title)} </Breadcrumb.Item>
+              {(editDocMode || viewDocMode) && <Breadcrumb.Item>{capitalize(title)}</Breadcrumb.Item>}
               {newDocMode && <Breadcrumb.Item>New</Breadcrumb.Item>}
             </Breadcrumb>
           )

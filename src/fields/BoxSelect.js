@@ -42,28 +42,28 @@ class BoxSelect extends React.Component {
             field.value && field.value[0] && typeof field.value[0] === 'object'
               ? field.value.map(item => item[optionKey])
               : field.value;
-          const setNewValue = (values) => {
-            if (labelInValue) {
-              const newValue = values.map(itemValue => data.find(item => item[optionKey] === itemValue))
-              let valueToSet = parseValuesOnChange(newValue);
-              if (typeof values === 'undefined') {
-                valueToSet = null;
-              }
-              form.setFieldValue(field.name, valueToSet)
-              if (onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
-            } else {
-              let valueToSet = parseValuesOnChange(values);
-              if (typeof values === 'undefined') {
-                valueToSet = null;
-              }
-              form.setFieldValue(field.name, valueToSet)
-              if (onValuesChanged) onValuesChanged(form.values, values, form.setFieldValue, form)
-            }
-          }
+           const setNewValue = (values) => {
+                  if(labelInValue) {
+                    const newValue = values.map(itemValue => data.find(item => item[optionKey] === itemValue))
+                    let valueToSet = parseValuesOnChange(newValue);
+                    if(typeof values === 'undefined') {
+                      valueToSet = null;
+                    }
+                    form.setFieldValue(field.name, valueToSet)
+                    if(onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
+                  }else{
+                    let valueToSet = parseValuesOnChange(values);
+                    if(typeof values === 'undefined') {
+                      valueToSet = null;
+                    }
+                    form.setFieldValue(field.name, valueToSet)
+                    if(onValuesChanged) onValuesChanged(form.values, values, form.setFieldValue, form)
+                  }
+                }
           return (
             <Form.Item
               {...sanitizeFormItemProps(this.props, field, form)}
-              className={classNames}
+              className={`${classNames} ra-boxSelect`}
             >
               <Checkbox.Group
                 style={{ width: '100%' }}
@@ -74,33 +74,31 @@ class BoxSelect extends React.Component {
                   {data &&
                     data.map((d, index) => {
                       const val = d ? d[optionKey] || d : d;
-                      const isActive = value && value.includes(val);
-                      const classNamePrefix = isActive ? 'is-active' : 'is-not-active'
                       return (
                         <div
-                          className={`ra-checkboxWithIcon ${classNamePrefix}`}
-                          key={d ? d[optionKey] : index}
-                          onClick={() => {
-                            const isActive = value && value.includes(val)
-                            const newValue = isActive ? value.filter(item => item !== val) : (value ? [...value, val] : [val]);
-                            setNewValue(newValue)
-                          }}
+                            className="ra-checkboxWithIcon"
+                            key={d[optionKey] || index}
+                            onClick={() => {
+                                const isActive = value && value.includes(val)
+                                const newValue = isActive ? value.filter(item => item !== val) : (value ? [...value, val] : [val]);
+                                setNewValue(newValue)
+                            }}
                         >
                           <Checkbox value={val}>
                             <div className='ra-checkboxWithIconContent'>
-                              {!!(d && d.icon) && <Icon type={d.icon} />}
-                              <p>{this.renderLabel(
-                                d,
-                                optionLabel,
-                                optionKey,
-                                startCase,
-                                renderLabel
-                              ).toString()}</p>
+                            {!!(d && d.icon) && <Icon type={d.icon}/>}
+                            <p>{this.renderLabel(
+                              d,
+                              optionLabel,
+                              optionKey,
+                              startCase,
+                              renderLabel
+                            ).toString()}</p>
                             </div>
                           </Checkbox>
                         </div>
                       )
-                    })}
+ })}
                 </div>
               </Checkbox.Group>
             </Form.Item>

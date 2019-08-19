@@ -2,18 +2,19 @@
     --distanceFromTopList: 155px;
     --distanceFromTopDoc: 85px;
 }
-
 .ra-adminLayout {
     position: relative;
     z-index: 1;
 }
-
-.ra-adminLayout h1,
-.ra-adminLayout h2,
-.ra-adminLayout h3 {
+.ra-adminLayout .ant-form-item-label {
+    line-height: 28px;
+}
+.ra-adminLayout .ra-boxSelect .ant-form-item-label{
+    margin-bottom: -19px;
+}
+.ra-adminLayout h1, .ra-adminLayout h2, .ra-adminLayout h3{
     color: black;
 }
-
 .ra-sideModal-full {
     background-color: transparent;
     flex: 0 0 100% !important;
@@ -27,7 +28,6 @@
     background: white;
     bottom: 0;
 }
-
 .ra-topRightLoader {
     position: absolute;
     top: 15px;
@@ -40,14 +40,11 @@
     max-height: calc(100vh - 290px) !important; */
     overflow: auto !important;
 }
-
-.ra-tableWrapper .ant-table-thead>tr,
-.ra-tableWrapper .ant-table-tbody>tr {
+.ra-tableWrapper .ant-table-thead > tr, .ra-tableWrapper .ant-table-tbody > tr {
     word-break: break-word;
     cursor: pointer;
 }
-
-.ra-tableWrapper .ant-table-body .ant-table-body {
+.ra-tableWrapper .ant-table-body .ant-table-body{
     height: auto !important;
     max-height: auto !important;
     overflow: auto !important;
@@ -57,60 +54,48 @@
     overflow: auto !important;
 }
 
-.ra-tableWrapper,
-.ra-docWrapper {
-    /* Container*/
+.ra-tableWrapper , .ra-docWrapper { /* Container*/
     padding: 15px;
     background-color: #f1f3f6;
-
+    
 }
-
-.ra-docWrapper .ra-tableWrapper {
-    /* Container*/
+.ra-docWrapper .ra-tableWrapper{ /* Container*/
     padding: 0px;
 }
 
-.ra-tableContent,
-.ra-docContent {
-    /* Content*/
+.ra-tableContent , .ra-docContent {/* Content*/
     background-color: #ffffff;
     border: 1px solid #e5e5e5;
     padding: 15px;
     overflow: auto;
 }
-
-.ra-docContent {
-    /* Content*/
+.ra-docContent {/* Content*/
     height: calc(100vh - var(--distanceFromTopDoc));
     max-height: calc(100vh - var(--distanceFromTopDoc));
 }
 
-.ra-tableContent {
-    /* Content*/
+.ra-tableContent  {/* Content*/
     height: calc(100vh - var(--distanceFromTopList));
     max-height: calc(100vh - var(--distanceFromTopList));
     border-top: 0px;
     padding: 5px;
 }
-
-.ra-tableContent .ra-tableContent-table {
+.ra-tableContent .ra-tableContent-table{
     /* height: calc(100% - 24px);
     max-height: calc(100% - 24px); */
     height: calc(100% - 30px);
     overflow: auto;
 }
-
-.ra-tableContent .ra-tableContent-table .ant-table-fixed-header>.ant-table-content>.ant-table-scroll>.ant-table-body {
+.ra-tableContent .ra-tableContent-table .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
     max-height: calc(100vh - var(--distanceFromTopList) - 124px) !important;
     min-height: calc(100vh - var(--distanceFromTopList) - 124px) !important;
 }
 
-.ra-tableContent .ra-tableContent-pagination {
+.ra-tableContent .ra-tableContent-pagination{
     height: 30px;
     padding-top: 5px;
     text-align: right;
 }
-
 .noTableHeader .ra-tableContent {
     /* height: calc(100vh - 105px) !important;
     max-height: calc(100vh - 105px) !important; */
@@ -123,12 +108,10 @@
     padding: 15px;
 
 }
-
 .ra-tableHeader-row {
     display: flex;
     justify-content: space-between;
 }
-
 .ra-docBody {
     display: flex;
     flex-direction: column;
@@ -142,43 +125,35 @@
     padding-right: 15px;
     margin-bottom: 15px;
 }
-
-.ra-docFields .ant-form-item:not(.flex-row) {
+.ra-docFields .ant-form-item:not(.flex-row){
     max-width: 500px;
     display: block !important;
 }
-
-.ra-docFields .ant-form-item:not(.flex-row) .ant-calendar-picker {
+.ra-docFields .ant-form-item:not(.flex-row) .ant-calendar-picker{
     width: 245px;
 }
-
 .ra-docFooter {
     display: flex;
     justify-content: flex-end;
 }
-
 .ra-docHeader {
     display: flex;
     height: 55px;
     align-items: center;
 }
-
 .ra-docHeader-back {
-    margin-right: 5px;
+    margin-right: 10px;
 }
-
 .ra-docHeader-title {
     padding-top: 10px;
     font-size: 19px;
 }
-
 .ra-fieldsArrayGroupNumber {
     display: flex !important;
     align-items: center;
     margin-bottom: 7px;
 }
-
-.ra-fieldsArrayGroupNumber .ant-input-group-addon {
+.ra-fieldsArrayGroupNumber .ant-input-group-addon{
     height: 32px;
     display: flex;
     justify-content: center;
@@ -187,15 +162,13 @@
     width: 39px;
     border-left: 1px solid #d9d9d9;
 }
-
-.ra-fieldsArrayObjectRow {
+.ra-fieldsArrayObjectRow{
     border: 1px solid #d9d9d9;
     padding: 5px;
     margin-bottom: 5px;
     position: relative;
 }
-
-.ra-fieldsArrayRow {
+.ra-fieldsArrayRow{
     border: 1px solid #d9d9d9;
     padding: 5px;
     margin-bottom: 5px;
@@ -210,26 +183,21 @@
     padding: 6px;
     box-shadow: 1px -1px #dadada;
 }
-
 .ra-translatesMessage {
     position: absolute;
     top: 7px;
     right: 50px;
 }
-
 .ra-marginRight5 {
     margin-right: 5px;
 }
-
 .ra-marginLeft5 {
     margin-left: 5px;
 }
-
 .ra-translates {
     position: relative;
 }
-
-.ra-translates .addBtn {
+.ra-translates .addBtn{
     position: absolute;
     right: 0;
     z-index: 200;
@@ -238,15 +206,12 @@
     box-shadow: initial;
     background: transparent;
 }
-
-.padding5 {
+.padding5 { 
     padding: 5px;
 }
-
 .ra-mr15 {
     margin-right: 15px;
 }
-
 .ra-filtersOptionsWrapper {
     padding: 5px;
     margin-top: 15px;
@@ -254,24 +219,19 @@
     border-radius: 5px;
     width: 100%;
 }
-
-.ra-filters {
+.ra-filters{
     width: 100%;
 }
-
 .ra-filters-toggle {
     margin-right: 10px;
 }
-
 .ra-filters-toggle.hidden {
     visibility: hidden;
 }
-
-.ra-filtersOptions {
+.ra-filtersOptions{
     width: 100%;
     max-width: 750px;
 }
-
 .ra-filtersOptionsRow {
     display: flex;
     width: 100%;
@@ -279,107 +239,87 @@
     position: relative;
     padding-right: 15px;
 }
-
 .ra-simpleSearchBtn {
     color: black;
     border: none;
     opacity: 0.7;
 }
-
 .ra-simpleSearchBtn:hover {
     opacity: 1;
 }
-
-.ra-filtersOptionsTitle {
+.ra-filtersOptionsTitle{
     margin: 15px 0px;
     color: #2d3446;
     text-decoration: underline;
 }
-
 .ra-filtersOptionsFooter {
     width: 100%;
     display: flex;
     margin-top: 15px;
     margin-bottom: 10px;
 }
-
 .ra-removeFilterRow {
     color: black;
     font-size: 6px;
 }
-
 /* .ra-adminLayout .ant-table td { white-space: nowrap; } */
-.ra-adminLayout .ant-table-thead>tr>th {
+.ra-adminLayout .ant-table-thead > tr > th{
     background-color: transparent;
 }
-
 .ra-adminLayout .ant-table-header {
     background-color: transparent;
 }
-
 .ra-text-line-through {
     text-decoration: line-through
 }
-
 .ra-hideSelectBorder .ant-select-selection {
     border: 0px;
 }
-
 .ra-table-action-btns {
     width: 100%;
     display: block;
     text-align: right;
 }
-
 .ra-columnsFilters {
     display: flex;
     flex-direction: column;
     background: #fff;
     border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
-
 .ra-columnsFilters .ra-columnsFiltersList {
     display: flex;
     flex-direction: column;
     padding: 0 8px;
 }
-
-.ra-columnsFilters .ra-columnsFiltersList .ant-checkbox-wrapper+.ant-checkbox-wrapper {
+.ra-columnsFilters .ra-columnsFiltersList .ant-checkbox-wrapper + .ant-checkbox-wrapper {
     margin-left: 0px;
 }
-
 #ra-columnsFilters-btn {
     height: 50px;
     font-size: 15px;
     margin-right: 5px;
 }
-
 .ant-table-wrapper.overFlowScroll {
     overflow: auto;
     max-height: 100%;
 }
-
 .ra-printObject-item {
     display: block;
 }
-
 .ra-printObject-item-wrapper {
     margin-bottom: 5px;
     display: table;
 }
-
 .ra-fieldsGroup {
     border: 1px solid #e5e5e5;
     padding: 5px;
     margin-bottom: 15px;
     margin-top: 15px;
 }
-
 .ra-submitBtn-notValid {
     opacity: 0.3;
 }
-
 .ra-dropZone {
     background-color: #fff;
     background-image: none;
@@ -389,7 +329,6 @@
     padding: 15px;
     position: relative;
 }
-
 .ra-dropZone__file {
     background-color: #fff;
     background-image: none;
@@ -403,60 +342,48 @@
     padding-top: 5px;
     cursor: pointer;
 }
-
 .ra-dropZone__clear-url {
     position: absolute;
     margin-top: 12px;
     cursor: pointer;
     right: 25px;
 }
-
 .ra-dropZone__clear-file {
     cursor: pointer;
     margin-left: 15px;
 }
-
 .ra-dropZone input {
-    padding-right: 35px;
-}
-
+    padding-right: 35px; 
+  }
 .ra-linkStyle {
     color: blue !important;
     border-bottom: 1px solid blue;
 }
-
 /* doc fields style*/
 .ra-docContent .ant-form-item .ant-switch {
     width: 44px;
     height: 22px
 }
-
 .ra-docContent .ant-select {
     width: 100% !important
 }
-
 .ra-docContent .ant-switch::after {
     width: 18px;
     height: 18px;
 }
-
 .ra-ml5 {
     margin-left: 5px;
 }
-
-.ra-list-text-ellipsis,
-.ra-list-tr-ellipsis {
+.ra-list-text-ellipsis, .ra-list-tr-ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 50px;
     white-space: nowrap;
 }
-
 .ra-helpText-underField {
-    font-size: 12px;
+        font-size: 12px;
 
 }
-
 .ra-checkboxWithIconRow {
     display: flex;
     flex-flow: wrap;
@@ -475,24 +402,19 @@
     border: 1px solid #d9d9d9;
     border-radius: 4px;
 }
-
 .ra-checkboxWithIcon:hover {
     border: 1px solid #a5a5a5;
 }
-
-.ra-checkboxWithIcon .ant-checkbox,
-.ra-checkboxWithIcon .ant-radio {
+.ra-checkboxWithIcon .ant-checkbox , .ra-checkboxWithIcon .ant-radio{
     position: absolute;
     right: 5px;
     top: 5px;
 }
-
-.ra-checkboxWithIcon label {
+.ra-checkboxWithIcon label{
     position: initial !important;
     pointer-events: none;
 }
-
-.ra-checkboxWithIcon label .ra-checkboxWithIconContent {
+.ra-checkboxWithIcon label .ra-checkboxWithIconContent{
     display: flex;
     flex-direction: column;
     width: 60px;
@@ -501,18 +423,15 @@
     justify-content: center;
     padding-top: 16px;
 }
-
-.ra-checkboxWithIcon label .ra-checkboxWithIconContent .anticon {
+.ra-checkboxWithIcon label .ra-checkboxWithIconContent .anticon{
     font-size: 35px;
     margin-bottom: 5px;
 }
-
-.ra-checkboxWithIcon.is-active .ant-radio-inner::after {
-    transform: scale(1);
-    opacity: 1;
-}
-
 .ra-tableContent-table .ant-tag {
     max-width: 200px;
+    overflow: auto;
+}
+.ra-max100 {
+    max-height: 100px;
     overflow: auto;
 }
