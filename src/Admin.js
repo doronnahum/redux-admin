@@ -8,7 +8,9 @@ import { Layout, Breadcrumb, Modal } from 'antd'
 import router from './router';
 import { sendMessage } from './message'
 import isEqual from 'lodash/isEqual';
-import {objDig, capitalize} from './util';
+import { objDig, capitalize } from './util';
+import { LOCALS } from './local'
+
 const { Refresh, Delete, Update } = actions;
 
 const NEW_DOC = 'New'
@@ -76,9 +78,9 @@ class Admin extends Component {
   };
 
   componentDidMount() {
-    if(this.props.syncWithUrl) {
+    if (this.props.syncWithUrl) {
       this.syncDocIdFromQueryParams(null, null, null, 'handleListFetchOnLoad')
-    }else{
+    } else {
       this.handleListFetchOnLoad()
     }
 
@@ -191,8 +193,8 @@ class Admin extends Component {
         this.onEditClick(null, _queryParamsEdit, replaceParams, updateParamsType)
       } else if (_queryParamsView.length && (canRead || _excludeFields) && allowViewMode) {
         this.onViewDocClick(null, _queryParamsView, replaceParams, updateParamsType)
-      }else{
-        if(handleListFetchOnLoad) this.handleListFetchOnLoad() // We want to load list on load only id doc is not open
+      } else {
+        if (handleListFetchOnLoad) this.handleListFetchOnLoad() // We want to load list on load only id doc is not open
       }
     }
   }
@@ -243,25 +245,25 @@ class Admin extends Component {
     const id = row ? row[rowKey || idKey] : docId
     const _this = this;
     Modal.confirm({
-      title: 'Please Confirm Your Request',
-      content: `Are you sure delete ${title} ?`,
-      okText: 'Delete',
+      title: LOCALS.DOC.RENDER_DELETE_MODAL_TITLE(row),
+      content: LOCALS.DOC.RENDER_DELETE_MODAL_CONTENT(row, title),
+      okText: LOCALS.DOC.DELETE_MODAL_OK_BUTTON,
       okType: 'danger',
       maskClosable: true,
-      cancelText: 'Cancel',
+      cancelText: LOCALS.DOC.DELETE_MODAL_CANCEL_BUTTON,
       onOk() {
         return new Promise((resolve, reject) => {
           _this.props.actions.Delete({
             targetKey: getListTargetKey(url, listTargetKeyPrefix),
             id,
             onEnd: () => {
-              sendMessage('Delete successfully', 'success');
+              sendMessage(LOCALS.NOTIFICATION.DELETE_SUCCESSFULLY, 'success');
               _this.onChangeEndFromList()
               resolve()
             },
             onFailed: (payload) => {
               resolve()
-              const message = objDig(payload, 'error.response.data.message') || 'Delete failed'
+              const message = objDig(payload, 'error.response.data.message') || LOCALS.NOTIFICATION.DELETE_FAILED
               sendMessage(message, 'error');
             },
             customFetch: _this.props.customDocFetch
@@ -273,17 +275,17 @@ class Admin extends Component {
   /**
    * Put data from list
    */
-  onUpdateFromList({id, data}) {
+  onUpdateFromList({ id, data }) {
     this.props.actions.Update({
       targetKey: getListTargetKey(this.props.url, this.props.listTargetKeyPrefix),
       id,
       data,
       onEnd: () => {
-        sendMessage('Update successfully', 'success');
+        sendMessage(LOCALS.NOTIFICATION.UPDATE_SUCCESSFULLY, 'success');
         this.onChangeEndFromList()
       },
       onFailed: (payload) => {
-        const message = objDig(payload, 'error.response.data.message') || 'Update failed'
+        const message = objDig(payload, 'error.response.data.message') || LOCALS.NOTIFICATION.UPDATE_FAILED
         sendMessage(message, 'error');
       },
       customFetch: this.props.customListFetch
@@ -316,7 +318,7 @@ class Admin extends Component {
   onCreateEnd(res) {
     const { data } = res
     const { queryParamsPrefix, queryParamsEditKey, queryParamsNewKey, listTargetKeyPrefix, url } = this.props
-    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
+    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
     const { getIdFromNewDocResponse, rowKey, idKey } = this.props
     const newDocId = getIdFromNewDocResponse ? getIdFromNewDocResponse(res) : data[rowKey || idKey]
     if (this.props.editAfterSaved) {
@@ -340,8 +342,8 @@ class Admin extends Component {
    * The purpose of this is to keep the list update on each document change
    */
   onDeleteEnd(res) {
-    const {url, listTargetKeyPrefix} = this.props;
-    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
+    const { url, listTargetKeyPrefix } = this.props;
+    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
     if (this.props.onChangeEnd) this.props.onChangeEnd(res)
   }
 
@@ -366,9 +368,9 @@ class Admin extends Component {
    * The purpose of this is to keep the list update on each document change
    */
   onUpdateEnd(res) {
-    const {url, listTargetKeyPrefix} = this.props;
-    this.setState({updateCounter: this.state.updateCounter + 1}) // Help to refresh the doc
-    if(this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
+    const { url, listTargetKeyPrefix } = this.props;
+    this.setState({ updateCounter: this.state.updateCounter + 1 }) // Help to refresh the doc
+    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
     if (this.props.onChangeEnd) this.props.onChangeEnd(res)
   }
 
@@ -382,19 +384,19 @@ class Admin extends Component {
   onClose(syncWithUrl = true, checkBackToParams = true) {
     const { url } = this.props
     const params = router.onGetParams() || {}
-    if(checkBackToParams && params.backTo && params.backTo.length && !this.state.listSource) {
+    if (checkBackToParams && params.backTo && params.backTo.length && !this.state.listSource) {
       // This a situation when we navigate from one list to document in other list
       // for example - from products we click on user and it take as to user doc in the users screen
       router.onBack()
-    }else{
+    } else {
       if (this.state.showDoc) {
         if (syncWithUrl) this.handleRoute(BACK)
-        if(!this.state.listSource) {
+        if (!this.state.listSource) {
           this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
         }
         this.setState({ currentId: null, docSource: null, showDoc: false, docMode: null, currentDocData: null })
         const docTargetKey = getDocTargetKey(url);
-        dispatchAction.Clean({targetKey: docTargetKey});
+        dispatchAction.Clean({ targetKey: docTargetKey });
       }
     }
   }
@@ -431,10 +433,10 @@ class Admin extends Component {
     if (!isEqual(sort, this.state.sort)) this.setState({ sort }, this.onQueryParametersChanged)
   }
   onQueryParametersChanged() {
-    const {url, listTargetKeyPrefix} = this.props;
-    if(!this.state.listSource) {
+    const { url, listTargetKeyPrefix } = this.props;
+    if (!this.state.listSource) {
       this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
-    }else{
+    } else {
       const params = this.getParams()
       this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix), params })
     }
@@ -447,10 +449,10 @@ class Admin extends Component {
   }
 
   onRefreshList() {
-    const {url, listTargetKeyPrefix} = this.props;
-    if(!this.state.listSource) {
+    const { url, listTargetKeyPrefix } = this.props;
+    if (!this.state.listSource) {
       this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
-    }else{
+    } else {
       this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) })
     }
   }
@@ -540,7 +542,7 @@ class Admin extends Component {
               canRead,
               excludeFields,
               backToText,
-              updateCounter
+              updateCounter,
             }
             if (renderDoc) return renderDoc(propsToPass);
             if (doc) return cloneElement(doc, propsToPass);
@@ -563,10 +565,10 @@ class Admin extends Component {
           const title = data ? this.props.getDocTitle(data) : currentId
           return (
             <Breadcrumb className='ra-breadcrumb'>
-              <Breadcrumb.Item onClick={this.goHome}> Home </Breadcrumb.Item>
+              <Breadcrumb.Item onClick={this.goHome}> {LOCALS.BREADCRUMB.HOME} </Breadcrumb.Item>
               <Breadcrumb.Item onClick={this.onCloseFromBreadcrumb}> {capitalize(this.props.title)} </Breadcrumb.Item>
               {(editDocMode || viewDocMode) && <Breadcrumb.Item>{capitalize(title)}</Breadcrumb.Item>}
-              {newDocMode && <Breadcrumb.Item>New</Breadcrumb.Item>}
+              {newDocMode && <Breadcrumb.Item>{LOCALS.BREADCRUMB.NEW}</Breadcrumb.Item>}
             </Breadcrumb>
           )
         }}
@@ -584,14 +586,14 @@ class Admin extends Component {
   }
 
   render() {
-    if(this.state.hasError) {
+    if (this.state.hasError) {
       return <div>
-        Oops! something went wrong
-        <a onClick={() => this.setState({hasError: false})}>Retry</a>
+        {LOCALS.ADVANCED_FILTER}
+        <a onClick={() => this.setState({ hasError: false })}>{LOCALS.RETRY_BUTTON_TEXT_ON_ERROR}</a>
       </div>
     }
     return (
-      <Layout className='ra-adminLayout'>
+      <Layout className={`ra-adminLayout dir-${LOCALS.LANG_DIR}`} dir={LOCALS.LANG_DIR}>
         {this.props.showBreadcrumb && this.renderBreadcrumb()}
         <Layout.Content className='ra-adminLayout-list-wrapper'>{this.renderList()}</Layout.Content>
         {this.props.doc && <Layout.Content className='ra-docWra'>{this.renderDoc()}</Layout.Content>}
@@ -635,7 +637,7 @@ Admin.propTypes = {
     excludeFields: PropTypes.array // [] by default
   }),
   disabledFetchDocOnEdit: PropTypes.bool, // false by default, set true to save query and use the data the from list as document data
-  getParams: PropTypes.func.isRequired // pass function that build query params from the filters parameters getParams({skip, sort, limit, searchValue})
+  getParams: PropTypes.func.isRequired, // pass function that build query params from the filters parameters getParams({skip, sort, limit, searchValue})
 };
 Admin.defaultProps = {
   queryParamsPrefix: '',

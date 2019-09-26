@@ -3,6 +3,8 @@ import startCase from 'lodash/startCase'
 import { Tag } from 'antd';
 import moment from 'moment'
 import printObject from './printObject';
+import { Tooltip } from 'antd';
+import { LOCALS } from '../local'
 
 const getListField = function ({ key, title, type, render, sorter, width = 150, defaultValue = '', itemType, labelKey }) {
   const field = {
@@ -33,7 +35,7 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
       }
     } else if (type === Date || type === 'date') {
       field.width = field.width || 100
-      field.render = function (fieldValue) { return fieldValue ? moment(fieldValue).format('MM/DD/YY HH:mm:ss') : defaultValue }
+      field.render = function (fieldValue) { return fieldValue ? moment(fieldValue).format(LOCALS.TABLE_DATE_FIELD_FORMAT) : defaultValue }
     } else if (type === Boolean || type === 'boolean') {
       field.width = field.width || 80
       field.render = function (fieldValue) { return fieldValue ? <span>&#10004;</span> : <span>&#10008;</span> }
@@ -55,6 +57,14 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
           e.stopPropagation();
           window.open(fieldValue);
         }}>{fieldValue}</a> : ''
+      }
+    } else if (field.key === '_id') {
+      field.width = 95;
+      field.render = function (fieldValue) {
+        if (!fieldValue) return
+        const str = fieldValue
+        const start = fieldValue.length - 6
+        return <Tooltip title={fieldValue}>{str.slice(start > 0 ? start : 0, fieldValue.length)}</Tooltip>
       }
     }
   }

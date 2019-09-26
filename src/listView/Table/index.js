@@ -1,10 +1,10 @@
 import React from 'react';
 import { Table, Input, Icon, Dropdown, Menu, Pagination } from 'antd';
 import Filters from '../../filters';
-import uniq from 'lodash/uniq';
-import {getMinTableWidth} from './helpers';
+import { getMinTableWidth } from './helpers';
 import PropTypes from 'prop-types'
 import FilterColumns from './FilterColumns'
+import { LOCALS } from '../../local';
 
 const Search = Input.Search;
 class ReTable extends React.Component {
@@ -20,27 +20,27 @@ class ReTable extends React.Component {
   };
 
   handleChange = (pagination, filters, sorter) => {
-    if(sorter.columnKey === 'action') return
+    if (sorter.columnKey === 'action') return
     const newSortKey = sorter.columnKey || sorter.field;
     const newSortOrder = sorter.order;
-    if(this.sortKey !== newSortKey || this.sortOrder !== newSortOrder) {
+    if (this.sortKey !== newSortKey || this.sortOrder !== newSortOrder) {
       this.sortKey = newSortKey;
       this.sortOrder = newSortOrder;
-      this.props.onSortChange({[newSortKey]: newSortOrder === 'descend' ? -1 : 1})
+      this.props.onSortChange({ [newSortKey]: newSortOrder === 'descend' ? -1 : 1 })
     }
   };
 
   onShowFilterColumns = () => {
-    this.setState({showFilterColumns: true})
+    this.setState({ showFilterColumns: true })
   }
   onFilterColumnsConfirm = (columnsFilters) => {
-    this.setState({showFilterColumns: false, columnsFilters})
+    this.setState({ showFilterColumns: false, columnsFilters })
   }
   onFilterColumnsReset = () => {
-    this.setState({columnsFilters: []})
+    this.setState({ columnsFilters: [] })
   }
   onFilterColumnsClose = () => {
-    this.setState({showFilterColumns: false})
+    this.setState({ showFilterColumns: false })
   }
 
   getActions() {
@@ -106,15 +106,17 @@ class ReTable extends React.Component {
   };
 
   getFilterFields = (columns) => {
-    const {getFilterFields, filtersFields} = this.props
-    if(getFilterFields) return getFilterFields(this.props)
+    const { getFilterFields, filtersFields } = this.props
+    if (getFilterFields) return getFilterFields(this.props)
     const filterFields = []
     columns.map(item => {
       const _filtersField = filtersFields && filtersFields.find(filtersField => filtersField.key === (item.key || item.dataIndex))
-      if(!filtersFields || _filtersField) {
+      if (!filtersFields || _filtersField) {
+        const fieldCustomName = this.props.getFilterTitle && this.props.getFilterTitle(item);
         filterFields.push({
           key: item.key || item.dataIndex,
-          title: item.title,
+          title: fieldCustomName || item.title,
+          label: fieldCustomName || item.title,
           type: item.type || String,
           // getData: () => {
           //   return uniq(this.props.data.map(value => value[item.key || item.dataIndex]))
@@ -126,12 +128,20 @@ class ReTable extends React.Component {
     return filterFields
   }
   hideAdvanceOptions = () => {
-    this.setState({showAdvanceFiltersOptions: false})
+    this.setState({ showAdvanceFiltersOptions: false })
   }
   showAdvanceOptions = () => {
-    this.setState({showAdvanceFiltersOptions: true})
+    this.setState({ showAdvanceFiltersOptions: true })
   }
 
+  getFilterField = (field) => {
+    const fieldCustomName = this.props.getFilterTitle && this.props.getFilterTitle(field);
+    return {
+      title: fieldCustomName || field.title,
+      label: fieldCustomName || field.title,
+      key: field.key || field.dataIndex
+    }
+  }
   columnsToRender = () => {
     const {
       getColumns,
@@ -139,10 +149,10 @@ class ReTable extends React.Component {
     } = this.props;
 
     this.columns = getColumns(this.props)
-    this.columnsFiltersMenu = allowColumnFilters ? (this.columnsFiltersMenu || this.columns.map(field => ({title: field.title, key: field.key || field.dataIndex}))) : null
-    if(!this.state.columnsFilters || !this.state.columnsFilters.length) {
+    this.columnsFiltersMenu = allowColumnFilters ? (this.columnsFiltersMenu || this.columns.map(this.getFilterField)) : null
+    if (!this.state.columnsFilters || !this.state.columnsFilters.length) {
       return [...this.columns, ...this.getActions()];
-    }else{
+    } else {
       return [...this.columns.filter(field => {
         return this.state.columnsFilters.includes(field.key || field.dataIndex)
       }), ...this.getActions()]
@@ -150,8 +160,8 @@ class ReTable extends React.Component {
   }
 
   onDownloadExcel = () => {
-    const {data, onDownloadExcel} = this.props;
-    if(onDownloadExcel) {
+    const { data, onDownloadExcel } = this.props;
+    if (onDownloadExcel) {
       onDownloadExcel({
         data,
         columns: this.columns,
@@ -161,8 +171,8 @@ class ReTable extends React.Component {
     }
   }
   onDownloadPdf = () => {
-    const {data, onDownloadPdf} = this.props;
-    if(onDownloadPdf) {
+    const { data, onDownloadPdf } = this.props;
+    if (onDownloadPdf) {
       onDownloadPdf({
         data,
         columns: this.columns,
@@ -179,24 +189,24 @@ class ReTable extends React.Component {
       allowColumnFilters,
       onDownloadExcel,
       onDownloadPdf,
-      canCreate
+      canCreate,
     } = this.props;
     const overlay = <Menu>
-      <Menu.Item key="1" onClick={onRefreshClick}><Icon type="reload" />Reload</Menu.Item>
-      {(allowAdvanceFilters && allowFilters) && <Menu.Item key="2" onClick={this.showAdvanceOptions}><Icon type="filter" />Advanced Filter</Menu.Item>}
-      {allowColumnFilters && <Menu.Item key="3" onClick={this.onShowFilterColumns}><Icon type="table" />Columns</Menu.Item>}
-      {onDownloadPdf && <Menu.Item key="4" onClick={this.onDownloadPdf}><Icon type="file-pdf" />Pdf</Menu.Item>}
-      {onDownloadExcel && <Menu.Item key="5" onClick={this.onDownloadExcel}><Icon type="file-excel" />Xsl</Menu.Item>}
+      <Menu.Item key="1" onClick={onRefreshClick}><Icon type="reload" />{LOCALS['RELOAD']}</Menu.Item>
+      {(allowAdvanceFilters && allowFilters) && <Menu.Item key="2" onClick={this.showAdvanceOptions}><Icon type="filter" />{LOCALS['ADVANCED_FILTER']}</Menu.Item>}
+      {allowColumnFilters && <Menu.Item key="3" onClick={this.onShowFilterColumns}><Icon type="table" />{LOCALS['COLUMNS']}</Menu.Item>}
+      {onDownloadPdf && <Menu.Item key="4" onClick={this.onDownloadPdf}><Icon type="file-pdf" />{LOCALS['PDF']}</Menu.Item>}
+      {onDownloadExcel && <Menu.Item key="5" onClick={this.onDownloadExcel}><Icon type="file-excel" />{LOCALS['XSL']}</Menu.Item>}
     </Menu>
-    if(canCreate) {
+    if (canCreate) {
       return <Dropdown.Button
         placement='bottomLeft'
         onClick={onNewClick}
         overlay={overlay}
       >
-      New
+        {LOCALS['NEW']}
       </Dropdown.Button>
-    }else{
+    } else {
       return (
         <Dropdown overlay={overlay}>
           <Icon type="setting" />
@@ -206,7 +216,7 @@ class ReTable extends React.Component {
   }
 
   onRow = (row) => {
-    if(this.props.onRow) return this.props.onRow(row);
+    if (this.props.onRow) return this.props.onRow(row);
     const { editable, canRead, onEditClick, onViewDocClick } = this.props;
     const canView = onViewDocClick && canRead
     return {
@@ -262,76 +272,73 @@ class ReTable extends React.Component {
       onChange: this.props.onPageChange,
       onShowSizeChange: this.props.onPageSizeChange,
       showSizeChanger: true,
-      showTotal: (total, [from, to]) => {
-        if(total > 0) return `Showing ${from} to ${to} of ${total} entries`
-        return ''
-      }
+      showTotal: LOCALS.TABLE_TOTAL_DISPLAY
     }
     return (
       <React.Fragment>
-      {renderOnTop && renderOnTop(this.props)}
-      <div className="ra-tableWrapper">
-        {renderHeaders && renderHeaders(this.props)}
-        {showHeaders &&
-          <div className="ra-tableHeader">
-            <div className="ra-tableHeader-row">
-              <div className="ra-tableHeader-left">
-                {allowFilters &&
-                  <Filters
-                    fields={this.getFilterFields(this.columns)}
-                    onFiltersChanged={onFiltersChanged}
-                    hideAdvanceOptions={this.hideAdvanceOptions}
-                    showAdvanceOptions={this.state.showAdvanceFiltersOptions}
-                    onShowAdvanceOptions={this.showAdvanceOptions}
-                  />
-                }
-                {showSearchField && <Search
-                  placeholder="input search text"
-                  onSearch={onSearch}
-                  onChange={onSearchValueChange}
-                  value={searchValue}
-                  style={{ width: 200 }}
-                />}
-              </div>
-              <div className="ra-tableHeaderActions">
-                {this.renderMenu()}
+        {renderOnTop && renderOnTop(this.props)}
+        <div className="ra-tableWrapper">
+          {renderHeaders && renderHeaders(this.props)}
+          {showHeaders &&
+            <div className="ra-tableHeader">
+              <div className="ra-tableHeader-row">
+                <div className="ra-tableHeader-left">
+                  {allowFilters &&
+                    <Filters
+                      fields={this.getFilterFields(this.columns)}
+                      onFiltersChanged={onFiltersChanged}
+                      hideAdvanceOptions={this.hideAdvanceOptions}
+                      showAdvanceOptions={this.state.showAdvanceFiltersOptions}
+                      onShowAdvanceOptions={this.showAdvanceOptions}
+                    />
+                  }
+                  {showSearchField && <Search
+                    placeholder={LOCALS.SEARCH_PLACE_HOLDER}
+                    onSearch={onSearch}
+                    onChange={onSearchValueChange}
+                    value={searchValue}
+                    style={{ width: 200 }}
+                  />}
+                </div>
+                <div className="ra-tableHeaderActions">
+                  {this.renderMenu()}
+                </div>
               </div>
             </div>
-          </div>
-        }
-        <div className="ra-tableContent">
-          <div className='ra-tableContent-table'>
-            <div style={{minWidth: minWidth + 20}}>
-              <Table
-                scroll={{ y: 200, x: minWidth }}
-                columns={columns}
-                dataSource={data}
-                onChange={this.handleChange}
-                onRow={this.onRow}
-                rowKey={rowKey}
-                locale={locale}
-                pagination={false}
-                loading={loading}
-                expandedRowRender={expandedRowRender}
-                rowSelection={this.props.rowSelection}
-              />
-            </div>
-          </div>
-          <div className='ra-tableContent-pagination'>
-            <Pagination {...paginationProps}/>
-          </div>
-          {(allowColumnFilters && this.columns) &&
-          <FilterColumns
-            visible={this.state.showFilterColumns}
-            onOk={this.onFilterColumnsConfirm}
-            onReset={this.onFilterColumnsReset}
-            onClose={this.onFilterColumnsClose}
-            fields={this.columnsFiltersMenu}
-            columnsFilters={this.state.columnsFilters}
-          />
           }
+          <div className="ra-tableContent">
+            <div className='ra-tableContent-table'>
+              <div style={{ minWidth: minWidth + 20 }}>
+                <Table
+                  scroll={{ y: 200, x: minWidth }}
+                  columns={columns}
+                  dataSource={data}
+                  onChange={this.handleChange}
+                  onRow={this.onRow}
+                  rowKey={rowKey}
+                  locale={locale}
+                  pagination={false}
+                  loading={loading}
+                  expandedRowRender={expandedRowRender}
+                  rowSelection={this.props.rowSelection}
+                />
+              </div>
+            </div>
+            <div className='ra-tableContent-pagination'>
+              <Pagination {...paginationProps} />
+            </div>
+            {(allowColumnFilters && this.columns) &&
+              <FilterColumns
+                visible={this.state.showFilterColumns}
+                onOk={this.onFilterColumnsConfirm}
+                onReset={this.onFilterColumnsReset}
+                onClose={this.onFilterColumnsClose}
+                fields={this.columnsFiltersMenu}
+                columnsFilters={this.state.columnsFilters}
+              />
+            }
+          </div>
         </div>
-      </div>
       </React.Fragment>
     );
   }

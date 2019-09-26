@@ -30,8 +30,8 @@
     width: 100% !important;
     position: absolute;
     top: 0;
-    left: 0;
     right: 0;
+    left: 0;
     background: white;
     bottom: 0;
 }
@@ -39,7 +39,7 @@
 .ra-topRightLoader {
     position: absolute;
     top: 15px;
-    right: 15px;
+    left: 15px;
 
 }
 
@@ -116,7 +116,7 @@
 .ra-tableContent .ra-tableContent-pagination {
     height: 30px;
     padding-top: 5px;
-    text-align: right;
+    text-align: left;
 }
 
 .noTableHeader .ra-tableContent {
@@ -147,7 +147,7 @@
     flex: 1;
     max-height: 100%;
     overflow: auto;
-    padding-right: 15px;
+    padding-left: 15px;
     margin-bottom: 15px;
 }
 
@@ -172,7 +172,7 @@
 }
 
 .ra-docHeader-back {
-    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .ra-docHeader-title {
@@ -191,9 +191,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: -2px;
+    margin-right: -2px;
     width: 39px;
-    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #d9d9d9;
 }
 
 .ra-fieldsArrayObjectRow {
@@ -213,24 +213,24 @@
 .ra-fieldsArrayObjectRow_remove {
     position: absolute;
     top: 0px;
-    right: 0px;
+    left: 0px;
     background: #e8e8e8;
     padding: 6px;
-    box-shadow: 1px -1px #dadada;
+    box-shadow: -1px -1px #dadada;
 }
 
 .ra-translatesMessage {
     position: absolute;
     top: 7px;
-    right: 50px;
+    left: 50px;
 }
 
 .ra-marginRight5 {
-    margin-right: 5px;
+    margin-left: 5px;
 }
 
 .ra-marginLeft5 {
-    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .ra-translates {
@@ -239,7 +239,7 @@
 
 .ra-translates .addBtn {
     position: absolute;
-    right: 0;
+    left: 0;
     z-index: 200;
     color: black;
     border: none;
@@ -252,7 +252,7 @@
 }
 
 .ra-mr15 {
-    margin-right: 15px;
+    margin-left: 15px;
 }
 
 .ra-filtersOptionsWrapper {
@@ -268,7 +268,7 @@
 }
 
 .ra-filters-toggle {
-    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .ra-filters-toggle.hidden {
@@ -286,7 +286,7 @@
     width: 100%;
     align-items: center;
     position: relative;
-    padding-right: 15px;
+    padding-left: 15px;
 }
 
 .ra-simpleSearchBtn {
@@ -337,7 +337,7 @@
 .ra-table-action-btns {
     width: 100%;
     display: flex;
-    text-align: right;
+    text-align: left;
 }
 
 .ra-columnsFilters {
@@ -355,13 +355,13 @@
 }
 
 .ra-columnsFilters .ra-columnsFiltersList .ant-checkbox-wrapper+.ant-checkbox-wrapper {
-    margin-left: 0px;
+    margin-right: 0px;
 }
 
 #ra-columnsFilters-btn {
     height: 50px;
     font-size: 15px;
-    margin-right: 5px;
+    margin-left: 5px;
 }
 
 .ant-table-wrapper.overFlowScroll {
@@ -417,16 +417,16 @@
     position: absolute;
     margin-top: 12px;
     cursor: pointer;
-    right: 25px;
+    left: 25px;
 }
 
 .ra-dropZone__clear-file {
     cursor: pointer;
-    margin-left: 15px;
+    margin-right: 15px;
 }
 
 .ra-dropZone input {
-    padding-right: 35px;
+    padding-left: 35px;
 }
 
 .ra-linkStyle {
@@ -450,7 +450,7 @@
 }
 
 .ra-ml5 {
-    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .ra-list-text-ellipsis,
@@ -479,7 +479,7 @@
     justify-content: center;
     cursor: pointer;
     position: relative;
-    margin-right: 10px;
+    margin-left: 10px;
     margin-bottom: 10px;
     border: 1px solid #d9d9d9;
     border-radius: 4px;
@@ -492,7 +492,7 @@
 .ra-checkboxWithIcon .ant-checkbox,
 .ra-checkboxWithIcon .ant-radio {
     position: absolute;
-    right: 5px;
+    left: 5px;
     top: 5px;
 }
 
@@ -525,8 +525,6 @@
     max-height: 100px;
     overflow: auto;
 }
-
-/*rtl:begin:ignore*/
 .ra-adminLayout .ant-table-thead>tr>th .ant-table-header-column {
     display: flex;
     flex-direction: column;
@@ -584,10 +582,6 @@ form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-selectio
     align-items: center;
 }
 
-
-/*rtl:end:ignore*/
-
-/*rtl:raw:
 .ant-dropdown-menu {
     text-align: right;
 }
@@ -601,25 +595,31 @@ form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-selectio
     padding: 16px 16px;
     text-align: right;
 }
+
 .ra-breadcrumb {
     margin-right: 65px !important;
     margin-left: inherit;
     display: flex;
     flex-direction: row;
 }
+
 .ant-select-dropdown-menu {
     padding-right: 0px;
     padding-left: 0px;
 }
+
 .ra-filters {
     text-align: left;
 }
+
 .ra-filtersOptionsTitle {
     text-align: right;
 }
+
 .ra-filtersOptionsAddRow {
     margin-right: 5px;
 }
+
 .ra-filtersOptionsFooter {
     justify-content: flex-end;
 }
@@ -627,42 +627,49 @@ form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-selectio
 .ra-filtersOptionsRow {
     padding-right: 0;
 }
+
 .ant-modal-confirm .ant-modal-confirm-btns button + button {
     float: left;
     margin-right: 8px;
     margin-left: 8px;
 }
+
 .ant-modal-confirm-body > .anticon {
     float: right;
     margin-right: 0px;
     font-size: 22px;
     margin-left: 16px;
 }
+
 .ant-modal-confirm .ant-modal-confirm-btns {
     float: left;
     margin-top: 24px;
 }
+
 .ant-modal-confirm-body > .anticon + .ant-modal-confirm-title + .ant-modal-confirm-content {
     margin-left: 0;
     margin-right: 38px;
 }
+
 form .has-feedback > .ant-select .ant-select-selection-selected-value, form .has-feedback :not(.ant-input-group-addon) > .ant-select .ant-select-selection-selected-value {
     padding-left: 42px;
     padding-right: 0px;
 }
+
 .ant-select-selection-selected-value {
     float: right;
     padding-right: 0px;
     padding-left: 0px;
 }
+
 form .has-feedback .ant-calendar-picker-icon, form .has-feedback .ant-time-picker-icon, form .has-feedback .ant-calendar-picker-clear, form .has-feedback .ant-time-picker-clear {
     left: 28px;
     right: inherit;
 }
+
 .ant-table-thead > tr > th .ant-table-header-column .ant-table-column-sorters {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     flex-direction: row-reverse;
 }
-*/

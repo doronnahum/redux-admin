@@ -1,18 +1,19 @@
 import React from 'react';
 import { InputNumber, Form, Input, Icon, Button, DatePicker } from 'antd';
-import {Field, FieldArray} from 'formik'
-import {sanitizeFormItemProps, getFieldValueByName} from './util'
+import { Field, FieldArray } from 'formik'
+import { sanitizeFormItemProps, getFieldValueByName } from './util'
 import Consumer from './Consumer'
 import getDocField from '../helpers/getDocField';
+import { LOCALS } from '../local';
 
 class ArrayInput extends React.Component {
-  renderField({index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label, disabled}) {
+  renderField({ index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label, disabled }) {
     const _objectKey = objectKey ? `.${objectKey}` : ''
     const fieldName = `${name}.${index}${_objectKey}`
     const defaultLabel = `${index + 1} - ${_objectKey ? `${_objectKey} -` : ''} ${name} `
     return (
       <Field name={fieldName} key={fieldName} className={'ra-docFieldWrapper ra-docField-' + fieldName}>
-        {({field}) => {
+        {({ field }) => {
           return (
             <React.Fragment>
               {getDocField({
@@ -21,7 +22,7 @@ class ArrayInput extends React.Component {
                 label: label || defaultLabel,
                 disabled
               })}
-              {(showRemoveBtn && !disabled) && <Icon className='ra-fieldsArrayObjectRow_remove' type="close" onClick={() => arrayHelpers.remove(index)}/>
+              {(showRemoveBtn && !disabled) && <Icon className='ra-fieldsArrayObjectRow_remove' type="close" onClick={() => arrayHelpers.remove(index)} />
               }
             </React.Fragment>
           )
@@ -31,28 +32,28 @@ class ArrayInput extends React.Component {
   }
   render() {
     const { name, label, itemType, objectStructure, helpText, disabled } = this.props;
-    if(itemType === 'object' && !objectStructure) {
+    if (itemType === 'object' && !objectStructure) {
       // eslint-disable-next-line quotes
       return "redux-admin ArrayInput, missing props.objectStructure: [{key: 'date', type: 'date', label: 'Date'}, {key: 'text', type: 'string', label: 'Text'}]"
     }
     return (
       <Consumer >
         {(form) => {
-          const {values} = form
+          const { values } = form
           const value = getFieldValueByName(name, values)
           return (
             <Form.Item
-              {...sanitizeFormItemProps(this.props, {name}, form)}
+              {...sanitizeFormItemProps(this.props, { name }, form)}
             >
               <FieldArray
                 name={name}
                 render={arrayHelpers => (
                   <div>
                     {value && value.map((item, index) => {
-                      if(itemType === 'object') {
+                      if (itemType === 'object') {
                         return <div className='ra-fieldsArrayObjectRow' key={index}>
                           {
-                            objectStructure.map(({key, type, label}, i) => {
+                            objectStructure.map(({ key, type, label }, i) => {
                               const showRemoveBtn = i === (objectStructure.length - 1);
                               return this.renderField({
                                 index,
@@ -85,9 +86,9 @@ class ArrayInput extends React.Component {
                         </div>
                       )
                     })}
-                    {disabled && (!value || !value.length) && <Input disabled/>}
+                    {disabled && (!value || !value.length) && <Input disabled />}
                     {(helpText && helpText.length > 0 && value && value.length > 0) && <p className='ra-helpText-underField'>{helpText}</p>}
-                    {(!disabled) && <Button onClick={() => arrayHelpers.push(null)} >{(!value || value.length < 1) ? `Add - ${label}` : '+'} </Button>}
+                    {(!disabled) && <Button onClick={() => arrayHelpers.push(null)} >{(!value || value.length < 1) ? LOCALS.BUTTONS.RENDER_ADD_BUTTON_TEXT(label) : '+'} </Button>}
                   </div>
                 )}
               />
@@ -101,7 +102,7 @@ class ArrayInput extends React.Component {
 export default ArrayInput;
 
 ArrayInput.defaultValue = {
-  numberInputStyle: {width: '100%'}
+  numberInputStyle: { width: '100%' }
 }
 
 /*

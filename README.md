@@ -1,6 +1,11 @@
 # redux-admin
 
 ### Build fast admin screen with full CRUD functionality inside your react apps
+
+>  **Updates**:
+> - version 1.6.0
+>   - Support rtl and localization
+
  [![Edit redux-admin](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/kx0pv848v7)
 
 ### Basic example
@@ -86,7 +91,7 @@ export default Posts;
 
  1. You can install redux-admin with [NPM](https://npmjs.com/), [Yarn](https://yarnpkg.com/)
 	```jsx
-	npm install redux-admin formik antd net-provider --save
+	npm install redux-admin --save
 	```
  2. [Follow Net-Provider Installation instruction](https://github.com/doronnahum/net-provider#installation) 
  Net-provider is the connection to your api
@@ -112,8 +117,18 @@ export default Posts;
 4. import style
 	```jsx
 	import  "redux-admin/lib/style.css";
+	// -- or rtl style --
+	import  "redux-admin/lib/style.rtl.css";
 	```
 5. Install [antd](https://ant.design/)	 
+6. Optional - set diffrent locale- default is enUs
+	```jsx
+	import { setLocal, locals } from  'redux-admin';
+	setLocal(locals.heIl);
+	```
+	You can create you own local file
+	just copy this [file](https://github.com/doronnahum/redux-admin/blob/master/src/local/en-US.js) and update the content
+	
  ## Admin Component
 This is the main component that will render a list view and document view,
 sync the doc view with the list view and keep everything to work nice and updating, display notification, update the list when the document is updating. sync filters with URL.

@@ -1,6 +1,6 @@
-import _Admin, {getListTargetKey as _getListTargetKey} from './Admin';
+import _Admin, { getListTargetKey as _getListTargetKey } from './Admin';
 import Table from './listView/Table';
-import {buildColumnFilterFromData} from './listView/Table/helpers'
+import { buildColumnFilterFromData } from './listView/Table/helpers'
 import SideModal from './docWrappers/SideModal.js';
 import SimpleDoc from './docView/SimpleDoc.js';
 import _Translates from './Translates';
@@ -9,11 +9,19 @@ import * as _fields from './fields';
 import * as _parseServer from './parse-server';
 import * as _mongoose from './mongoose';
 import _Layout from './Layout'
-import {getDocField, getListField} from './helpers'
-export {FeathersAdmin} from './feathers'
-export {setRouteConfig} from './router'
-export {Field, Form} from 'formik';
+import { getDocField, getListField } from './helpers'
+export { FeathersAdmin } from './feathers'
+export { setRouteConfig } from './router'
+export { Field, Form } from 'formik';
+export { setLocal } from './local'
 
+import enUS from './local/en-US'
+import heIl from './local/he-IL'
+
+export const locals = {
+  enUS,
+  heIl
+}
 export const tableHelpers = {
   buildColumnFilterFromData
 }

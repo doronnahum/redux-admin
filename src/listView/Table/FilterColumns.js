@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {Modal, Checkbox, Button} from 'antd';
+import { Modal, Checkbox, Button } from 'antd';
+import { LOCALS } from '../../local';
 
 export default class FilterColumns extends Component {
   constructor(props) {
@@ -11,17 +12,17 @@ export default class FilterColumns extends Component {
   };
 
   onSelectAll = () => {
-    this.setState({columnsFilters: this.props.fields.map(item => item.key)})
+    this.setState({ columnsFilters: this.props.fields.map(item => item.key) })
   }
   render() {
     return (
       <Modal
-        title="Columns to display"
+        title={LOCALS.FILTERS.COLUMNS_TO_DISPLAY_MODAL_TITLE}
         visible={this.props.visible}
         onOk={() => this.props.onOk(this.state.columnsFilters)}
         onCancel={this.props.onClose}
-        okText="Ok"
-        cancelText="Reset"
+        okText={LOCALS.FILTERS.OK_BUTTON_TEXT}
+        cancelText={LOCALS.FILTERS.RESET_BUTTON_TEXT}
         closable
         destroyOnClose
       >
@@ -34,13 +35,13 @@ export default class FilterColumns extends Component {
                   key={key}
                   checked={this.state.columnsFilters.includes(key)}
                   onChange={() => {
-                    if(isActive) {
+                    if (isActive) {
                       const newValue = this.state.columnsFilters.filter(item => item !== key)
-                      this.setState({columnsFilters: newValue})
-                    }else{
+                      this.setState({ columnsFilters: newValue })
+                    } else {
                       const newValue = [...this.state.columnsFilters]
                       newValue.push(key)
-                      this.setState({columnsFilters: newValue})
+                      this.setState({ columnsFilters: newValue })
                     }
                   }}
                 >
@@ -49,7 +50,7 @@ export default class FilterColumns extends Component {
               )
             })
           }
-          <Button onClick={this.onSelectAll}>Select All</Button>
+          <Button onClick={this.onSelectAll}>{LOCALS.FILTERS.SELECT_ALL_BUTTON_TEXT}</Button>
         </div>
       </Modal>
     )
