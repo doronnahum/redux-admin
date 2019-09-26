@@ -24,7 +24,6 @@ const local = {
     NEW: 'חדש'
   },
   DOC: {
-    RENDER_BACK_TO_BTN_TEXT: (target) => `חזרה ל ${target}`,
     LOADING_TEXT: 'טוען...',
     NEW_DOC_TITLE: 'חדש',
     CREATE_BUTTON_TEXT: 'צור',

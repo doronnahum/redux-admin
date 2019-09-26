@@ -673,3 +673,23 @@ form .has-feedback .ant-calendar-picker-icon, form .has-feedback .ant-time-picke
     justify-content: flex-end;
     flex-direction: row-reverse;
 }
+
+.ant-tag .anticon-close {
+    margin-right: 3px;
+    margin-left: initial;
+}
+
+.ra-refModal__input .ra-refModal__input__plus {
+    left: 15px;
+    right: auto;
+}
+
+.ra-refModal__input .ant-tag {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+
+.ra-refModal .ant-modal-footer > div {
+    flex-direction: row-reverse;
+}

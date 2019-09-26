@@ -113,7 +113,7 @@ class SimpleDoc extends Component {
         <div className='ra-docWrapper ra-simpleForm'>
           <div className='ra-docContent'>
             <div className='ra-docHeader'>
-              <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{LOCALS.DOC.RENDER_BACK_TO_BTN_TEXT(backToText)}</Button>
+              <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{backToText || ''}</Button>
               <h1 className='ra-docHeader-title'></h1>
             </div>
             <div className='ra-docBody'>
@@ -128,7 +128,7 @@ class SimpleDoc extends Component {
         <div className={'ra-docWrapper ra-simpleForm viewMode'}>
           <div className='ra-docContent'>
             <div className='ra-docHeader'>
-              <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{LOCALS.DOC.RENDER_BACK_TO_BTN_TEXT(backToText)}</Button>
+              <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{backToText || ''}</Button>
               <h1 className='ra-docHeader-title'>{this.props.showTitle && getTitle(dataFromServer)}</h1>
             </div>
             <div className='ra-docBody'> {/* We didn't use <Formik.Form> because we want to enabled nested forms, (form inside form)*/}
@@ -192,7 +192,7 @@ class SimpleDoc extends Component {
             <div className={`ra-docWrapper ra-simpleForm ${isNewDoc ? 'newDoc' : ''}`}>
               <div className='ra-docContent'>
                 <div className='ra-docHeader'>
-                  <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{LOCALS.DOC.RENDER_BACK_TO_BTN_TEXT(backToText)}</Button>
+                  <Button type="default" icon='left' className='ra-docHeader-back' onClick={onClose} >{backToText || ''}</Button>
                   <h1 className='ra-docHeader-title'>{getTitle(dataFromServer)}</h1>
                 </div>
                 <div className='ra-docBody'> {/* We didn't use <Formik.Form> because we want to enabled nested forms, (form inside form)*/}

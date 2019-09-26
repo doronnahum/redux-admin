@@ -24,7 +24,6 @@ const local = {
     NEW: 'New'
   },
   DOC: {
-    RENDER_BACK_TO_BTN_TEXT: (target) => `Back to ${target}`,
     LOADING_TEXT: 'Loading...',
     NEW_DOC_TITLE: 'New',
     CREATE_BUTTON_TEXT: 'Create',
