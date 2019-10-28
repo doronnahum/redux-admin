@@ -1,5 +1,5 @@
 const local = {
-  LANG_DIR: 'rtl',
+  LANG_DIR: 'ltr',
   LANG_NAME: 'English',
   ADVANCED_FILTER: 'Advanced Filter',
   RELOAD: 'Reload',
