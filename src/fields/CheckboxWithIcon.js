@@ -6,14 +6,15 @@ import toStartCase from 'lodash/startCase';
 
 class CheckboxWithIcon extends React.Component {
   renderLabel(option, optionLabel, optionKey, startCase, renderLabel) {
-    if (renderLabel) {
-      return renderLabel({ option, optionLabel, optionKey, startCase });
-    }
     const text =
       typeof option === 'object'
         ? option[optionLabel] || option[optionKey]
         : option;
-    return startCase ? toStartCase(text) : text;
+    const label = startCase ? toStartCase(text) : text;
+    if (renderLabel) {
+      return renderLabel({ label, option, optionLabel, optionKey, startCase });
+    }
+    return label;
   }
   render() {
     const {
@@ -42,25 +43,25 @@ class CheckboxWithIcon extends React.Component {
             field.value && typeof field.value === 'object'
               ? field.value[optionKey]
               : field.value;
-           const setNewValue = (e) => {
-                  const value = e.target.value;
-                  if(labelInValue) {
-                    const newValue = data.find(item => item[optionKey] === value)
-                    let valueToSet = parseValuesOnChange(newValue);
-                    if(typeof value === 'undefined') {
-                      valueToSet = null;
-                    }
-                    form.setFieldValue(field.name, valueToSet)
-                    if(onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
-                  }else{
-                    let valueToSet = parseValuesOnChange(value);
-                    if(typeof value === 'undefined') {
-                      valueToSet = null;
-                    }
-                    form.setFieldValue(field.name, valueToSet)
-                    if(onValuesChanged) onValuesChanged(form.values, value, form.setFieldValue, form)
-                  }
-                }
+          const setNewValue = (e) => {
+            const value = e.target.value;
+            if (labelInValue) {
+              const newValue = data.find(item => item[optionKey] === value)
+              let valueToSet = parseValuesOnChange(newValue);
+              if (typeof value === 'undefined') {
+                valueToSet = null;
+              }
+              form.setFieldValue(field.name, valueToSet)
+              if (onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
+            } else {
+              let valueToSet = parseValuesOnChange(value);
+              if (typeof value === 'undefined') {
+                valueToSet = null;
+              }
+              form.setFieldValue(field.name, valueToSet)
+              if (onValuesChanged) onValuesChanged(form.values, value, form.setFieldValue, form)
+            }
+          }
           return (
             <Form.Item
               {...sanitizeFormItemProps(this.props, field, form)}
@@ -77,25 +78,25 @@ class CheckboxWithIcon extends React.Component {
                       const val = d ? d[optionKey] || d : d;
                       return (
                         <div
-                            className="ra-checkboxWithIcon"
-                            key={d[optionKey] || index}
-                            onClick={() => setNewValue({target: {value:  val}})}
+                          className="ra-checkboxWithIcon"
+                          key={d[optionKey] || index}
+                          onClick={() => setNewValue({ target: { value: val } })}
                         >
                           <Radio value={val}>
                             <div className='ra-checkboxWithIconContent'>
-                            {!!(d && d.icon) && <Icon type={d.icon}/>}
-                            <p>{this.renderLabel(
-                              d,
-                              optionLabel,
-                              optionKey,
-                              startCase,
-                              renderLabel
-                            ).toString()}</p>
+                              {!!(d && d.icon) && <Icon type={d.icon} />}
+                              <p>{this.renderLabel(
+                                d,
+                                optionLabel,
+                                optionKey,
+                                startCase,
+                                renderLabel
+                              ).toString()}</p>
                             </div>
                           </Radio>
                         </div>
                       )
- })}
+                    })}
                 </div>
               </Radio.Group>
             </Form.Item>

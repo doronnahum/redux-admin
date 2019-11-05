@@ -471,6 +471,10 @@
     flex-flow: wrap;
 }
 
+.ra-checkboxWithIconRow .ra-checkboxWithIcon:first-child {
+    margin-left: 0px;
+}
+
 .ra-checkboxWithIcon {
     width: 105px;
     height: 105px;
@@ -584,6 +588,65 @@ form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-selectio
     align-items: center;
 }
 
+.nextjs-app-body {
+    .ra-refModal {
+        top: 85px !important;
+    }
+
+    .ra-docHeader {
+        background: #798dfe;
+        margin: -15px -15px 15px -15px;
+
+        .ra-docHeader-title {
+            color: white;
+        }
+    }
+
+    .ra-tableWrapper .ant-table-body {
+        overflow: visible !important;
+    }
+
+    .ant-table-thead>tr>th {
+        font-weight: 800;
+    }
+
+    .ra-docHeader-back {
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        background: transparent;
+    }
+
+
+}
+
+#nextjs-app-rtl .sideBarArrowBackBtn {
+    transform: rotate(180deg);
+}
+
+#nextjs-app-rtl .ant-dropdown {
+    z-index: 2000;
+}
+
+#nextjs-app-rtl .ra-docHeader-title {
+    padding-top: 0px !important;
+}
+
+#nextjs-app-rtl .ra-table-action-btns {
+    margin-left: 55px;
+}
+
+#nextjs-app-rtl .ant-select-selection--single .ant-select-selection__rendered {
+    margin-right: 11px;
+}
+
+#nextjs-app-rtl .ra-breadcrumb {
+    margin-right: 0px !important;
+    padding-top: 22px;
+}
+
 
 /*rtl:end:ignore*/
 
@@ -680,5 +743,9 @@ form .has-feedback .ant-calendar-picker-icon, form .has-feedback .ant-time-picke
 }
 .ra-refModal .ant-modal-footer > div {
     flex-direction: row-reverse;
+}
+.ra-fieldsArrayObjectRow_remove {
+   margin-right: calc(100% - 26px);
+   right: initial;
 }
 */

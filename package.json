@@ -1,6 +1,6 @@
 {
   "name": "redux-admin",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "Admin React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -13,12 +13,13 @@
   "scripts": {
     "build": "nwb build-react-component --copy-files",
     "clean": "nwb clean-module && nwb clean-demo",
-    "prepublishOnly": "npm run min-css &&npm run build",
+    "prepublishOnly": "npm run min-css &&npm run min-css-rtl &&npm run build",
     "start": "nwb serve-react-demo",
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server",
-    "min-css": "uglifycss ./src/style.css --output ./src/style.min.css"
+    "min-css": "uglifycss ./src/style.css --output ./src/style.min.css",
+    "min-css-rtl": "uglifycss ./src/style.rtl.css --output ./src/style.rtl.min.css"
   },
   "dependencies": {
     "immer": "3.1.3",

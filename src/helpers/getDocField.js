@@ -37,13 +37,13 @@ export const isFieldDisabled = function (fieldName, documentRollConfig = { canCr
   return isDisabled
 }
 
-const getDocField = function ({ key, type, label, required, ref, RefComponent = Reference, referenceKey, labelInValue, arrayItemType = String, multiSelect = false, disabled = false, documentRollConfig, isNewDoc, optionLabel, optionKey, options, getParamsByValue, placeholder, objectStructure, nestedArray, inputType, inputProps, helpText }) {
+const getDocField = function ({ key, type, label, required, ref, RefComponent = Reference, referenceKey, labelInValue, arrayItemType = String, multiSelect = false, disabled = false, documentRollConfig, isNewDoc, optionLabel, optionKey, options, getParamsByValue, placeholder, objectStructure, nestedArray, inputType, inputProps, helpText, renderLabel }) {
   const _disabled = disabled || isFieldDisabled(key, documentRollConfig, isNewDoc)
   const _label = label || startCase(key)
-  if(inputType === 'file'){
+  if (inputType === 'file') {
     return (
       <Dropzone key={key} inputProps={inputProps} name={key} required={required} label={_label} disabled={_disabled} placeholder={placeholder} />
-    ) 
+    )
   }
   if (ref) {
     const fieldProps = {
@@ -61,9 +61,9 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
     return (
       <RefComponent url={ref} targetKeyPrefix={referenceKey} key={referenceKey || key} getParamsByValue={getParamsByValue} fieldProps={fieldProps} disabled={_disabled}>
         {({ data, onSearchValueChanged, loading, onFocus }) => {
-          const resProps = {data, onSearchValueChanged, loading, onFocus}
-          if (multiSelect) return <MultiSelect  {...fieldProps} {...resProps}/>
-          return <Select  {...fieldProps} {...resProps}/>
+          const resProps = { data, onSearchValueChanged, loading, onFocus }
+          if (multiSelect) return <MultiSelect  {...fieldProps} {...resProps} />
+          return <Select  {...fieldProps} {...resProps} />
         }}
       </RefComponent>
     )
@@ -72,22 +72,22 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
     let _options = options;
     let _optionKey = optionKey;
     let _optionLabel = optionLabel;
-    if(multiSelect){
+    if (multiSelect) {
       const Element = inputType === 'boxSelect' ? BoxSelect : MultiSelect;
       const itemType = getItemTypeAsString(arrayItemType)
-      if(itemType === 'string' && options && typeof options[0] === 'string'){
+      if (itemType === 'string' && options && typeof options[0] === 'string') {
         _optionKey = 'value'
-        _options = options.map(item => ({value: item, label: startCase(item)}))
+        _options = options.map(item => ({ value: item, label: startCase(item) }))
       }
-      return <Element data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled}/>
+      return <Element data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled} />
     }
-    if (options && typeof options[0] === 'string'){
+    if (options && typeof options[0] === 'string') {
       _optionKey = 'value'
       _optionLabel = 'label'
-      _options = options.map(item => ({value: item, label: startCase(item)}))
+      _options = options.map(item => ({ value: item, label: startCase(item) }))
     }
     const Element = inputType === 'boxSelect' ? CheckboxWithIcon : Select;
-    return <Element data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled} />
+    return <Element renderLabel={renderLabel} data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled} />
   }
   if (type === String || type === 'string') {
     const Element = inputType === 'textArea' ? TextArea : Input;
@@ -107,21 +107,21 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
   }
   if (type === Array || type === 'array') {
     const itemType = getItemTypeAsString(arrayItemType)
-    if(nestedArray){
-      return <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} defaultValue={[]} required={required}/>
+    if (nestedArray) {
+      return <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} defaultValue={[]} required={required} />
     }
     return (
-      <ArrayInput name={key} label={_label} key={key} inputProps={inputProps} itemType={itemType} disabled={_disabled} placeholder={placeholder} objectStructure={objectStructure} helpText={helpText} required={required}/>
+      <ArrayInput name={key} label={_label} key={key} inputProps={inputProps} itemType={itemType} disabled={_disabled} placeholder={placeholder} objectStructure={objectStructure} helpText={helpText} required={required} />
     )
   }
   if (type === Date || type === 'date' || type === 'date-time') {
     return (
-      <DatePicker name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} required={required}/>
+      <DatePicker name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} required={required} />
     )
   }
   if (type === Object || type === 'object') {
     return (
-      <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} required={required}/>
+      <ObjectEditor name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} required={required} />
     )
   }
 };
