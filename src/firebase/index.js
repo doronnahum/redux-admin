@@ -1,2 +1,2 @@
 /* eslint-disable camelcase */
-export {set_getFirestore_function} from './initFirebase';
+export { set_getFirestore_function } from './initFirebase';

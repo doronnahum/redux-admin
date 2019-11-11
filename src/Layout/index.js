@@ -7,9 +7,9 @@ class Layout extends Component {
       <div className="ra-adminLayout ant-layout noTableHeader ">
         {this.props.header}
         <div className="ant-layout-content">
-          <div className='ra-tableWrapper'>
-            <div className='ra-tableContent'>
-              <div className='ant-table-wrapper overFlowScroll'>
+          <div className="ra-tableWrapper">
+            <div className="ra-tableContent">
+              <div className="ant-table-wrapper overFlowScroll">
                 {this.props.children}
               </div>
             </div>

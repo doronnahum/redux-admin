@@ -1,77 +1,78 @@
 import React from 'react';
 import { InputNumber, Form, Input, Icon, Button, DatePicker } from 'antd';
-import { Field, FieldArray } from 'formik'
-import { sanitizeFormItemProps, getFieldValueByName } from './util'
-import Consumer from './Consumer'
+import { Field, FieldArray } from 'formik';
+import { sanitizeFormItemProps, getFieldValueByName } from './util';
+import Consumer from './Consumer';
 import getDocField from '../helpers/getDocField';
 import { LOCALS } from '../local';
 
 class ArrayInput extends React.Component {
   renderField({ index, name, itemType, objectKey, showRemoveBtn = true, arrayHelpers, form, label, disabled }) {
-    const _objectKey = objectKey ? `.${objectKey}` : ''
-    const fieldName = `${name}.${index}${_objectKey}`
-    const defaultLabel = `${index + 1} - ${_objectKey ? `${_objectKey} -` : ''} ${name} `
+    const _objectKey = objectKey ? `.${objectKey}` : '';
+    const fieldName = `${name}.${index}${_objectKey}`;
+    const defaultLabel = `${index + 1} - ${_objectKey ? `${_objectKey} -` : ''} ${name} `;
     return (
-      <Field name={fieldName} key={fieldName} className={'ra-docFieldWrapper ra-docField-' + fieldName}>
-        {({ field }) => {
-          return (
-            <React.Fragment>
-              {getDocField({
-                key: fieldName,
-                type: itemType,
-                label: label || defaultLabel,
-                disabled
-              })}
-              {(showRemoveBtn && !disabled) && <Icon className='ra-fieldsArrayObjectRow_remove' type="close" onClick={() => arrayHelpers.remove(index)} />
-              }
-            </React.Fragment>
-          )
-        }}
+      <Field name={fieldName} key={fieldName} className={`ra-docFieldWrapper ra-docField-${fieldName}`}>
+        {({ field }) => (
+          <React.Fragment>
+            {getDocField({
+              key: fieldName,
+              type: itemType,
+              label: label || defaultLabel,
+              disabled,
+            })}
+            {(showRemoveBtn && !disabled) && <Icon className="ra-fieldsArrayObjectRow_remove" type="close" onClick={() => arrayHelpers.remove(index)} />}
+          </React.Fragment>
+        )}
       </Field>
-    )
+    );
   }
+
   render() {
     const { name, label, itemType, objectStructure, helpText, disabled } = this.props;
     if (itemType === 'object' && !objectStructure) {
       // eslint-disable-next-line quotes
-      return "redux-admin ArrayInput, missing props.objectStructure: [{key: 'date', type: 'date', label: 'Date'}, {key: 'text', type: 'string', label: 'Text'}]"
+      return "redux-admin ArrayInput, missing props.objectStructure: [{key: 'date', type: 'date', label: 'Date'}, {key: 'text', type: 'string', label: 'Text'}]";
     }
     return (
-      <Consumer >
+      <Consumer>
         {(form) => {
-          const { values } = form
-          const value = getFieldValueByName(name, values)
+          const { values } = form;
+          const value = getFieldValueByName(name, values);
           return (
             <Form.Item
               {...sanitizeFormItemProps(this.props, { name }, form)}
             >
               <FieldArray
                 name={name}
-                render={arrayHelpers => (
+              >
+                {(arrayHelpers) => (
                   <div>
                     {value && value.map((item, index) => {
                       if (itemType === 'object') {
-                        return <div className='ra-fieldsArrayObjectRow' key={index}>
-                          {
-                            objectStructure.map(({ key, type, label }, i) => {
-                              const showRemoveBtn = i === (objectStructure.length - 1);
-                              return this.renderField({
-                                index,
-                                name,
-                                itemType: type,
-                                objectKey: key,
-                                showRemoveBtn,
-                                arrayHelpers,
-                                form,
-                                label: label || key,
-                                disabled
+                        return (
+                          <div className="ra-fieldsArrayObjectRow" key={index}>
+                            {
+                              objectStructure.map(({ key, type, label }, i) => {
+                                const showRemoveBtn = i === (objectStructure.length - 1);
+                                return this.renderField({
+                                  index,
+                                  name,
+                                  itemType: type,
+                                  objectKey: key,
+                                  showRemoveBtn,
+                                  arrayHelpers,
+                                  form,
+                                  label: label || key,
+                                  disabled,
+                                });
                               })
-                            })
-                          }
-                        </div>
+                            }
+                          </div>
+                        );
                       }
                       return (
-                        <div key={index} className='ra-fieldsArrayRow'>
+                        <div key={index} className="ra-fieldsArrayRow">
                           {this.renderField({
                             index,
                             name,
@@ -80,30 +81,29 @@ class ArrayInput extends React.Component {
                             showRemoveBtn: true,
                             arrayHelpers,
                             form,
-                            disabled
-                          })
-                          }
+                            disabled,
+                          })}
                         </div>
-                      )
+                      );
                     })}
                     {disabled && (!value || !value.length) && <Input disabled />}
-                    {(helpText && helpText.length > 0 && value && value.length > 0) && <p className='ra-helpText-underField'>{helpText}</p>}
-                    {(!disabled) && <Button onClick={() => arrayHelpers.push(null)} >{(!value || value.length < 1) ? LOCALS.BUTTONS.RENDER_ADD_BUTTON_TEXT(label) : '+'} </Button>}
+                    {(helpText && helpText.length > 0 && value && value.length > 0) && <p className="ra-helpText-underField">{helpText}</p>}
+                    {(!disabled) && <Button onClick={() => arrayHelpers.push(null)}>{(!value || value.length < 1) ? LOCALS.BUTTONS.RENDER_ADD_BUTTON_TEXT(label) : '+'} </Button>}
                   </div>
                 )}
-              />
+              </FieldArray>
             </Form.Item>
-          )
+          );
         }}
       </Consumer>
-    )
+    );
   }
 }
 export default ArrayInput;
 
 ArrayInput.defaultValue = {
-  numberInputStyle: { width: '100%' }
-}
+  numberInputStyle: { width: '100%' },
+};
 
 /*
               <Select

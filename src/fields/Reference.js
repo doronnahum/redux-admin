@@ -4,21 +4,20 @@ import { NetProvider } from 'net-provider';
 
 class Reference extends React.Component {
   render() {
-    const { url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount, targetKeyPrefix } = this.props
-    const _targetKey = targetKey || `${url + (targetKeyPrefix || '')}-Reference`
+    const { url, lazyLoad, params, getParamsByValue, targetKey, clearOnUnMount, targetKeyPrefix } = this.props;
+    const _targetKey = targetKey || `${url + (targetKeyPrefix || '')}-Reference`;
     return (
       <NetProvider
         targetKey={_targetKey}
         loadData={lazyLoad ? {
           targetKey: _targetKey,
           method: 'get',
-          url: url,
+          url,
           params: getParamsByValue(null),
         } : null}
         clearOnUnMount={clearOnUnMount}
       >
-        {({ data, crudActions, loading, status }) => {
-          return this.props.children({
+        {({ data, crudActions, loading, status }) => this.props.children({
             data,
             loading,
             onFocus: () => {
@@ -26,24 +25,23 @@ class Reference extends React.Component {
                 crudActions.Refresh({
                   targetKey: _targetKey,
                   method: 'get',
-                  url: url,
-                  params: getParamsByValue(null)
-                })
+                  url,
+                  params: getParamsByValue(null),
+                });
               }
             },
-            onSearchValueChanged: value => {
+            onSearchValueChanged: (value) => {
               crudActions.Refresh({
                 targetKey: _targetKey,
                 method: 'get',
-                url: url,
-                params: getParamsByValue(value)
-              })
+                url,
+                params: getParamsByValue(value),
+              });
             },
-            crudActions
-          })
-        }}
+            crudActions,
+          })}
       </NetProvider>
-    )
+    );
   }
 }
 export default Reference;
@@ -52,11 +50,11 @@ Reference.defaultProps = {
   lazyLoad: false,
   getParamsByValue: (value) => {
     // eslint-disable-next-line no-console
-    console.log('Reference Field - missing getParamsByValue')
-    if ((value && value !== '')) return { filter: { name: value } }
-    return null
+    console.log('Reference Field - missing getParamsByValue');
+    if ((value && value !== '')) return { filter: { name: value } };
+    return null;
   },
-  referenceKey: ''
+  referenceKey: '',
 };
 
 Reference.propTypes = {

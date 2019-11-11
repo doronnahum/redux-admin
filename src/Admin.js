@@ -1,35 +1,35 @@
 /* eslint-disable no-console */
 import React, { Component, Fragment, cloneElement } from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { NetProvider, idKey, Selector, actions, dispatchAction } from 'net-provider';
-import { Layout, Breadcrumb, Modal } from 'antd'
-import router from './router';
-import { sendMessage } from './message'
+import { Layout, Breadcrumb, Modal } from 'antd';
 import isEqual from 'lodash/isEqual';
+import router from './router';
+import { sendMessage } from './message';
 import { objDig, capitalize } from './util';
-import { LOCALS } from './local'
+import { LOCALS } from './local';
 
 const { Refresh, Delete, Update } = actions;
 
-const NEW_DOC = 'New'
+const NEW_DOC = 'New';
 const EDIT_MODE = 'Edit Mode';
 const VIEW_MODE = 'View Mode';
 const SET_PARAMS = 'onSetParams';
-const BACK = 'onBack'
-const REPLACE_PARAMS = 'onReplaceParams'
+const BACK = 'onBack';
+const REPLACE_PARAMS = 'onReplaceParams';
 
 const DEFAULT_ROLE_CONFIG = {
   canCreate: true,
   canRead: true,
   canUpdate: true,
   canDelete: true,
-  excludeFields: []
-}
+  excludeFields: [],
+};
 
-const getDocTargetKey = url => `Admin-${url}-doc`
-export const getListTargetKey = (url, listTargetKeyPrefix = '') => `Admin-${url}-list${listTargetKeyPrefix}`
+const getDocTargetKey = (url) => `Admin-${url}-doc`;
+export const getListTargetKey = (url, listTargetKeyPrefix = '') => `Admin-${url}-list${listTargetKeyPrefix}`;
 
 class Admin extends Component {
   constructor(props) {
@@ -47,41 +47,41 @@ class Admin extends Component {
       sort: this.props.initialSort,
       filters: [],
       hasError: false,
-      updateCounter: 0
+      updateCounter: 0,
     };
-    this.renderList = this.renderList.bind(this)
-    this.renderDoc = this.renderDoc.bind(this)
-    this.onClose = this.onClose.bind(this)
-    this.onCloseFromBreadcrumb = this.onCloseFromBreadcrumb.bind(this)
-    this.onEditClick = this.onEditClick.bind(this)
-    this.onViewDocClick = this.onViewDocClick.bind(this)
-    this.onDeleteClick = this.onDeleteClick.bind(this)
-    this.renderBreadcrumb = this.renderBreadcrumb.bind(this)
-    this.onNewClick = this.onNewClick.bind(this)
-    this.onCreateEnd = this.onCreateEnd.bind(this)
-    this.onUpdateEnd = this.onUpdateEnd.bind(this)
-    this.onDeleteEnd = this.onDeleteEnd.bind(this)
-    this.handleRoute = this.handleRoute.bind(this)
-    this.getRoleConfig = this.getRoleConfig.bind(this)
-    this.handleBackEvent = this.handleBackEvent.bind(this)
-    this.onSearchValueChange = this.onSearchValueChange.bind(this)
-    this.onPageSizeChange = this.onPageSizeChange.bind(this)
-    this.onPageChange = this.onPageChange.bind(this)
-    this.onSortChange = this.onSortChange.bind(this)
-    this.onQueryParametersChanged = this.onQueryParametersChanged.bind(this)
-    this.getParams = this.getParams.bind(this)
-    this.onFiltersChanged = this.onFiltersChanged.bind(this)
-    this.onUpdateFromList = this.onUpdateFromList.bind(this)
-    this.onRefreshList = this.onRefreshList.bind(this)
+    this.renderList = this.renderList.bind(this);
+    this.renderDoc = this.renderDoc.bind(this);
+    this.onClose = this.onClose.bind(this);
+    this.onCloseFromBreadcrumb = this.onCloseFromBreadcrumb.bind(this);
+    this.onEditClick = this.onEditClick.bind(this);
+    this.onViewDocClick = this.onViewDocClick.bind(this);
+    this.onDeleteClick = this.onDeleteClick.bind(this);
+    this.renderBreadcrumb = this.renderBreadcrumb.bind(this);
+    this.onNewClick = this.onNewClick.bind(this);
+    this.onCreateEnd = this.onCreateEnd.bind(this);
+    this.onUpdateEnd = this.onUpdateEnd.bind(this);
+    this.onDeleteEnd = this.onDeleteEnd.bind(this);
+    this.handleRoute = this.handleRoute.bind(this);
+    this.getRoleConfig = this.getRoleConfig.bind(this);
+    this.handleBackEvent = this.handleBackEvent.bind(this);
+    this.onSearchValueChange = this.onSearchValueChange.bind(this);
+    this.onPageSizeChange = this.onPageSizeChange.bind(this);
+    this.onPageChange = this.onPageChange.bind(this);
+    this.onSortChange = this.onSortChange.bind(this);
+    this.onQueryParametersChanged = this.onQueryParametersChanged.bind(this);
+    this.getParams = this.getParams.bind(this);
+    this.onFiltersChanged = this.onFiltersChanged.bind(this);
+    this.onUpdateFromList = this.onUpdateFromList.bind(this);
+    this.onRefreshList = this.onRefreshList.bind(this);
     this.previousRoutes = 0; // This we help us to navigate back only if needed
     this.routeByComponentStart = false; // This will help the popstate listener to not interfere if we are initiated the navigate
-  };
+  }
 
   componentDidMount() {
     if (this.props.syncWithUrl) {
-      this.syncDocIdFromQueryParams(null, null, null, 'handleListFetchOnLoad')
+      this.syncDocIdFromQueryParams(null, null, null, 'handleListFetchOnLoad');
     } else {
-      this.handleListFetchOnLoad()
+      this.handleListFetchOnLoad();
     }
 
     this._isMounted = true;
@@ -89,22 +89,21 @@ class Admin extends Component {
       this.popstateListenerAdded = true;
       window.addEventListener('popstate', this.handleBackEvent);
     }
-  };
+  }
 
   componentDidCatch(error, info) {
     // Display fallback UI
     this.setState({ hasError: true });
     // You can also log the error to an error reporting service
-    console.log('redux-admin catch err', error, info)
+    console.log('redux-admin catch err', error, info);
   }
 
   detectBrowserBackButton(event) {
     if (event && event.currentTarget === window) {
-      console.log('detectBrowserBackButton() - Need to test if this a cross browser solution')
-      return true
-    } else {
-      return false
+      console.log('detectBrowserBackButton() - Need to test if this a cross browser solution');
+      return true;
     }
+      return false;
   }
 
   handleBackEvent(event) {
@@ -114,46 +113,46 @@ class Admin extends Component {
         We want to open/close a document
         but only if the event is from the browser and not from user button click
       */
-      const hasBrowserBackButtonClick = this.detectBrowserBackButton(event)
-      if (!hasBrowserBackButtonClick) return
+      const hasBrowserBackButtonClick = this.detectBrowserBackButton(event);
+      if (!hasBrowserBackButtonClick) return;
       const params = router.onGetParams() || {};
-      const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey } = this.props
+      const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey } = this.props;
       const routeParams = params || router.onGetParams() || {};
       const _queryParamsNew = routeParams[`${queryParamsPrefix}${queryParamsNewKey}`];
       const _queryParamsView = routeParams[`${queryParamsPrefix}${queryParamsViewKey}`];
       const _queryParamsEdit = routeParams[`${queryParamsPrefix}${queryParamsEditKey}`];
       if (!_queryParamsNew && !_queryParamsView && !_queryParamsEdit) { // This a navigate back
-        this.onClose(false)
+        this.onClose(false);
       } else { // this a navigate forward
-        this.syncDocIdFromQueryParams(params, true, REPLACE_PARAMS)
+        this.syncDocIdFromQueryParams(params, true, REPLACE_PARAMS);
       }
     }
   }
 
   handleRoute(type, data) {
-    if (!this.props.syncWithUrl) return
-    const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey } = this.props
+    if (!this.props.syncWithUrl) return;
+    const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey } = this.props;
     if (type === BACK) {
       if (this.previousRoutes > 0) {
-        this.previousRoutes = this.previousRoutes - 1
-        router[type](data)
+        this.previousRoutes = this.previousRoutes - 1;
+        router[type](data);
       } else {
         const _queryParamsNewKey = `${queryParamsPrefix}${queryParamsNewKey}`;
         const _queryParamsViewKey = `${queryParamsPrefix}${queryParamsViewKey}`;
         const _queryParamsEditKey = `${queryParamsPrefix}${queryParamsEditKey}`;
-        this.handleRoute(REPLACE_PARAMS, { [_queryParamsNewKey]: '', [_queryParamsViewKey]: '', [_queryParamsEditKey]: '' })
+        this.handleRoute(REPLACE_PARAMS, { [_queryParamsNewKey]: '', [_queryParamsViewKey]: '', [_queryParamsEditKey]: '' });
       }
     } else {
-      this.previousRoutes = this.previousRoutes + 1
-      router[type](data)
+      this.previousRoutes = this.previousRoutes + 1;
+      router[type](data);
     }
   }
 
   getParams() {
-    const { searchValue, limit, sort, skip, filters } = this.state
+    const { searchValue, limit, sort, skip, filters } = this.state;
     if (this.props.params) {
-      console.warn('redux-admin - please stop using params, it is deprecate, use getParams instep')
-      return this.props.params
+      console.warn('redux-admin - please stop using params, it is deprecate, use getParams instep');
+      return this.props.params;
     }
     if (this.props.getParams) {
       return this.props.getParams({
@@ -162,16 +161,16 @@ class Admin extends Component {
         limit,
         sort,
         skip,
-        props: this.props
-      })
+        props: this.props,
+      });
     }
   }
 
   handleListFetchOnLoad() {
-    const { getListSource, url, onReadEnd, listTargetKeyPrefix } = this.props
+    const { getListSource, url, onReadEnd, listTargetKeyPrefix } = this.props;
     this.setState({
-      listSource: getListSource({ url, targetKey: getListTargetKey(url, listTargetKeyPrefix), params: this.getParams(), onEnd: onReadEnd })
-    })
+      listSource: getListSource({ url, targetKey: getListTargetKey(url, listTargetKeyPrefix), params: this.getParams(), onEnd: onReadEnd }),
+    });
   }
 
   /**
@@ -180,21 +179,21 @@ class Admin extends Component {
    */
   syncDocIdFromQueryParams(params, replaceParams = false, updateParamsType, handleListFetchOnLoad) {
     if (this.props.syncWithUrl) {
-      const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey, allowViewMode } = this.props
+      const { queryParamsPrefix, queryParamsNewKey, queryParamsViewKey, queryParamsEditKey, allowViewMode } = this.props;
       const routeParams = params || router.onGetParams() || {};
       const _queryParamsNew = routeParams[`${queryParamsPrefix}${queryParamsNewKey}`] || '';
       const _queryParamsView = routeParams[`${queryParamsPrefix}${queryParamsViewKey}`] || '';
       const _queryParamsEdit = routeParams[`${queryParamsPrefix}${queryParamsEditKey}`] || '';
-      const { canCreate, canUpdate, canRead, excludeFields } = this.getRoleConfig()
-      const _excludeFields = excludeFields && excludeFields.length
+      const { canCreate, canUpdate, canRead, excludeFields } = this.getRoleConfig();
+      const _excludeFields = excludeFields && excludeFields.length;
       if (_queryParamsNew.length && (canCreate || _excludeFields)) {
-        this.onNewClick(replaceParams, updateParamsType)
+        this.onNewClick(replaceParams, updateParamsType);
       } else if (_queryParamsEdit.length && (canUpdate || _excludeFields)) {
-        this.onEditClick(null, _queryParamsEdit, replaceParams, updateParamsType)
+        this.onEditClick(null, _queryParamsEdit, replaceParams, updateParamsType);
       } else if (_queryParamsView.length && (canRead || _excludeFields) && allowViewMode) {
-        this.onViewDocClick(null, _queryParamsView, replaceParams, updateParamsType)
+        this.onViewDocClick(null, _queryParamsView, replaceParams, updateParamsType);
       } else {
-        if (handleListFetchOnLoad) this.handleListFetchOnLoad() // We want to load list on load only id doc is not open
+        if (handleListFetchOnLoad) this.handleListFetchOnLoad(); // We want to load list on load only id doc is not open
       }
     }
   }
@@ -207,13 +206,14 @@ class Admin extends Component {
    * @description This will open a document in Edit mode
    */
   onEditClick(row, docId, syncParams = true, updateParamsType = SET_PARAMS) {
-    const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsEditKey, disabledFetchDocOnEdit } = this.props
-    const newCurrentId = docId || row[rowKey || idKey]
-    const docSource = getDocumentSource({ url, id: newCurrentId, targetKey: getDocTargetKey(url) })
-    this.setState({ updateCounter: this.state.updateCounter + 1, docSource, showDoc: true, currentId: newCurrentId, docMode: EDIT_MODE, currentDocData: disabledFetchDocOnEdit ? row : null })
+    const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsEditKey, disabledFetchDocOnEdit } = this.props;
+    const newCurrentId = docId || row[rowKey || idKey];
+    const docSource = getDocumentSource({ url, id: newCurrentId, targetKey: getDocTargetKey(url) });
+    this.setState({ updateCounter: this.state.updateCounter + 1, docSource, showDoc: true, currentId: newCurrentId, docMode: EDIT_MODE, currentDocData: disabledFetchDocOnEdit ? row : null });
     const _queryParamsEditKey = `${queryParamsPrefix}${queryParamsEditKey}`;
-    if (syncParams) this.handleRoute(updateParamsType, { [_queryParamsEditKey]: newCurrentId })
+    if (syncParams) this.handleRoute(updateParamsType, { [_queryParamsEditKey]: newCurrentId });
   }
+
   /**
    * @function onViewDocClick
    * @param {object} row Object that include id inside
@@ -222,13 +222,14 @@ class Admin extends Component {
    * @description This will open a document in Edit mode
    */
   onViewDocClick(row, docId, syncParams = true, updateParamsType = SET_PARAMS) {
-    const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsViewKey, disabledFetchDocOnEdit } = this.props
-    const newCurrentId = docId || row[rowKey || idKey]
-    const docSource = getDocumentSource({ url, id: newCurrentId, targetKey: getDocTargetKey(url) })
-    this.setState({ docSource, showDoc: true, currentId: newCurrentId, docMode: VIEW_MODE, currentDocData: disabledFetchDocOnEdit ? row : null })
+    const { rowKey, getDocumentSource, url, queryParamsPrefix, queryParamsViewKey, disabledFetchDocOnEdit } = this.props;
+    const newCurrentId = docId || row[rowKey || idKey];
+    const docSource = getDocumentSource({ url, id: newCurrentId, targetKey: getDocTargetKey(url) });
+    this.setState({ docSource, showDoc: true, currentId: newCurrentId, docMode: VIEW_MODE, currentDocData: disabledFetchDocOnEdit ? row : null });
     const _queryParamsViewKey = `${queryParamsPrefix}${queryParamsViewKey}`;
-    if (syncParams) this.handleRoute(updateParamsType, { [_queryParamsViewKey]: newCurrentId })
+    if (syncParams) this.handleRoute(updateParamsType, { [_queryParamsViewKey]: newCurrentId });
   }
+
   /**
    * @function onDeleteClick
    * @param {object} row Object that include id inside
@@ -237,12 +238,12 @@ class Admin extends Component {
    * @description This will open a document in Edit mode
    */
   onDeleteClick(row, docId, syncParams = true) {
-    const { url, rowKey, listTargetKeyPrefix } = this.props
+    const { url, rowKey, listTargetKeyPrefix } = this.props;
     if (!row && !docId) {
-      console.warn('onDeleteClick Missing row or docId')
+      console.warn('onDeleteClick Missing row or docId');
     }
-    const title = row ? this.props.getDocTitle(row) : docId
-    const id = row ? row[rowKey || idKey] : docId
+    const title = row ? this.props.getDocTitle(row) : docId;
+    const id = row ? row[rowKey || idKey] : docId;
     const _this = this;
     Modal.confirm({
       title: LOCALS.DOC.RENDER_DELETE_MODAL_TITLE(row),
@@ -258,20 +259,21 @@ class Admin extends Component {
             id,
             onEnd: () => {
               sendMessage(LOCALS.NOTIFICATION.DELETE_SUCCESSFULLY, 'success');
-              _this.onChangeEndFromList()
-              resolve()
+              _this.onChangeEndFromList();
+              resolve();
             },
             onFailed: (payload) => {
-              resolve()
-              const message = objDig(payload, 'error.response.data.message') || LOCALS.NOTIFICATION.DELETE_FAILED
+              resolve();
+              const message = objDig(payload, 'error.response.data.message') || LOCALS.NOTIFICATION.DELETE_FAILED;
               sendMessage(message, 'error');
             },
-            customFetch: _this.props.customDocFetch
-          })
+            customFetch: _this.props.customDocFetch,
+          });
         }).catch(() => console.log('Oops errors!'));
       },
     });
   }
+
   /**
    * Put data from list
    */
@@ -282,14 +284,14 @@ class Admin extends Component {
       data,
       onEnd: () => {
         sendMessage(LOCALS.NOTIFICATION.UPDATE_SUCCESSFULLY, 'success');
-        this.onChangeEndFromList()
+        this.onChangeEndFromList();
       },
       onFailed: (payload) => {
-        const message = objDig(payload, 'error.response.data.message') || LOCALS.NOTIFICATION.UPDATE_FAILED
+        const message = objDig(payload, 'error.response.data.message') || LOCALS.NOTIFICATION.UPDATE_FAILED;
         sendMessage(message, 'error');
       },
-      customFetch: this.props.customListFetch
-    })
+      customFetch: this.props.customListFetch,
+    });
   }
 
   /**
@@ -298,13 +300,14 @@ class Admin extends Component {
    * @description This will open a document on New mode
    */
   onNewClick(syncParams = true, updateParamsType = SET_PARAMS) {
-    const { getDocumentSource, url, queryParamsPrefix, queryParamsNewKey } = this.props
+    const { getDocumentSource, url, queryParamsPrefix, queryParamsNewKey } = this.props;
     const targetKey = getDocTargetKey(url);
-    const docSource = getDocumentSource({ url, targetKey: getDocTargetKey(url) })
-    this.setState({ docSource, showDoc: true, currentId: null, docMode: NEW_DOC, currentDocData: null })
+    const docSource = getDocumentSource({ url, targetKey: getDocTargetKey(url) });
+    this.setState({ docSource, showDoc: true, currentId: null, docMode: NEW_DOC, currentDocData: null });
     const _queryParamsNewKey = `${queryParamsPrefix}${queryParamsNewKey}`;
-    if (syncParams) this.handleRoute(updateParamsType, { [_queryParamsNewKey]: NEW_DOC })
+    if (syncParams) this.handleRoute(updateParamsType, { [_queryParamsNewKey]: NEW_DOC });
   }
+
   /**
    * @function onCreateEnd
    * @param {object} res net-provider onEnd callBack
@@ -316,20 +319,20 @@ class Admin extends Component {
    * And to keep the list update on each document change
    */
   onCreateEnd(res) {
-    const { data } = res
-    const { queryParamsPrefix, queryParamsEditKey, queryParamsNewKey, listTargetKeyPrefix, url } = this.props
-    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
-    const { getIdFromNewDocResponse, rowKey, idKey } = this.props
-    const newDocId = getIdFromNewDocResponse ? getIdFromNewDocResponse(res) : data[rowKey || idKey]
+    const { data } = res;
+    const { queryParamsPrefix, queryParamsEditKey, queryParamsNewKey, listTargetKeyPrefix, url } = this.props;
+    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }); }
+    const { getIdFromNewDocResponse, rowKey, idKey } = this.props;
+    const newDocId = getIdFromNewDocResponse ? getIdFromNewDocResponse(res) : data[rowKey || idKey];
     if (this.props.editAfterSaved) {
-      this.onEditClick(null, newDocId, null)
+      this.onEditClick(null, newDocId, null);
       const _queryParamsNewKey = `${queryParamsPrefix}${queryParamsNewKey}`;
       const _queryParamsEditKey = `${queryParamsPrefix}${queryParamsEditKey}`;
-      this.handleRoute(REPLACE_PARAMS, { [_queryParamsNewKey]: '', [_queryParamsEditKey]: newDocId })
+      this.handleRoute(REPLACE_PARAMS, { [_queryParamsNewKey]: '', [_queryParamsEditKey]: newDocId });
     } else {
-      this.onClose()
+      this.onClose();
     }
-    if (this.props.onChangeEnd) this.props.onChangeEnd(res)
+    if (this.props.onChangeEnd) this.props.onChangeEnd(res);
   }
 
   /**
@@ -343,8 +346,8 @@ class Admin extends Component {
    */
   onDeleteEnd(res) {
     const { url, listTargetKeyPrefix } = this.props;
-    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
-    if (this.props.onChangeEnd) this.props.onChangeEnd(res)
+    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }); }
+    if (this.props.onChangeEnd) this.props.onChangeEnd(res);
   }
 
   /**
@@ -355,7 +358,7 @@ class Admin extends Component {
    * @param {object} res.data The data from the response
    */
   onChangeEndFromList(res) {
-    if (this.props.onChangeEnd) this.props.onChangeEnd(res)
+    if (this.props.onChangeEnd) this.props.onChangeEnd(res);
   }
 
   /**
@@ -369,36 +372,35 @@ class Admin extends Component {
    */
   onUpdateEnd(res) {
     const { url, listTargetKeyPrefix } = this.props;
-    this.setState({ updateCounter: this.state.updateCounter + 1 }) // Help to refresh the doc
-    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }) }
-    if (this.props.onChangeEnd) this.props.onChangeEnd(res)
+    this.setState({ updateCounter: this.state.updateCounter + 1 }); // Help to refresh the doc
+    if (this.state.listSource) { this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) }); }
+    if (this.props.onChangeEnd) this.props.onChangeEnd(res);
   }
 
   onCloseFromBreadcrumb() {
-    this.onClose('syncWithUrl', false)
+    this.onClose('syncWithUrl', false);
   }
+
   /**
    * @function onClose
    * @description This will close the document and navigate back to list
    */
   onClose(syncWithUrl = true, checkBackToParams = true) {
-    const { url } = this.props
-    const params = router.onGetParams() || {}
+    const { url } = this.props;
+    const params = router.onGetParams() || {};
     if (checkBackToParams && params.backTo && params.backTo.length && !this.state.listSource) {
       // This a situation when we navigate from one list to document in other list
       // for example - from products we click on user and it take as to user doc in the users screen
-      router.onBack()
-    } else {
-      if (this.state.showDoc) {
-        if (syncWithUrl) this.handleRoute(BACK)
+      router.onBack();
+    } else if (this.state.showDoc) {
+        if (syncWithUrl) this.handleRoute(BACK);
         if (!this.state.listSource) {
-          this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
+          this.handleListFetchOnLoad(); // This append when the screen reload with an open doc, we want to load the list it this situation
         }
-        this.setState({ currentId: null, docSource: null, showDoc: false, docMode: null, currentDocData: null })
+        this.setState({ currentId: null, docSource: null, showDoc: false, docMode: null, currentDocData: null });
         const docTargetKey = getDocTargetKey(url);
         dispatchAction.Clean({ targetKey: docTargetKey });
       }
-    }
   }
 
   /**
@@ -406,66 +408,69 @@ class Admin extends Component {
    * @description This will Replace current route with home route
    */
   goHome() {
-    router.goHome()
+    router.goHome();
   }
 
   onSearchValueChange(eventOrString) {
-    const value = (eventOrString && eventOrString.target) ? eventOrString.target.value : eventOrString
+    const value = (eventOrString && eventOrString.target) ? eventOrString.target.value : eventOrString;
     if (this.props.onSearchValueChange) {
-      this.props.onSearchValueChange(value)
+      this.props.onSearchValueChange(value);
     } else {
-      this.setState({ searchValue: value, skip: 0 }, this.onQueryParametersChanged)
+      this.setState({ searchValue: value, skip: 0 }, this.onQueryParametersChanged);
     }
   }
 
   onFiltersChanged(filters) {
-    this.setState({ filters, skip: 0 }, this.onQueryParametersChanged)
+    this.setState({ filters, skip: 0 }, this.onQueryParametersChanged);
   }
 
   onPageChange(page) {
-    const newSkip = (page - 1) * this.state.limit
-    if (newSkip !== this.state.skip) this.setState({ skip: newSkip }, this.onQueryParametersChanged)
+    const newSkip = (page - 1) * this.state.limit;
+    if (newSkip !== this.state.skip) this.setState({ skip: newSkip }, this.onQueryParametersChanged);
   }
+
   onPageSizeChange(current, limit) {
-    if (limit !== this.state.limit) this.setState({ limit }, this.onQueryParametersChanged)
+    if (limit !== this.state.limit) this.setState({ limit }, this.onQueryParametersChanged);
   }
+
   onSortChange(sort) {
-    if (!isEqual(sort, this.state.sort)) this.setState({ sort }, this.onQueryParametersChanged)
+    if (!isEqual(sort, this.state.sort)) this.setState({ sort }, this.onQueryParametersChanged);
   }
+
   onQueryParametersChanged() {
     const { url, listTargetKeyPrefix } = this.props;
     if (!this.state.listSource) {
-      this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
+      this.handleListFetchOnLoad(); // This append when the screen reload with an open doc, we want to load the list it this situation
     } else {
-      const params = this.getParams()
-      this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix), params })
+      const params = this.getParams();
+      this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix), params });
     }
   }
 
   getRoleConfig() {
-    const { roleConfig } = this.props
-    if (!roleConfig) return DEFAULT_ROLE_CONFIG
-    else return roleConfig
+    const { roleConfig } = this.props;
+    if (!roleConfig) return DEFAULT_ROLE_CONFIG;
+    return roleConfig;
   }
 
   onRefreshList() {
     const { url, listTargetKeyPrefix } = this.props;
     if (!this.state.listSource) {
-      this.handleListFetchOnLoad() // This append when the screen reload with an open doc, we want to load the list it this situation
+      this.handleListFetchOnLoad(); // This append when the screen reload with an open doc, we want to load the list it this situation
     } else {
-      this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) })
+      this.props.actions.Refresh({ targetKey: getListTargetKey(url, listTargetKeyPrefix) });
     }
   }
 
   renderList() {
-    const { listSource, showDoc } = this.state
-    const { list, renderList, rowKey, listClearOnUnMount, allowViewMode } = this.props
-    const { canCreate, canDelete, canUpdate, canRead, excludeFields } = this.getRoleConfig()
+    const { listSource, showDoc } = this.state;
+    const { list, renderList, rowKey, listClearOnUnMount, allowViewMode } = this.props;
+    const { canCreate, canDelete, canUpdate, canRead, excludeFields } = this.getRoleConfig();
     if (listSource) {
       return (
         <Fragment>
           <NetProvider loadData={listSource} targetKey={listSource.targetKey} clearOnUnMount={listClearOnUnMount}>
-            {props => {
+            {(props) => {
               const propsToPass = {
                 ...props,
                 onEditClick: this.onEditClick,
@@ -487,37 +492,37 @@ class Admin extends Component {
                 onPageSizeChange: this.onPageSizeChange,
                 onPageChange: this.onPageChange,
                 onSortChange: this.onSortChange,
-                onFiltersChanged: this.onFiltersChanged
-              }
+                onFiltersChanged: this.onFiltersChanged,
+              };
               if (showDoc) return null;
-              if (renderList) return renderList(propsToPass)
-              if (list) return cloneElement(list, propsToPass)
-              return 'Missing list component or renderList'
+              if (renderList) return renderList(propsToPass);
+              if (list) return cloneElement(list, propsToPass);
+              return 'Missing list component or renderList';
             }}
           </NetProvider>
         </Fragment>
-      )
+      );
     }
   }
 
   renderDoc() {
-    if (!this.state.showDoc) return
-    const { docSource, currentId, docMode, currentDocData, updateCounter } = this.state
-    const { docWrapper, doc, renderDoc, url, getDocTitle, customDocFetch, disabledFetchDocOnEdit } = this.props
-    const Wrapper = docWrapper || Fragment
+    if (!this.state.showDoc) return;
+    const { docSource, currentId, docMode, currentDocData, updateCounter } = this.state;
+    const { docWrapper, doc, renderDoc, url, getDocTitle, customDocFetch, disabledFetchDocOnEdit } = this.props;
+    const Wrapper = docWrapper || Fragment;
     const newDocMode = docMode === NEW_DOC;
-    const params = router.onGetParams() || {}
+    const params = router.onGetParams() || {};
     const backToText = (params.backTo && params.backTo.length && !this.state.listSource) ? params.backTo : null;
     // TO OD
     // disabledFetchDocOnEdit NEED TO WORK ONLY WHEN DATA EXIST, NOT WHEN FULL RELOAD
     const loadDataOnMount = newDocMode ? false : (!disabledFetchDocOnEdit || !(disabledFetchDocOnEdit && currentDocData));
     const initialValues = currentDocData || this.props.initialValues;
-    const wrapperProps = docWrapper ? { onClose: this.onClose, targetKey: docSource.targetKey } : {}
-    const { canCreate, canDelete, canUpdate, excludeFields, canRead } = this.getRoleConfig()
+    const wrapperProps = docWrapper ? { onClose: this.onClose, targetKey: docSource.targetKey } : {};
+    const { canCreate, canDelete, canUpdate, excludeFields, canRead } = this.getRoleConfig();
     return (
       <Wrapper {...wrapperProps}>
         <NetProvider loadData={loadDataOnMount ? docSource : null} targetKey={docSource.targetKey} key={newDocMode ? 'new' : currentId}>
-          {props => {
+          {(props) => {
             const propsToPass = {
               ...props,
               onClose: this.onClose,
@@ -543,60 +548,62 @@ class Admin extends Component {
               excludeFields,
               backToText,
               updateCounter,
-            }
+            };
             if (renderDoc) return renderDoc(propsToPass);
             if (doc) return cloneElement(doc, propsToPass);
-            return 'Missing doc component or renderDoc'
+            return 'Missing doc component or renderDoc';
           }}
         </NetProvider>
       </Wrapper>
-    )
+    );
   }
 
   renderBreadcrumb() {
-    const { docSource, docMode, currentId } = this.state
+    const { docSource, docMode, currentId } = this.state;
     const newDocMode = docMode === NEW_DOC;
     const editDocMode = docMode === EDIT_MODE;
     const viewDocMode = docMode === VIEW_MODE;
-    const targetKey = (editDocMode || viewDocMode) && docSource && docSource.targetKey
+    const targetKey = (editDocMode || viewDocMode) && docSource && docSource.targetKey;
     return (
-      <Selector targetKey={targetKey} toSelect='data' key={targetKey || 1}>
+      <Selector targetKey={targetKey} toSelect="data" key={targetKey || 1}>
         {({ data }) => {
-          const title = data ? this.props.getDocTitle(data) : currentId
+          const title = data ? this.props.getDocTitle(data) : currentId;
           return (
-            <Breadcrumb className='ra-breadcrumb'>
+            <Breadcrumb className="ra-breadcrumb">
               <Breadcrumb.Item onClick={this.goHome}> {LOCALS.BREADCRUMB.HOME} </Breadcrumb.Item>
               <Breadcrumb.Item onClick={this.onCloseFromBreadcrumb}> {capitalize(this.props.title)} </Breadcrumb.Item>
               {(editDocMode || viewDocMode) && <Breadcrumb.Item>{capitalize(title)}</Breadcrumb.Item>}
               {newDocMode && <Breadcrumb.Item>{LOCALS.BREADCRUMB.NEW}</Breadcrumb.Item>}
             </Breadcrumb>
-          )
+          );
         }}
       </Selector>
-    )
+    );
   }
 
   componentWillUnmount() {
     if (this.popstateListenerAdded) {
-      window.removeEventListener('popstate', this.handleBackEvent)
+      window.removeEventListener('popstate', this.handleBackEvent);
     }
     if (this.props.adminWillUnmount) {
-      this.props.adminWillUnmount()
+      this.props.adminWillUnmount();
     }
   }
 
   render() {
     if (this.state.hasError) {
-      return <div>
+      return (
+<div>
         {LOCALS.ADVANCED_FILTER}
         <a onClick={() => this.setState({ hasError: false })}>{LOCALS.RETRY_BUTTON_TEXT_ON_ERROR}</a>
-      </div>
+</div>
+);
     }
     return (
       <Layout className={`ra-adminLayout dir-${LOCALS.LANG_DIR}`} dir={LOCALS.LANG_DIR}>
         {this.props.showBreadcrumb && this.renderBreadcrumb()}
-        <Layout.Content className='ra-adminLayout-list-wrapper'>{this.renderList()}</Layout.Content>
-        {this.props.doc && <Layout.Content className='ra-docWra'>{this.renderDoc()}</Layout.Content>}
+        <Layout.Content className="ra-adminLayout-list-wrapper">{this.renderList()}</Layout.Content>
+        {this.props.doc && <Layout.Content className="ra-docWra">{this.renderDoc()}</Layout.Content>}
       </Layout>
     );
   }
@@ -634,7 +641,7 @@ Admin.propTypes = {
     canRead: PropTypes.bool, // true by default
     canUpdate: PropTypes.bool, // true by default
     canDelete: PropTypes.bool, // true by default
-    excludeFields: PropTypes.array // [] by default
+    excludeFields: PropTypes.array, // [] by default
   }),
   disabledFetchDocOnEdit: PropTypes.bool, // false by default, set true to save query and use the data the from list as document data
   getParams: PropTypes.func.isRequired, // pass function that build query params from the filters parameters getParams({skip, sort, limit, searchValue})
@@ -644,24 +651,20 @@ Admin.defaultProps = {
   queryParamsNewKey: 'n',
   queryParamsViewKey: 'v',
   queryParamsEditKey: 'e',
-  getListSource: ({ url, targetKey, params, body, onEnd }) => {
-    return {
-      targetKey: targetKey,
-      url: url,
+  getListSource: ({ url, targetKey, params, body, onEnd }) => ({
+      targetKey,
+      url,
       params,
       body,
       onEnd,
       // getCountFromResponse: res => res.data.count
-    }
-  },
-  getDocumentSource: ({ url, targetKey, params, body, id, data }) => {
-    return {
-      targetKey: targetKey,
+    }),
+  getDocumentSource: ({ url, targetKey, params, body, id, data }) => ({
+      targetKey,
       url: id ? `${url}/${id}` : url,
       id,
-      refreshType: 'none'
-    }
-  },
+      refreshType: 'none',
+    }),
   allowViewMode: false,
   syncWithUrl: true,
   showBreadcrumb: true,
@@ -679,7 +682,7 @@ Admin.defaultProps = {
     canRead: true,
     canUpdate: true,
     canDelete: true,
-    excludeFields: []
+    excludeFields: [],
   },
   disabledFetchDocOnEdit: false,
   allowExportToPdf: false,
@@ -687,14 +690,14 @@ Admin.defaultProps = {
   onDownloadPdf: null, // to override local export pass function to handle this ({data, columnsToDisplay, onDownloadExcel}) => {....}
   onDownloadExcel: null, // to override local export pass function to handle this ({data, columnsToDisplay, onDownloadExcel}) => {....}
   getParams: (res) => {
-    console.log('Redux-admin missing getParams, getParams({skip, sort, limit, searchValue})', res)
+    console.log('Redux-admin missing getParams, getParams({skip, sort, limit, searchValue})', res);
   },
-  listTargetKeyPrefix: '' // helpful when we render admin inside admin
+  listTargetKeyPrefix: '', // helpful when we render admin inside admin
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ Refresh, Delete, Update }, dispatch)
+    actions: bindActionCreators({ Refresh, Delete, Update }, dispatch),
   };
 }
 export default connect(null, mapDispatchToProps)(Admin);

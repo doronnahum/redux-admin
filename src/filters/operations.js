@@ -5,7 +5,7 @@ import {
   InputNumber,
   Select,
   DatePicker,
-  AutoComplete
+  AutoComplete,
 } from '../fields';
 
 
@@ -20,7 +20,7 @@ export const equal = {
   mongooseCode: '$eq',
   label: LOCALS.FILTERS.EQUAL.LABEL,
   info: LOCALS.FILTERS.EQUAL.INFO,
-  type: Number
+  type: Number,
 };
 export const notEquals = {
   renderInputComponent: (name, fieldData, advanceMode) => (
@@ -30,15 +30,15 @@ export const notEquals = {
   mongooseCode: '$ne',
   label: LOCALS.FILTERS.NOT_EQUAL.LABEL,
   info: LOCALS.FILTERS.NOT_EQUAL.INFO,
-  type: Number
+  type: Number,
 };
 
 export const renderSelectInput = (name, options) => (
   <Select
     showSearch
     data={options}
-    optionLabel={'label'}
-    optionKey={'value'}
+    optionLabel="label"
+    optionKey="value"
     name={name}
     placeholder={LOCALS.FILTERS.SELECT_PLACE_HOLDER}
   // style={{width: 165}}
@@ -60,7 +60,7 @@ export const stringEqual = {
   mongooseCode: '$eq',
   label: LOCALS.FILTERS.STRING_EQUAL.LABEL,
   info: LOCALS.FILTERS.STRING_EQUAL.INFO,
-  type: String
+  type: String,
 };
 export const stringNotEquals = {
   renderInputComponent: (name, fieldData, advanceMode, options) => {
@@ -78,7 +78,7 @@ export const stringNotEquals = {
   mongooseCode: '$ne',
   label: LOCALS.FILTERS.STRING_NOT_EQUAL.LABEL,
   info: LOCALS.FILTERS.STRING_NOT_EQUAL.INFO,
-  type: String
+  type: String,
 };
 
 export const greaterThan = {
@@ -92,7 +92,7 @@ export const greaterThan = {
   mongooseCode: '$gt',
   label: LOCALS.FILTERS.GREATER_THAN.LABEL,
   info: LOCALS.FILTERS.GREATER_THAN.INFO,
-  type: Number
+  type: Number,
 };
 export const greaterThanOrEqual = {
   renderInputComponent: (name, fieldData, advanceMode, options) => {
@@ -105,7 +105,7 @@ export const greaterThanOrEqual = {
   mongooseCode: '$gte',
   label: LOCALS.FILTERS.GREATER_THAN_OR_EQUAL.LABEL,
   info: LOCALS.FILTERS.GREATER_THAN_OR_EQUAL.INFO,
-  type: Number
+  type: Number,
 };
 
 export const lessThan = {
@@ -119,7 +119,7 @@ export const lessThan = {
   mongooseCode: '$lt',
   label: LOCALS.FILTERS.LESS_THAN.LABEL,
   info: LOCALS.FILTERS.LESS_THAN.INFO,
-  type: Number
+  type: Number,
 };
 export const lessThanOrEqual = {
   renderInputComponent: (name, fieldData, advanceMode, options) => {
@@ -132,7 +132,7 @@ export const lessThanOrEqual = {
   mongooseCode: '$lte',
   label: LOCALS.FILTERS.LESS_THAN_OR_EQUAL.LABEL,
   info: LOCALS.FILTERS.LESS_THAN_OR_EQUAL.INFO,
-  type: Number
+  type: Number,
 };
 
 export const allInArray = {
@@ -146,7 +146,7 @@ export const allInArray = {
   mongooseCode: '$ne',
   label: LOCALS.FILTERS.ALL_IN_ARRAY.LABEL,
   info: LOCALS.FILTERS.ALL_IN_ARRAY.INFO,
-  type: String
+  type: String,
 };
 export const matchInArray = {
   renderInputComponent: (name, fieldData, advanceMode, options) => {
@@ -159,7 +159,7 @@ export const matchInArray = {
   mongooseCode: '$in',
   label: LOCALS.FILTERS.NONE_IN_ARRAY.LABEL,
   info: LOCALS.FILTERS.NONE_IN_ARRAY.INFO,
-  type: String
+  type: String,
 };
 export const noneInArray = {
   renderInputComponent: (name, fieldData, advanceMode, options) => {
@@ -172,7 +172,7 @@ export const noneInArray = {
   mongooseCode: '$nin',
   label: LOCALS.FILTERS.NONE_IN_ARRAY.LABEL,
   info: LOCALS.FILTERS.NONE_IN_ARRAY.INFO,
-  type: String
+  type: String,
 };
 
 export const dateEqual = {
@@ -183,8 +183,8 @@ export const dateEqual = {
   mongooseCode: '$eq',
   label: LOCALS.FILTERS.DATE_EQUAL.LABEL,
   info: LOCALS.FILTERS.DATE_EQUAL.INFO,
-  formatter: value => value && moment(value).format(LOCALS.FILTERS.MOMENT_FORMAT_DATE),
-  type: Date
+  formatter: (value) => value && moment(value).format(LOCALS.FILTERS.MOMENT_FORMAT_DATE),
+  type: Date,
 };
 export const after = {
   renderInputComponent: (name, fieldData, advanceMode) => (
@@ -194,8 +194,8 @@ export const after = {
   mongooseCode: '$gt',
   label: LOCALS.FILTERS.AFTER.LABEL,
   info: LOCALS.FILTERS.AFTER.INFO,
-  formatter: value => value && moment(value).format(LOCALS.FILTERS.MOMENT_FORMAT_DATE),
-  type: Date
+  formatter: (value) => value && moment(value).format(LOCALS.FILTERS.MOMENT_FORMAT_DATE),
+  type: Date,
 };
 export const before = {
   renderInputComponent: (name, fieldData, advanceMode) => (
@@ -205,6 +205,6 @@ export const before = {
   mongooseCode: '$lt',
   label: LOCALS.FILTERS.BEFORE.LABEL,
   info: LOCALS.FILTERS.BEFORE.INFO,
-  formatter: value => value && moment(value).format(LOCALS.FILTERS.MOMENT_FORMAT_DATE),
-  type: Date
+  formatter: (value) => value && moment(value).format(LOCALS.FILTERS.MOMENT_FORMAT_DATE),
+  type: Date,
 };

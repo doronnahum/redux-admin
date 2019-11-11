@@ -4,7 +4,7 @@
 export const createPointer = function (schemaName, objectId) {
   return {
     className: schemaName,
-    objectId: objectId,
+    objectId,
     __type: 'Pointer',
   };
 };

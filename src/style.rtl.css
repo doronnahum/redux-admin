@@ -469,11 +469,9 @@
 .ra-checkboxWithIconRow {
     display: flex;
     flex-flow: wrap;
+    margin-left: -10px;
 }
 
-.ra-checkboxWithIconRow .ra-checkboxWithIcon:first-child {
-    margin-right: 0px;
-}
 
 .ra-checkboxWithIcon {
     width: 105px;
@@ -586,38 +584,34 @@ form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-selectio
     align-items: center;
 }
 
-.nextjs-app-body {
-    .ra-refModal {
-        top: 85px !important;
-    }
+.nextjs-app-body .ra-refModal {
+    top: 85px !important;
+}
 
-    .ra-docHeader {
-        background: #798dfe;
-        margin: -15px -15px 15px -15px;
+.nextjs-app-body .ra-docHeader {
+    background: #798dfe;
+    margin: -15px -15px 15px -15px;
+}
 
-        .ra-docHeader-title {
-            color: white;
-        }
-    }
+.nextjs-app-body .ra-docHeader .ra-docHeader-title {
+    color: white;
+}
 
-    .ra-tableWrapper .ant-table-body {
-        overflow: visible !important;
-    }
+.nextjs-app-body .ra-tableWrapper .ant-table-body {
+    overflow: visible !important;
+}
 
-    .ant-table-thead>tr>th {
-        font-weight: 800;
-    }
+.nextjs-app-body .ant-table-thead>tr>th {
+    font-weight: 800;
+}
 
-    .ra-docHeader-back {
-        margin-left: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        background: transparent;
-    }
-
-
+.nextjs-app-body .ra-docHeader-back {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: transparent;
 }
 
 #nextjs-app-rtl .sideBarArrowBackBtn {

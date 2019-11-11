@@ -1,13 +1,12 @@
 import React from 'react';
 import { Radio, Icon, Form } from 'antd';
 import { Field } from 'formik';
-import { sanitizeFormItemProps, sanitizeFormikFieldProps } from './util';
 import toStartCase from 'lodash/startCase';
+import { sanitizeFormItemProps, sanitizeFormikFieldProps } from './util';
 
 class CheckboxWithIcon extends React.Component {
   renderLabel(option, optionLabel, optionKey, startCase, renderLabel) {
-    const text =
-      typeof option === 'object'
+    const text = typeof option === 'object'
         ? option[optionLabel] || option[optionKey]
         : option;
     const label = startCase ? toStartCase(text) : text;
@@ -16,6 +15,7 @@ class CheckboxWithIcon extends React.Component {
     }
     return label;
   }
+
   render() {
     const {
       loading,
@@ -34,34 +34,33 @@ class CheckboxWithIcon extends React.Component {
       onValuesChanged,
       renderLabel,
       placeholder,
-      classNames
+      classNames,
     } = this.props;
     return (
       <Field {...sanitizeFormikFieldProps(this.props)}>
         {({ field, form }) => {
-          const value =
-            field.value && typeof field.value === 'object'
+          const value = field.value && typeof field.value === 'object'
               ? field.value[optionKey]
               : field.value;
           const setNewValue = (e) => {
-            const value = e.target.value;
+            const { value } = e.target;
             if (labelInValue) {
-              const newValue = data.find(item => item[optionKey] === value)
+              const newValue = data.find((item) => item[optionKey] === value);
               let valueToSet = parseValuesOnChange(newValue);
               if (typeof value === 'undefined') {
                 valueToSet = null;
               }
-              form.setFieldValue(field.name, valueToSet)
-              if (onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form)
+              form.setFieldValue(field.name, valueToSet);
+              if (onValuesChanged) onValuesChanged(form.values, newValue, form.setFieldValue, form);
             } else {
               let valueToSet = parseValuesOnChange(value);
               if (typeof value === 'undefined') {
                 valueToSet = null;
               }
-              form.setFieldValue(field.name, valueToSet)
-              if (onValuesChanged) onValuesChanged(form.values, value, form.setFieldValue, form)
+              form.setFieldValue(field.name, valueToSet);
+              if (onValuesChanged) onValuesChanged(form.values, value, form.setFieldValue, form);
             }
-          }
+          };
           return (
             <Form.Item
               {...sanitizeFormItemProps(this.props, field, form)}
@@ -73,8 +72,8 @@ class CheckboxWithIcon extends React.Component {
                 onChange={setNewValue}
               >
                 <div className="ra-checkboxWithIconRow">
-                  {data &&
-                    data.map((d, index) => {
+                  {data
+                    && data.map((d, index) => {
                       const val = d ? d[optionKey] || d : d;
                       return (
                         <div
@@ -83,19 +82,20 @@ class CheckboxWithIcon extends React.Component {
                           onClick={() => setNewValue({ target: { value: val } })}
                         >
                           <Radio value={val}>
-                            <div className='ra-checkboxWithIconContent'>
+                            <div className="ra-checkboxWithIconContent">
                               {!!(d && d.icon) && <Icon type={d.icon} />}
                               <p>{this.renderLabel(
                                 d,
                                 optionLabel,
                                 optionKey,
                                 startCase,
-                                renderLabel
-                              ).toString()}</p>
+                                renderLabel,
+                              ).toString()}
+                              </p>
                             </div>
                           </Radio>
                         </div>
-                      )
+                      );
                     })}
                 </div>
               </Radio.Group>
@@ -116,6 +116,6 @@ CheckboxWithIcon.defaultProps = {
   startCase: true, // When True it will show you label like this 'My Display'
   showSearch: true,
   placeholder: 'Type here...',
-  parseValuesOnChange: values => values // You can pass function that get values and return the values to send to server
+  parseValuesOnChange: (values) => values, // You can pass function that get values and return the values to send to server
   // onValuesChanged: (values,value, setFieldValue, form) => {} // Use if you want to change other field in each change
 };

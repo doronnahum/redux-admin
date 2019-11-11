@@ -19,6 +19,7 @@ import Dropzone from './Dropzone';
 import BoxSelect from './BoxSelect';
 import CheckboxWithIcon from './CheckboxWithIcon';
 import * as util from './util';
+
 export {
   Input,
   InputNumber,
@@ -40,6 +41,6 @@ export {
   Dropzone,
   BoxSelect,
   CheckboxWithIcon,
-  util
+  util,
 
-}
+};
