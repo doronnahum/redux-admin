@@ -105,6 +105,8 @@ class SimpleDoc extends Component {
 
   render() {
     const { initialLoadFinished, data, validationSchema, validate, getDocFields, crudActions, isNewDoc, status, getTitle, onClose, btnSubmitLoading, id, showFooter, canCreate,
+      validationSchemaOnCreate,
+      validationSchemaOnUpdate,
       canDelete,
       canUpdate,
       viewMode,
@@ -152,7 +154,7 @@ class SimpleDoc extends Component {
       <Formik
         key={isNewDoc ? LOCALS.DOC.NEW_DOC_TITLE : (id + updateCounter)}
         initialValues={data ? { ...data, ...initialValuesToUse } : initialValuesToUse}
-        validationSchema={validationSchema}
+        validationSchema={isNewDoc ? validationSchemaOnCreate : validationSchemaOnUpdate || validationSchema}
         validate={validate}
         onSubmit={this.onSubmit}
       >
@@ -207,25 +209,25 @@ class SimpleDoc extends Component {
                     {getDocFields(propsToPass)}
                   </div>
                   {(showFooter && showBtn) && (
-<div className="ra-docFooter">
-                    {showBtn && (
-<Button
-                      type="primary"
-                      className={`ra-submitBtn ra-submitBtn-${!disabledSubmit ? 'valid' : 'notValid'}`}
-                      loading={btnSubmitLoading}
-                      onClick={() => {
-                        if (!disabledSubmit) {
-                          this.onSubmit(values);
-                        } else {
-                          showAllError();
-                        }
-                      }}
->
-                      {isNewDoc ? LOCALS.DOC.CREATE_BUTTON_TEXT : LOCALS.DOC.UPDATE_BUTTON_TEXT}
-</Button>
-)}
-</div>
-)}
+                    <div className="ra-docFooter">
+                      {showBtn && (
+                        <Button
+                          type="primary"
+                          className={`ra-submitBtn ra-submitBtn-${!disabledSubmit ? 'valid' : 'notValid'}`}
+                          loading={btnSubmitLoading}
+                          onClick={() => {
+                            if (!disabledSubmit) {
+                              this.onSubmit(values);
+                            } else {
+                              showAllError();
+                            }
+                          }}
+                        >
+                          {isNewDoc ? LOCALS.DOC.CREATE_BUTTON_TEXT : LOCALS.DOC.UPDATE_BUTTON_TEXT}
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
