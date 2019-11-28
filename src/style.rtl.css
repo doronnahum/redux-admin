@@ -317,14 +317,6 @@
     font-size: 6px;
 }
 
-/* .ra-adminLayout .ant-table td { white-space: nowrap; } */
-.ra-adminLayout .ant-table-thead>tr>th {
-    background-color: transparent;
-}
-
-.ra-adminLayout .ant-table-header {
-    background-color: transparent;
-}
 
 .ra-text-line-through {
     text-decoration: line-through
@@ -521,24 +513,30 @@
 .ra-tableContent-table .ant-tag {
     max-width: 200px;
     overflow: auto;
+    display: inline-table;
+    margin: 3px;
 }
 
 .ra-max100 {
     max-height: 100px;
     overflow: auto;
 }
-.ra-adminLayout .ant-table-thead>tr>th .ant-table-header-column {
+
+.ra-listTags {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ra-adminLayout .ant-table-thead>tr>th .ant-table-header-column {
+    margin-bottom: 15px;
 }
 
 .dir-rtl.ra-adminLayout .ant-pagination-prev {
-    transform: rotate(180deg);
+    transform: rotate(-180deg);
 }
 
 .dir-rtl.ra-adminLayout .ant-pagination-next {
-    transform: rotate(180deg);
+    transform: rotate(-180deg);
 }
 
 .dir-rtl.ra-adminLayout .ant-btn-group {
@@ -547,35 +545,35 @@
 }
 
 .dir-rtl.ra-adminLayout .ant-dropdown-menu {
-    text-align: right;
+    text-align: left;
 }
 
 .dir-rtl.ra-adminLayout .ant-dropdown-menu-item>.anticon:first-child,
 .ant-dropdown-menu-submenu-title>.anticon:first-child {
-    margin-left: 8px;
-    margin-right: initial;
+    margin-right: 8px;
+    margin-left: initial;
 }
 
 .dir-rtl.ra-adminLayout .ant-select-dropdown-menu {
-    padding-right: initial;
-    padding-left: 40px;
+    padding-left: initial;
+    padding-right: 40px;
 }
 
 .dir-rtl.ra-adminLayout form .has-feedback>.ant-select .ant-select-arrow,
 form .has-feedback>.ant-select .ant-select-selection__clear,
 form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-arrow,
 form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-selection__clear {
-    left: 26px;
-    right: inherit;
+    right: 26px;
+    left: inherit;
 }
 
 .dir-rtl.ra-adminLayout .ant-select-selection__placeholder,
 .ant-select-search__field__placeholder {
-    text-align: right;
+    text-align: left;
 }
 
 .dir-rtl.ra-adminLayout .ra-docHeader-back .anticon-left {
-    transform: rotate(180deg);
+    transform: rotate(-180deg);
 }
 
 .dir-rtl.ra-adminLayout .ra-tableHeader-row {
@@ -595,6 +593,7 @@ form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-selectio
 
 .nextjs-app-body .ra-docHeader .ra-docHeader-title {
     color: white;
+    padding-top: 0px;
 }
 
 .nextjs-app-body .ra-tableWrapper .ant-table-body {
@@ -606,13 +605,20 @@ form .has-feedback :not(.ant-input-group-addon)>.ant-select .ant-select-selectio
 }
 
 .nextjs-app-body .ra-docHeader-back {
-    margin-left: 10px;
+    margin-right: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     background: transparent;
 }
+
+.ra-breadcrumb {
+    font-weight: 800;
+}
+
+
+/*rtl:end:ignore*/
 
 #nextjs-app-rtl .sideBarArrowBackBtn {
     transform: rotate(180deg);
@@ -755,3 +761,38 @@ form .has-feedback .ant-calendar-picker-icon, form .has-feedback .ant-time-picke
    margin-right: calc(100% - 26px);
    right: initial;
 }
+
+.ant-form-item-required:before {
+    margin-left: 4px !important;
+    margin-right: initial !important;
+}
+
+.has-error.has-feedback .ant-form-item-children-icon, .has-success.has-feedback .ant-form-item-children-icon, .has-warning.has-feedback .ant-form-item-children-icon, .is-validating.has-feedback .ant-form-item-children-icon {
+    right: inherit !important;;
+    left: 0 !important;;
+}
+
+.ant-select-allow-clear .ant-select-selection--single .ant-select-selection-selected-value{
+    padding-left: 16px;
+    padding-right: 0;
+  }
+
+.ant-select-selection__clear{
+    left: 11px;
+    right: auto;
+  }
+
+.ant-select-arrow{
+    left: 11px;
+    right: auto;
+  }
+
+.ant-calendar-picker-clear, .ant-calendar-picker-icon{
+    left: 12px;
+    right: auto;
+  }
+
+.ant-calendar-picker-clear, .ant-calendar-picker-icon{
+    left: 12px;
+    right: auto;
+  }
