@@ -1,6 +1,6 @@
 {
   "name": "redux-admin",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "Admin React component",
   "main": "lib/index.js",
   "module": "es/index.js",

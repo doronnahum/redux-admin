@@ -153,14 +153,21 @@ class ReTable extends React.Component {
     const {
       getColumns,
       allowColumnFilters,
+      actionPosition,
     } = this.props;
 
     this.columns = getColumns(this.props);
     this.columnsFiltersMenu = allowColumnFilters ? (this.columnsFiltersMenu || this.columns.map(this.getFilterField)) : null;
     if (!this.state.columnsFilters || !this.state.columnsFilters.length) {
+      if (actionPosition === 'start') {
+        return [...this.getActions(), ...this.columns]
+      }
       return [...this.columns, ...this.getActions()];
     }
-      return [...this.columns.filter((field) => this.state.columnsFilters.includes(field.key || field.dataIndex)), ...this.getActions()];
+    if (actionPosition === 'start') {
+      return [...this.getActions(), ...this.columns.filter((field) => this.state.columnsFilters.includes(field.key || field.dataIndex))];
+    }
+    return [...this.columns.filter((field) => this.state.columnsFilters.includes(field.key || field.dataIndex)), ...this.getActions()];
   }
 
   onDownloadExcel = () => {
@@ -198,30 +205,30 @@ class ReTable extends React.Component {
       canCreate,
     } = this.props;
     const overlay = (
-<Menu>
-      <Menu.Item key="1" onClick={onRefreshClick}><Icon type="reload" />{LOCALS.RELOAD}</Menu.Item>
-      {(allowAdvanceFilters && allowFilters) && <Menu.Item key="2" onClick={this.showAdvanceOptions}><Icon type="filter" />{LOCALS.ADVANCED_FILTER}</Menu.Item>}
-      {allowColumnFilters && <Menu.Item key="3" onClick={this.onShowFilterColumns}><Icon type="table" />{LOCALS.COLUMNS}</Menu.Item>}
-      {onDownloadPdf && <Menu.Item key="4" onClick={this.onDownloadPdf}><Icon type="file-pdf" />{LOCALS.PDF}</Menu.Item>}
-      {onDownloadExcel && <Menu.Item key="5" onClick={this.onDownloadExcel}><Icon type="file-excel" />{LOCALS.XSL}</Menu.Item>}
-</Menu>
-);
+      <Menu>
+        <Menu.Item key="1" onClick={onRefreshClick}><Icon type="reload" />{LOCALS.RELOAD}</Menu.Item>
+        {(allowAdvanceFilters && allowFilters) && <Menu.Item key="2" onClick={this.showAdvanceOptions}><Icon type="filter" />{LOCALS.ADVANCED_FILTER}</Menu.Item>}
+        {allowColumnFilters && <Menu.Item key="3" onClick={this.onShowFilterColumns}><Icon type="table" />{LOCALS.COLUMNS}</Menu.Item>}
+        {onDownloadPdf && <Menu.Item key="4" onClick={this.onDownloadPdf}><Icon type="file-pdf" />{LOCALS.PDF}</Menu.Item>}
+        {onDownloadExcel && <Menu.Item key="5" onClick={this.onDownloadExcel}><Icon type="file-excel" />{LOCALS.XSL}</Menu.Item>}
+      </Menu>
+    );
     if (canCreate) {
       return (
-<Dropdown.Button
-        placement="bottomLeft"
-        onClick={onNewClick}
-        overlay={overlay}
->
-        {LOCALS.NEW}
-</Dropdown.Button>
-);
-    }
-      return (
-        <Dropdown overlay={overlay}>
-          <Icon type="setting" />
-        </Dropdown>
+        <Dropdown.Button
+          placement="bottomLeft"
+          onClick={onNewClick}
+          overlay={overlay}
+        >
+          {LOCALS.NEW}
+        </Dropdown.Button>
       );
+    }
+    return (
+      <Dropdown overlay={overlay}>
+        <Icon type="setting" />
+      </Dropdown>
+    );
   }
 
   onRow = (row) => {
@@ -291,35 +298,35 @@ class ReTable extends React.Component {
           {renderHeaders && renderHeaders(this.props)}
           {showHeaders
             && (
-<div className="ra-tableHeader">
-              <div className="ra-tableHeader-row">
-                <div className="ra-tableHeader-left">
-                  {allowFilters
-                    && (
-<Filters
-                      fields={this.getFilterFields(this.columns)}
-                      onFiltersChanged={onFiltersChanged}
-                      hideAdvanceOptions={this.hideAdvanceOptions}
-                      showAdvanceOptions={this.state.showAdvanceFiltersOptions}
-                      onShowAdvanceOptions={this.showAdvanceOptions}
-/>
-)}
-                  {showSearchField && (
-<Search
-                    placeholder={LOCALS.SEARCH_PLACE_HOLDER}
-                    onSearch={onSearch}
-                    onChange={onSearchValueChange}
-                    value={searchValue}
-                    style={{ width: 200 }}
-/>
-)}
-                </div>
-                <div className="ra-tableHeaderActions">
-                  {this.renderMenu()}
+              <div className="ra-tableHeader">
+                <div className="ra-tableHeader-row">
+                  <div className="ra-tableHeader-left">
+                    {allowFilters
+                      && (
+                        <Filters
+                          fields={this.getFilterFields(this.columns)}
+                          onFiltersChanged={onFiltersChanged}
+                          hideAdvanceOptions={this.hideAdvanceOptions}
+                          showAdvanceOptions={this.state.showAdvanceFiltersOptions}
+                          onShowAdvanceOptions={this.showAdvanceOptions}
+                        />
+                      )}
+                    {showSearchField && (
+                      <Search
+                        placeholder={LOCALS.SEARCH_PLACE_HOLDER}
+                        onSearch={onSearch}
+                        onChange={onSearchValueChange}
+                        value={searchValue}
+                        style={{ width: 200 }}
+                      />
+                    )}
+                  </div>
+                  <div className="ra-tableHeaderActions">
+                    {this.renderMenu()}
+                  </div>
                 </div>
               </div>
-</div>
-)}
+            )}
           <div className="ra-tableContent">
             <div className="ra-tableContent-table">
               <div style={{ minWidth: minWidth + 20 }}>
@@ -343,15 +350,15 @@ class ReTable extends React.Component {
             </div>
             {(allowColumnFilters && this.columns)
               && (
-<FilterColumns
-                visible={this.state.showFilterColumns}
-                onOk={this.onFilterColumnsConfirm}
-                onReset={this.onFilterColumnsReset}
-                onClose={this.onFilterColumnsClose}
-                fields={this.columnsFiltersMenu}
-                columnsFilters={this.state.columnsFilters}
-/>
-)}
+                <FilterColumns
+                  visible={this.state.showFilterColumns}
+                  onOk={this.onFilterColumnsConfirm}
+                  onReset={this.onFilterColumnsReset}
+                  onClose={this.onFilterColumnsClose}
+                  fields={this.columnsFiltersMenu}
+                  columnsFilters={this.state.columnsFilters}
+                />
+              )}
           </div>
         </div>
       </React.Fragment>
@@ -382,6 +389,7 @@ ReTable.defaultProps = {
   showHeaders: true,
   expandedRowRender: null,
   renderHeaders: null,
+  actionPosition: 'end',
 };
 
 ReTable.propTypes = {
@@ -392,6 +400,7 @@ ReTable.propTypes = {
   editable: PropTypes.bool,
   canUpdate: PropTypes.bool,
   canDelete: PropTypes.bool,
+  actionPosition: PropTypes.string, // start or end
   renderInsideRowActions: PropTypes.func, // renderInsideRowActions(cell, row) => <button>Delete</button>
   onEditClick: PropTypes.func,
   onDeleteClick: PropTypes.func,
