@@ -265,6 +265,7 @@ class ReTable extends React.Component {
       // onDownloadExcel,
       // onDownloadPdf,
       // canCreate
+      tableProps,
     } = this.props;
     if (!getColumns) return 'Table missing getColumns';
     const columns = this.columnsToRender();
@@ -342,6 +343,7 @@ class ReTable extends React.Component {
                   loading={loading}
                   expandedRowRender={expandedRowRender}
                   rowSelection={this.props.rowSelection}
+                  {...(tableProps || {})}
                 />
               </div>
             </div>
@@ -390,6 +392,7 @@ ReTable.defaultProps = {
   expandedRowRender: null,
   renderHeaders: null,
   actionPosition: 'end',
+  tableProps: null,
 };
 
 ReTable.propTypes = {
@@ -431,6 +434,7 @@ ReTable.propTypes = {
   expandedRowRender: PropTypes.func, // antd table expandedRowRender
   renderOnTop: PropTypes.func, // render content outside the table, on the top screen  renderOnTop(props) => <div>Hello</div>
   renderHeaders: PropTypes.func, // render content inside headers renderHeaders(props) => <div>Hello</div>
+  tableProps: PropTypes.object, // props that pass to table <table {...tableProps}
 };
 
 export default ReTable;

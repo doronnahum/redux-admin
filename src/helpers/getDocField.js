@@ -56,6 +56,7 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
       multiSelect,
       required,
       helpText,
+      disabled: _disabled,
     };
     return (
       <RefComponent url={ref} targetKeyPrefix={referenceKey} key={referenceKey || key} getParamsByValue={getParamsByValue} fieldProps={fieldProps} disabled={_disabled} inputType={inputType}>

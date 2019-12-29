@@ -205,12 +205,23 @@ export default class FilterOptions extends React.Component {
                             style={{ width: 165 }}
                             placeholder={LOCALS.FILTERS.SELECT_PLACE_HOLDER}
                             onValuesChanged={(v, newValue) => {
-                              const fieldsType = fields.find((item) => item.key === newValue).type;
-                              const newValues = { ...values };
-                              newValues.activeFilters[index].key = newValue;
-                              newValues.activeFilters[index].operator = getDefaultOperator(fieldsType).value;
-                              newValues.activeFilters[index].value = null;
-                              setValues(newValues);
+                              if (newValue) {
+                                const fieldsType = fields.find((item) => item.key === newValue).type;
+                                const newValues = { ...values };
+                                const oldValueKey = values.activeFilters[index].key;
+                                const oldFilterValue = values.activeFilters[index] && values.activeFilters[index].value;
+                                newValues.activeFilters[index].key = newValue;
+                                newValues.activeFilters[index].operator = getDefaultOperator(fieldsType).value;
+                                newValues.activeFilters[index].value = null;
+                                setValues(newValues);
+                                if (oldValueKey !== newValue && oldFilterValue) {
+                                  onSave(newValues);
+                                }
+                              } else {
+                                const resetValues = { activeFilters: [this.getNewRow()] };
+                                setValues(resetValues);
+                                onSave(resetValues);
+                              }
                             }}
                           />
                           {advanceMode && (
@@ -238,9 +249,9 @@ export default class FilterOptions extends React.Component {
                               className="ra-simpleSearchBtn"
                               ghost
                               onClick={() => {
-                                const values = { activeFilters: [this.getNewRow()] };
-                                setValues(values);
-                                onSave(values);
+                                const resetValues = { activeFilters: [this.getNewRow()] };
+                                setValues(resetValues);
+                                onSave(resetValues);
                               }}
                               icon="close"
                               size="small"
