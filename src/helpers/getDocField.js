@@ -1,6 +1,7 @@
 import React from 'react';
 
 import startCase from 'lodash/startCase';
+import { checkURL } from '../util';
 
 import {
   Input,
@@ -16,7 +17,10 @@ import {
   BoxSelect,
   CheckboxWithIcon,
   TimePicker,
+  Consumer,
+  InputWithImageView,
 } from '../fields';
+
 
 const getItemTypeAsString = function (type) {
   if (type === Number || type === 'number') return 'number';
@@ -89,11 +93,12 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
     const Element = inputType === 'boxSelect' ? CheckboxWithIcon : Select;
     return <Element renderLabel={renderLabel} data={_options} name={key} key={key} inputProps={inputProps} label={_label} optionLabel={_optionLabel} optionKey={_optionKey} placeholder={placeholder} disabled={_disabled} />;
   }
+  if (inputType === 'imageView') {
+    return <InputWithImageView name={key} required={required} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />;
+  }
   if (type === String || type === 'string') {
     const Element = inputType === 'textArea' ? TextArea : Input;
-    return (
-      <Element name={key} required={required} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />
-    );
+    return <Element name={key} required={required} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} />;
   }
   if (type === Number || type === 'number') {
     return (
@@ -118,7 +123,7 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
     if (inputType === 'timePicker') {
       return (
         <TimePicker name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} required={required} />
-      )
+      );
     }
     return (
       <DatePicker name={key} label={_label} key={key} inputProps={inputProps} disabled={_disabled} placeholder={placeholder} required={required} />

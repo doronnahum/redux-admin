@@ -22,6 +22,7 @@
   color: black;
 }
 
+
 .ra-sideModal-full {
   background-color: transparent;
   flex: 0 0 100% !important;
@@ -570,8 +571,19 @@
 }
 
 
+.imageViewBorder {
+  width: 70px;
+  height: 70px;
+  border: 1px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /*rtl:end:ignore*/
+.ra-dir-ltr {
+  direction: ltr !important;
+}
 
 /*rtl:raw:
 

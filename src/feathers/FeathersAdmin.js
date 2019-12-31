@@ -7,12 +7,12 @@ import { mongooseGetParams } from './helpers';
 
 export default class FeathersAdmin extends Component {
   render() {
-    const { customHandleResponse } = this.props;
+    const { customHandleResponse, regexFilters } = this.props;
     const _props = {};
     return (
       <Admin
         rowKey="_id"
-        getParams={(res) => mongooseGetParams(res, this.props.defaultFilter, this.props.defaultOptions)}
+        getParams={(res) => mongooseGetParams(res, this.props.defaultFilter, this.props.defaultOptions, regexFilters)}
         getIdFromNewDocResponse={(res) => res.response && res.response.data && res.response.data._id}
         getDocumentSource={({ url, targetKey, params, body, id, data }) => {
           let _params = null;

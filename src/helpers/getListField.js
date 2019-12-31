@@ -4,10 +4,10 @@ import startCase from 'lodash/startCase';
 import { Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import printObject from './printObject';
-
+import { checkURL } from '../util';
 import { LOCALS } from '../local';
 
-const getListField = function ({ key, title, type, render, sorter, width = 150, defaultValue = '', itemType, labelKey, dateFormat }) {
+const getListField = function ({ key, title, type, render, sorter, width = 150, defaultValue = '', itemType, labelKey, dateFormat, forceLtr }) {
   const field = {
     title: title || startCase(key),
     key,
@@ -15,7 +15,7 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
     width,
     sorter,
     type,
-    className: `ra-listField-${key} ${type === 'link' ? 'ra-list-tr-ellipsis' : ''}`,
+    className: `ra-listField-${key} ${type === 'link' ? 'ra-list-tr-ellipsis' : ''} ${forceLtr ? 'ra-dir-ltr' : ''}`,
   };
   if (render) {
     field.render = render;
@@ -55,7 +55,7 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
     }
   } else if (type === 'link') {
     field.render = function (fieldValue) {
-      return fieldValue ? (
+      return (fieldValue && checkURL(fieldValue)) ? (
         <a
           className="ra-linkStyle ra-list-text-ellipsis"
           onClick={(e) => {
@@ -65,6 +65,10 @@ const getListField = function ({ key, title, type, render, sorter, width = 150, 
         >{fieldValue}
         </a>
       ) : '';
+    };
+  } else if (type === 'imageView') {
+    field.render = function (fieldValue) {
+      return (fieldValue && checkURL(fieldValue)) ? <img src={fieldValue} width={65} height={65} /> : '';
     };
   } else if (field.key === '_id') {
     field.width = 95;

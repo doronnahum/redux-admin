@@ -75,8 +75,8 @@ let forEachKeyInKeypath = function (object, keypath, callback) {
   }
 
   let key = '';
-     let i;
-     let escape = false;
+  let i;
+  let escape = false;
 
   for (i = 0; i < keypath.length; ++i) {
     switch (keypath[i]) {
@@ -113,3 +113,8 @@ export const capitalize = (s) => {
   if (typeof s !== 'string') return '';
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
+
+
+export function checkURL(url) {
+  return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+}

@@ -18,6 +18,7 @@ import ObjectEditor from './ObjectEditor';
 import Dropzone from './Dropzone';
 import BoxSelect from './BoxSelect';
 import CheckboxWithIcon from './CheckboxWithIcon';
+import InputWithImageView from './InputWithImageView';
 import * as util from './util';
 
 export {
@@ -41,6 +42,6 @@ export {
   Dropzone,
   BoxSelect,
   CheckboxWithIcon,
+  InputWithImageView,
   util,
-
 };
