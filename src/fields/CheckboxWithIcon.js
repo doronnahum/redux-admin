@@ -7,13 +7,13 @@ import { sanitizeFormItemProps, sanitizeFormikFieldProps } from './util';
 class CheckboxWithIcon extends React.Component {
   renderLabel(option, optionLabel, optionKey, startCase, renderLabel) {
     const text = typeof option === 'object'
-        ? option[optionLabel] || option[optionKey]
-        : option;
+      ? option[optionLabel] || option[optionKey]
+      : option;
     const label = startCase ? toStartCase(text) : text;
     if (renderLabel) {
       return renderLabel({ label, option, optionLabel, optionKey, startCase });
     }
-    return label;
+    return label ? label.toString() : '';
   }
 
   render() {
@@ -40,8 +40,8 @@ class CheckboxWithIcon extends React.Component {
       <Field {...sanitizeFormikFieldProps(this.props)}>
         {({ field, form }) => {
           const value = field.value && typeof field.value === 'object'
-              ? field.value[optionKey]
-              : field.value;
+            ? field.value[optionKey]
+            : field.value;
           const setNewValue = (e) => {
             const { value } = e.target;
             if (labelInValue) {
@@ -90,7 +90,7 @@ class CheckboxWithIcon extends React.Component {
                                 optionKey,
                                 startCase,
                                 renderLabel,
-                              ).toString()}
+                              )}
                               </p>
                             </div>
                           </Radio>
