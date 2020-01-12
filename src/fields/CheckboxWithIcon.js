@@ -13,7 +13,7 @@ class CheckboxWithIcon extends React.Component {
     if (renderLabel) {
       return renderLabel({ label, option, optionLabel, optionKey, startCase });
     }
-    return label ? label.toString() : '';
+    return label ? label.toString() : '';;
   }
 
   render() {

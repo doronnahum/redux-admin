@@ -37,14 +37,13 @@ class DatePickerInput extends Component {
               {...sanitizeFormItemProps(this.props, { name }, form)}
             >
               <DatePicker
-showTime={{ format: 'HH:mm' }}
+                showTime={this.props.showTime || { format: 'HH:mm' }}
                 {...sanitizeAntdDatePickerInputProps(this.props)}
                 value={value ? moment(value) : null}
                 onChange={(value) => {
                   setFieldValue(name, value ? value._d.toISOString() : null);
                 }}
-format="YYYY-MM-DD HH:mm"
-
+                format={this.props.format || "YYYY-MM-DD HH:mm"}
                 onOpenChange={this.handleOpenChange}
                 onPanelChange={this.handlePanelChange}
                 onBlur={() => {

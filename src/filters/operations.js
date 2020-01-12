@@ -177,7 +177,12 @@ export const noneInArray = {
 
 export const dateEqual = {
   renderInputComponent: (name, fieldData, advanceMode) => (
-    <DatePicker showTime={false} name={name} placeholder={LOCALS.FILTERS.DATE_INPUT_PLACE_HOLDER} />
+    <DatePicker
+      showTime={false}
+      name={name}
+      placeholder={LOCALS.FILTERS.DATE_INPUT_PLACE_HOLDER}
+      format={'DD-MM-YYYY'}
+    />
   ),
   value: 'dateEqual',
   mongooseCode: '$eq',
