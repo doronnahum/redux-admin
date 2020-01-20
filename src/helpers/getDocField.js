@@ -40,7 +40,7 @@ export const isFieldDisabled = function (fieldName, documentRollConfig = { canCr
   return isDisabled;
 };
 
-const getDocField = function ({ key, type, label, required, ref, RefComponent = Reference, referenceKey, labelInValue, arrayItemType = String, multiSelect = false, disabled = false, documentRollConfig, isNewDoc, optionLabel, optionKey, options, getParamsByValue, placeholder, objectStructure, nestedArray, inputType, inputProps, helpText, renderLabel }) {
+const getDocField = function ({ key, type, label, required, ref, RefComponent = Reference, referenceKey, labelInValue, arrayItemType = String, multiSelect = false, disabled = false, documentRollConfig, isNewDoc, optionLabel, optionKey, options, getParamsByValue, placeholder, objectStructure, nestedArray, inputType, inputProps, helpText, renderLabel, customElements }) {
   const _disabled = disabled || isFieldDisabled(key, documentRollConfig, isNewDoc);
   const _label = label || startCase(key);
   if (inputType === 'file') {
@@ -61,6 +61,7 @@ const getDocField = function ({ key, type, label, required, ref, RefComponent = 
       required,
       helpText,
       disabled: _disabled,
+      customElements
     };
     return (
       <RefComponent url={ref} targetKeyPrefix={referenceKey} key={referenceKey || key} getParamsByValue={getParamsByValue} fieldProps={fieldProps} disabled={_disabled} inputType={inputType}>
